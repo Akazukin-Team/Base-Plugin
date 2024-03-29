@@ -1,0 +1,13 @@
+plugins {
+    id 'buildlogic.java-common-conventions'
+    id 'org.domaframework.doma.compile'
+}
+
+dependencies {
+    include("com.zaxxer:HikariCP:5.1.0")
+    include("org.xerial:sqlite-jdbc:3.45.2.0")
+
+    compileOnly("org.slf4j:slf4j-api:2.0.7")
+}
+
+compileJava.options.compilerArgs = ['-Adoma.domain.converters=net.akazukin.library.doma.domain.DomainConvertersProvider']

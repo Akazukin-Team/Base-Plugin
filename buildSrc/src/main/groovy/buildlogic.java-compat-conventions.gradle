@@ -1,0 +1,4 @@
+plugins {
+    id 'buildlogic.java-minecraft-conventions'
+    id 'buildlogic.java-runtime-conventions'
+}

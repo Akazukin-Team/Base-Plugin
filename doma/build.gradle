@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath 'org.xerial:sqlite-jdbc:3.45.2.0'
+    }
+}
+
+plugins {
+    id 'buildlogic.java-doma-conventions'
+    //id 'org.domaframework.doma.codegen'
+}
+
+/*domaCodeGen {
+    //ant.taskdef(resource: 'domagentask.properties', classpath: configurations.domaGenRuntime.asPath)
+
+    dev {
+        url = "jdbc:sqlite:${project.parent.projectDir}\\run\\mapart.db"
+        versionColumnNamePattern = "VERSION"
+        templateDir = file("$projectDir/templates")
+        driverClassName = "org.sqlite.JDBC"
+        entity {
+            versionColumnNamePattern = "VERSION_NO"
+            packageName = 'net.akazukin.bot.doma.generated.entity'
+            overwrite = true
+            useListener = false
+            useMappedSuperclass = false
+            originalStatesPropertyName = 'original'
+            entityPropertyClassNamesFile = file("$projectDir/codegen-mapping.properties")
+        }
+        dao {
+            packageName = 'net.akazukin.mapart.doma.generated.dao'
+            overwrite = true
+        }
+        sql {
+            overwrite = true
+        }
+    }
+}
+*/

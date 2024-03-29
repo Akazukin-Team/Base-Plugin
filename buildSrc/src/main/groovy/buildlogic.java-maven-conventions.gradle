@@ -1,0 +1,60 @@
+plugins {
+    id 'maven-publish'
+    id 'java-library'
+}
+
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.register("sourcesJar", Jar) {
+    archiveClassifier.set("sources")
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    archiveBaseName = project.plugin_name
+
+    from {
+        configurations.include.filter {
+            parent.subprojects.buildDir.path.any { it2 -> it.path.startsWith(it2) }
+        }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.register("shadowJar", Jar) {
+    archiveClassifier.set("")
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    archiveBaseName = project.plugin_name
+
+    from {
+        configurations.include.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = project.artifact
+            version = project.version
+            //from components.java
+
+            artifact(tasks.named("sourcesJar")) {
+                classifier "sources"
+                extension "jar"
+            }
+            artifact(tasks.named("shadowJar")) {
+                classifier ""
+                extension "jar"
+            }
+        }
+    }
+}

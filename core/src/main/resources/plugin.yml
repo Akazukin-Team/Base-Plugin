@@ -1,0 +1,17 @@
+name: ${NAME}
+version: ${VERSION}
+description: A plugin for plugin made by our
+author: Akazukin-Team
+authors: [ Currypan1229 ]
+website: https://discord.gg/De8T2NS74X
+softdepend:
+  - WorldEdit
+  - WorldGuard
+  - FastAsyncWorldEdit
+
+database: true
+
+main: net.akazukin.library.LibraryPlugin
+api-version: 1.20
+
+load: STARTUP

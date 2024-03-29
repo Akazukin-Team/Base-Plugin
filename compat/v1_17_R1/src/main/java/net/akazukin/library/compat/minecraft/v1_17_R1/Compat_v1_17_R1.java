@@ -1,0 +1,148 @@
+package net.akazukin.library.compat.minecraft.v1_17_R1;
+
+import io.netty.channel.Channel;
+import net.akazukin.library.compat.minecraft.Compat;
+import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
+import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
+import net.akazukin.library.compat.minecraft.data.packets.Packet;
+import net.akazukin.library.utils.ReflectionUtils;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.server.network.ServerConnection;
+import net.minecraft.world.inventory.ContainerAnvil;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+
+public class Compat_v1_17_R1 implements Compat {
+    private final PacketProcessor_v1_17_R1 pktProcessor;
+
+    public Compat_v1_17_R1() {
+        pktProcessor = new PacketProcessor_v1_17_R1(this);
+    }
+
+    @Override
+    public int getProtocolVersion() {
+        return SharedConstants.c();
+    }
+
+    @Override
+    public int getMinHeight(final World world) {
+        return world.getMinHeight();
+    }
+
+    @Override
+    public WrappedAnvilInventory getWrappedAnvil(final Inventory inventory) {
+        if (!(inventory instanceof CraftInventory)) return null;
+        if (!(((CraftInventory) inventory).getInventory() instanceof ContainerAnvil)) return null;
+
+        return new WrappedAnvilInventory(
+                inventory,
+                ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).v,
+                ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).w.get(),
+                ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).maximumRepairCost
+        );
+    }
+
+    @Override
+    public Inventory getBukkitAnvil(final WrappedAnvilInventory inventory) {
+        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).v = inventory.getRenameText();
+        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).w.set(inventory.getRepairCost());
+        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).maximumRepairCost = inventory.getMaximumRepairCost();
+        return inventory.getInventory();
+    }
+
+    @Override
+    public net.minecraft.network.protocol.Packet<?> getNMSPacket(final Packet packet) {
+        return pktProcessor.processWrapper(packet);
+    }
+
+    @Override
+    public Packet getWrappedPacket(final Object packet) {
+        return pktProcessor.processPacket((net.minecraft.network.protocol.Packet<?>) packet);
+    }
+
+    @Override
+    public void sendPacket(final Player player, final Packet packet) {
+        ((CraftPlayer) player).getHandle().b.sendPacket(getNMSPacket(packet));
+    }
+
+    @Override
+    public WrappedBlockPos getWrappedBlockPos(final Object pos) {
+        if (!(pos instanceof final BlockPosition pos2))
+            throw new IllegalArgumentException("Invalid argument position must be a block position");
+
+        return new WrappedBlockPos(pos2.getX(), pos2.getY(), pos2.getZ());
+    }
+
+    @Override
+    public BlockPosition getNMSBlockPos(final WrappedBlockPos pos) {
+        return new BlockPosition(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    @Override
+    public Channel getPlayerChannel(final Player player) {
+        return ((CraftPlayer) player).getHandle().b.a.k;
+    }
+
+    @Override
+    public List<Channel> getServerChannels() {
+        final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().getServerConnection();
+        try {
+            final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g", List.class);
+            return networks.stream().map(network -> network.k).toList();
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void sendSignUpdate(final Player player, final Location location, final String[] result) {
+        player.sendSignChange(location, result);
+    }
+
+    @Override
+    public ItemStack setNBT(final ItemStack itemStack, final String id, final String value) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
+        nbt.setString(id, value);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public ItemStack setNBT(final ItemStack itemStack, final String id, final long value) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
+        nbt.setLong(id, value);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public String getNBTString(final ItemStack itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.hasTag() && nmsItemStack.getTag().hasKey(id) ? nmsItemStack.getTag().getString(id) : null;
+    }
+
+    @Override
+    public Long getNBTLong(final ItemStack itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.hasTag() && nmsItemStack.getTag().hasKey(id) ? nmsItemStack.getTag().getLong(id) : null;
+    }
+
+    @Override
+    public boolean containsNBT(final ItemStack itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.hasTag() && nmsItemStack.getTag().hasKey(id);
+    }
+}

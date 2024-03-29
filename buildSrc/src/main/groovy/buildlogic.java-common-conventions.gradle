@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+}
+
+
+repositories {
+    maven {
+        name "spigot-repo"
+        url "https://repo.rosewooddev.io/repository/public/"
+    }
+    maven {
+        name 'geysermc'
+        url "https://repo.opencollab.dev/main/"
+    }
+    maven {
+        name "ProtocolSupport"
+        url "https://repo.minebench.de/"
+    }
+    maven {
+        url 'https://repo.codemc.io/repository/nms/'
+    }
+    maven {
+        name "enginehub-maven" //worldedit
+        url "https://maven.enginehub.org/repo"
+    }
+    mavenCentral()
+    mavenLocal()
+}
+
+minecraft_version = properties.get("minecraft_version")
+craftbukkit_version = properties.get("craftbukkit_version")
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+
+    //testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(properties.getOrDefault("java_version", 8) as int)
+compileJava.sourceCompatibility = compileJava.targetCompatibility = properties.getOrDefault("java_version", 8)
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+
+jar.enabled = true
+
+//compileJava.dependsOn(processResources)
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType(Tar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType(Zip).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType(Jar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}

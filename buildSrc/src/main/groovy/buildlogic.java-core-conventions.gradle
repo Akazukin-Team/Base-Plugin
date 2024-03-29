@@ -1,0 +1,26 @@
+plugins {
+    id 'buildlogic.java-common-conventions'
+    id 'buildlogic.java-minecraft-conventions'
+    id 'application'
+}
+
+application {
+    mainClassName = "net.akazukin.library.Main"
+}
+
+dependencies {
+    include("com.google.code.gson:gson:2.10.1")
+}
+
+jar {
+    archiveClassifier.set("src")
+    archiveBaseName = project.plugin_name
+    enabled = true
+}
+
+compileJava.dependsOn(processResources)
+processResources {
+    filesMatching("plugin.yml") {
+        expand(NAME: parent.getProperties().plugin_name, VERSION: parent.getProperties().version, PACKAGE: project.group.toString())
+    }
+}

@@ -1,0 +1,7 @@
+plugins {
+    id 'buildlogic.java-compat-conventions'
+}
+
+dependencies {
+    compileOnly(project(":core"))
+}

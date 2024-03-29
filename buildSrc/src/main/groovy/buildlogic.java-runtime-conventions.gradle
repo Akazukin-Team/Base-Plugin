@@ -1,0 +1,44 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
+plugins {
+    id "xyz.jpenilla.run-paper"
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+    implementation.canBeResolved = true
+}
+
+tasks.register("updateAPL") {
+    group "minecraft"
+    doFirst {
+        copy {
+            from "${System.getenv().get("USERPROFILE")}\\.m2\\repository\\net\\akazukin\\plugin-library\\1.0.0\\plugin-library-1.0.0.jar"
+            into Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}/plugins")
+        }
+    }
+}
+
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+runServer {
+    jar {
+        from {
+            configurations.include.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+
+    Files.createDirectories(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}"))
+    minecraftVersion(project.minecraft_version)
+    runDirectory.set(file(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}")))
+    downloadPlugins {
+        url("https://github.com/TheBlackEntity/PlugManX/releases/download/2.3.7/PlugManX.jar")
+        url("https://download.luckperms.net/1533/bukkit/loader/LuckPerms-Bukkit-5.4.120.jar")
+    }
+    jvmArgs = [
+            "-Dcom.mojang.eula.agree=true"
+    ]
+}

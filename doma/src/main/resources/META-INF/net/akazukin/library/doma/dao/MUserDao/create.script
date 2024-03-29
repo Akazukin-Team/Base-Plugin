@@ -1,0 +1,13 @@
+-- マップアート土地マスタ
+create table M_MAPART_LAND (
+  LAND_ID BIGINT not null -- 土地ID
+  , PLAYER_UUID CHAR(34) not null -- プレイヤーUUID
+  , CHUNK_X BIGINT not null -- チャンクX
+  , CHUNK_Z BIGINT not null -- チャンクZ
+  , HEIGHT BIGINT not null -- 縦幅
+  , WIDTH BIGINT not null -- 横幅
+  , CREATED_AT DATETIME not null -- 作成日
+  , VERSION BIGINT not null -- バージョン
+  , constraint M_MAPART_LAND_PKC primary key (LAND_ID)
+) -- マップアート土地マスタ:Mapart土地管理用マスタ
+;

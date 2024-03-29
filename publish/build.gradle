@@ -1,0 +1,11 @@
+plugins {
+    id 'buildlogic.java-maven-conventions'
+}
+
+dependencies {
+    include(project(":core"))
+    parent.subprojects.forEach {
+        if (it.path.startsWith(":compat:") || it.path.startsWith(":compat:"))
+            include(it)
+    }
+}

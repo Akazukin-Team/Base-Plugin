@@ -1,0 +1,6 @@
+message.prefix=§7[§6§lAKZ§7]§e
+gui.selector.max=Max: ${value}
+gui.selector.min=Min: ${value}
+command.execute.mustBeByPlayer=§cThe command must have executed by player
+gui.selector.size.cantIncrease=§cこれ以上増やすことはできません;
+gui.selector.size.cantDecrease=§cこれ以上減らすことはできません;
