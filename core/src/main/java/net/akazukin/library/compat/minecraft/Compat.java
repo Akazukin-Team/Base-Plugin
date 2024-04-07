@@ -45,11 +45,18 @@ public interface Compat {
 
     ItemStack setNBT(ItemStack itemStack, String id, long value);
 
+    ItemStack setNBT(ItemStack itemStack, String id, boolean value);
+
     @Nullable
     String getNBTString(ItemStack itemStack, String id);
 
     @Nullable
     Long getNBTLong(ItemStack itemStack, String id);
 
+    @Nullable
+    Boolean getNBTBoolean(ItemStack itemStack, String id);
+
     boolean containsNBT(ItemStack itemStack, String id);
+
+    ItemStack removeNBT(ItemStack itemStack, String key);
 }

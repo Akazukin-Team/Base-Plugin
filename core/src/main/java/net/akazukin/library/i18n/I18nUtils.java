@@ -19,6 +19,7 @@ public class I18nUtils {
     private static final Pattern otherI18 = Pattern.compile("<\\$[a-zA-Z0-9.]+>");
     private static final Pattern argsRegex = Pattern.compile("<args\\[[0-9]+]>");
 
+    private static final Properties defaultLocale = new Properties();
     private static final Map<String, Properties> language = new HashMap<>();
 
     private final Plugin plugin;
@@ -29,22 +30,24 @@ public class I18nUtils {
         this.pluginId = pluginId;
     }
 
-    public String get(final String id) {
+    /*public String get(final String id) {
         return get("en_us", id);
     }
 
     public String get(final String id, final I18n i18n) {
-        return get("en_us", i18n.getKey());
-    }
+        return get(id, i18n.getKey());
+    }*/
 
     public String get(final String id, final I18n i18n, final Object... args) {
-        return get("en_us", i18n.getKey(), args);
+        return get(id, i18n.getKey(), args);
     }
 
     public String get(final String locale, final String id, final Object... args) {
-        if (!language.containsKey(locale)) throw new IllegalArgumentException("Invalid locale: " + locale);
-        if (!language.get(locale).containsKey(id)) return null;
-        String i18n = String.valueOf(language.get(locale).getProperty(id));
+        if ((!language.containsKey(locale) || !language.get(locale).containsKey(id)) && !defaultLocale.containsKey(id))
+            return null;
+
+        String i18n = String.valueOf((language.containsKey(locale) && language.get(locale).containsKey(id) ? language.get(locale) : defaultLocale).getProperty(id));
+        if (i18n == null || i18n.isEmpty()) return null;
 
         i18n = i18n.replaceAll("\\\\n", "\n");
 
@@ -53,12 +56,13 @@ public class I18nUtils {
         for (int i = 0; i < args.length; i++) {
             if (!m.find()) break;
 
-            if (args[i] == null) continue;
+            //if (args[i] == null) continue;
 
             final Pattern pattern = Pattern.compile(Pattern.quote("<args[" + i + "]>"));
             final Matcher m2 = pattern.matcher(i18n);
             if (m2.find()) {
                 if (args[i] instanceof I18n) args[i] = get(locale, ((I18n) args[i]).getKey());
+                //if (args[i] == null) continue;
                 i18n = m2.replaceAll(String.valueOf(args[i]));
             }
 
@@ -68,15 +72,13 @@ public class I18nUtils {
 
         final Matcher m2 = otherI18.matcher(i18n);
         if (m2.find()) i18n = m2.replaceAll(get(locale, m2.group().substring(2, m2.group().length() - 1)));
-        return i18n;
+        return (i18n == null || i18n.isEmpty()) ? null : i18n;
     }
 
     public void build(final String... locales) {
-        final Properties props = new Properties();
-
         try (final InputStream is = plugin.getResource("assets/net/akazukin/" + pluginId + "/langs/en_us.lang")) {
             try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                props.load(isr);
+                defaultLocale.load(isr);
             }
         } catch (final Exception e) {
             LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load default localization file", e);
@@ -85,13 +87,13 @@ public class I18nUtils {
 
         for (final String locale : locales) {
             final String langsFile = "langs/" + locale + ".lang";
-            final Properties props2 = (Properties) props.clone();
+            final Properties props = new Properties();
             try (final InputStream is = new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile).exists() ?
                     Files.newInputStream(new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile).toPath()) :
                     plugin.getResource("assets/net/akazukin/" + pluginId + "/" + langsFile)) {
                 try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                    props2.load(isr);
-                    language.put(locale, props2);
+                    props.load(isr);
+                    language.put(locale, props);
                 }
             } catch (final Exception e) {
                 LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load localization file | " + langsFile, e);

@@ -1,11 +1,25 @@
 # Ignore Gradle project-specific cache directory
-**/.gradle
 .gradle
+buildSrc/.gradle
 
 # Ignore Gradle build output directory
-**/build
+buildSrc/build
+core/build
+doma/build
+compat/build
+module/build
+publish/build
+compat/*/build
+module/*/build
 build
 
-**/.settings/
+# Ignore Gradle build output directory
+core/.settings
 
 .idea
+
+run
+
+core/.bin
+
+*.log

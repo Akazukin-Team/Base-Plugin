@@ -8,6 +8,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -65,13 +67,27 @@ public class StringUtils {
 
     @Nonnull
     public static String join(final String character, final List<Object> list) {
-        if (list == null || list.isEmpty()) return "";
+        if (list == null) return "";
         return join(character, list.toArray());
     }
 
     @Nonnull
     public static String join(final String character, final Object[] list) {
-        if (list == null || list.length == 0) return "";
-        return Arrays.stream(list).map(String::valueOf).collect(Collectors.joining(character));
+        if (list == null) return "";
+        return Arrays.stream(list).filter(Objects::nonNull).map(String::valueOf).collect(Collectors.joining(character));
+    }
+
+    @Nullable
+    public static Boolean getBoolean(final String bool) {
+        if (bool == null) return null;
+        if (bool.equalsIgnoreCase("true")) return true;
+        if (bool.equalsIgnoreCase("false")) return false;
+        return null;
+    }
+
+    @Nullable
+    public static UUID toUuid(@Nullable final String str) {
+        if (str == null) return null;
+        return UUID.fromString(str);
     }
 }

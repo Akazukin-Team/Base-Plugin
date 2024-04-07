@@ -66,7 +66,6 @@ public class Events implements Listener {
     public void onPacketReceive(final PacketReceiveEvent event) {
         callEvent(event);
         final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
-        if (pkt != null) System.out.println(pkt.getClass().getSimpleName());
     }
 
     private void callEvent(final Event event) {

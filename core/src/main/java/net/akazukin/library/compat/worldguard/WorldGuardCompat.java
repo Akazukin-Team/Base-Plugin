@@ -46,13 +46,42 @@ public class WorldGuardCompat {
 
     public static void removeOwner(final World world, final String regionId, final UUID player) {
         final DefaultDomain owners = getRegion(world, regionId).getOwners();
-        owners.addPlayer(player);
+        owners.removePlayer(player);
+        getRegion(world, regionId).setOwners(owners);
+    }
+
+    public static void removeAllOwners(final World world, final String regionId) {
+        final DefaultDomain owners = getRegion(world, regionId).getOwners();
+        owners.removeAll();
         getRegion(world, regionId).setOwners(owners);
     }
 
     public static boolean isOwner(final World world, final String regionId, final UUID player) {
         final DefaultDomain owners = getRegion(world, regionId).getOwners();
         return owners.contains(player);
+    }
+
+    public static void addMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = getRegion(world, regionId).getMembers();
+        members.addPlayer(player);
+        getRegion(world, regionId).setMembers(members);
+    }
+
+    public static void removeMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = getRegion(world, regionId).getMembers();
+        members.removePlayer(player);
+        getRegion(world, regionId).setMembers(members);
+    }
+
+    public static void removeAllMembers(final World world, final String regionId) {
+        final DefaultDomain members = getRegion(world, regionId).getMembers();
+        members.removeAll();
+        getRegion(world, regionId).setMembers(members);
+    }
+
+    public static boolean isMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = getRegion(world, regionId).getMembers();
+        return members.contains(player);
     }
 
     public static <K extends Flag<V>, V> void addFlag(final World world, final String regionId, final K key, final V value) {

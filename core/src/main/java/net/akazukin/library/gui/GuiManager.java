@@ -8,11 +8,18 @@ import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
 import net.akazukin.library.event.events.PacketReceiveEvent;
+import net.akazukin.library.gui.screens.chat.ChatGui;
+import net.akazukin.library.gui.screens.chest.ContainerGuiBase;
+import net.akazukin.library.gui.screens.chest.GuiBase;
+import net.akazukin.library.gui.screens.sign.SignStringSelectorGui;
+import net.akazukin.library.utils.InventoryUtils;
+import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,8 +40,8 @@ public class GuiManager implements Listenable {
         final Player player_ = Bukkit.getPlayer(player);
         player_.closeInventory();
         screens.remove(player);
-        gui.forceOpen();
         screens.put(player, gui);
+        gui.forceOpen();
     }
 
     public GuiBase getScreen(final UUID player) {
@@ -43,11 +50,26 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onInventoryClick(final InventoryClickEvent event) {
+        if (ItemUtils.isGuiItem(event.getCurrentItem())) {
+            event.setCancelled(true);
+        } else if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null) {
+            System.out.println("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
+        }
+
+        if (event.getCurrentItem() == null) return;
+
         final GuiBase gui = screens.get(event.getWhoClicked().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
             return;
 
-        ((ContainerGuiBase) gui).onInventoryClick(event);
+        if (InventoryUtils.isCloseItem(event.getCurrentItem())) {
+            event.getWhoClicked().closeInventory();
+        } else if (InventoryUtils.isPrevItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
+            event.getWhoClicked().closeInventory();
+            setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
+        } else {
+            ((ContainerGuiBase) gui).onInventoryClick(event);
+        }
     }
 
     @EventTarget
@@ -89,35 +111,22 @@ public class GuiManager implements Listenable {
     @EventTarget
     public void onPacketReceive(final PacketReceiveEvent event) {
         final GuiBase gui = screens.get(event.getClient().getPlayer().getUniqueId());
-        if (gui instanceof SignGui) {
+        if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
             if (pkt instanceof SOpenSignEditorPacket) {
-                ((SignGui) gui).onGuiOpen();
+                ((SignStringSelectorGui) gui).onGuiOpen();
             } else if (pkt instanceof CUpdateSignPacket) {
-                ((SignGui) gui).onGuiClose(event);
-                if (gui.prevGui == null) {
+                ((SignStringSelectorGui) gui).onGuiClose(event);
+                if (gui.getPrevGui() == null) {
                     screens.remove(event.getClient().getPlayer().getUniqueId());
                 } else {
-                    screens.put(event.getClient().getPlayer().getUniqueId(), gui.prevGui);
+                    screens.put(event.getClient().getPlayer().getUniqueId(), gui.getPrevGui());
                     Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () ->
                             screens.get(event.getClient().getPlayer().getUniqueId()).forceOpen());
                 }
             }
         }
     }
-
-    /*@EventTarget
-    public void onSignChange(final SignChangeEvent event) {
-        final GuiBase gui = screens.get(event.getPlayer().getUniqueId());
-        if (gui instanceof SignGui) {
-            ((SignGui) gui).onSignChange(event);
-            event.getPlayer().closeInventory();
-            if (gui.getPrevGui() != null) {
-                screens.put(event.getPlayer().getUniqueId(), gui.getPrevGui());
-                screens.get(event.getPlayer().getUniqueId()).forceOpen();
-            }
-        }
-    }*/
 
     @Override
     public boolean handleEvents() {

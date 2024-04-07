@@ -4,42 +4,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 public class InventoryUtils {
     private static final ItemStack prevItem;
-    private static final ItemStack emptyItem;
+    private static final ItemStack blankItem;
     private static final ItemStack closeItem;
 
     static {
-        prevItem = new ItemStack(Material.getMaterial("RED_WOOL"));
-        final ItemMeta prevItemMeta = prevItem.getItemMeta();
-        prevItemMeta.setDisplayName("§c§lOpen Previous Menu");
-        prevItemMeta.setLore(Arrays.asList(
-                "§fWhen u click this, open previous gui",
-                "§6§lUndroppable§r§7§l"
-        ));
-        prevItem.setItemMeta(prevItemMeta);
+        final ItemStack prevItem_ = new ItemStack(Material.getMaterial("RED_WOOL"));
+        ItemUtils.setDisplayName(prevItem_, "§c§lOpen Previous Menu");
+        prevItem = ItemUtils.setGuiItem(prevItem_);
 
+        final ItemStack blankItem_ = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
+        ItemUtils.setDisplayName(blankItem_, "§7Empty Slot");
+        blankItem = ItemUtils.setGuiItem(blankItem_);
 
-        emptyItem = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
-        final ItemMeta emptyItemMeta = emptyItem.getItemMeta();
-        emptyItemMeta.setDisplayName("§7Empty Slot");
-        emptyItemMeta.setLore(Collections.singletonList("§6§lUndroppable§r§7§l"));
-        emptyItem.setItemMeta(emptyItemMeta);
-
-
-        closeItem = new ItemStack(Material.getMaterial("BARRIER"));
-        final ItemMeta closeItemMeta = closeItem.getItemMeta();
-        closeItemMeta.setDisplayName("§c§lClose Menu");
-        closeItemMeta.setLore(Arrays.asList(
-                "§fWhen u click this, close your opened gui",
-                "§6§lUndroppable§r§7§l"
-        ));
-        closeItem.setItemMeta(closeItemMeta);
+        final ItemStack closeItem_ = new ItemStack(Material.getMaterial("BARRIER"));
+        ItemUtils.setDisplayName(closeItem_, "§c§lClose Menu");
+        closeItem = ItemUtils.setGuiItem(closeItem_);
     }
 
     public static Inventory createInventory(final String name, final int rows) {
@@ -52,8 +34,8 @@ public class InventoryUtils {
         }
     }
 
-    public static void fillEmptyItems(final Inventory inventory) {
-        fillItems(inventory, emptyItem);
+    public static void fillBlankItems(final Inventory inventory) {
+        fillItems(inventory, blankItem);
     }
 
     public static void fillCloseItem(final Inventory inventory) {
@@ -70,5 +52,9 @@ public class InventoryUtils {
 
     public static boolean isPrevItem(final ItemStack itemStack) {
         return prevItem.equals(itemStack);
+    }
+
+    public static boolean isBlankItem(final ItemStack itemStack) {
+        return blankItem.equals(itemStack);
     }
 }

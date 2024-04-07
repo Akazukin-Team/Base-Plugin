@@ -3,9 +3,10 @@ plugins {
 }
 
 dependencies {
+    include(project(":doma"))
     include(project(":core"))
     parent.subprojects.forEach {
-        if (it.path.startsWith(":compat:") || it.path.startsWith(":compat:"))
+        if (it.path.startsWith(":compat:") || it.path.startsWith(":module:"))
             include(it)
     }
 }

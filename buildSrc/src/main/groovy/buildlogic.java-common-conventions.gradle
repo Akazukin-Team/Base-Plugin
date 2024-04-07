@@ -32,9 +32,6 @@ repositories {
     mavenLocal()
 }
 
-minecraft_version = properties.get("minecraft_version")
-craftbukkit_version = properties.get("craftbukkit_version")
-
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'

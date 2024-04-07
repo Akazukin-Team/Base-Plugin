@@ -42,7 +42,7 @@ public class MessageHelper {
     }
 
     public void broadcast(final String message) {
-        Bukkit.broadcastMessage(get(getLocale(), I18n.of("message.prefix")) + " " + message);
+        Bukkit.broadcastMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + message);
     }
 
     public void sendMessage(final CommandSender sender, final String message) {
@@ -66,7 +66,7 @@ public class MessageHelper {
     }
 
     public void sendMessage(final HumanEntity player, final String message) {
-        player.sendMessage(get(getLocale(player.getUniqueId()), I18n.of("message.prefix")) + " " + message);
+        player.sendMessage(get(getLocale(player.getUniqueId()), I18n.of("library.message.prefix")) + " " + message);
     }
 
     public void sendMessage(final UUID player, final I18n message, final Object... args) {
@@ -74,14 +74,14 @@ public class MessageHelper {
     }
 
     public void sendMessage(final UUID player, final String message) {
-        sendMessage(Bukkit.getPlayer(player), get(getLocale(player), I18n.of("message.prefix")) + " " + message);
+        sendMessage(Bukkit.getPlayer(player), message);
     }
 
     public void consoleMessage(final I18n message, final Object... args) {
-        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("message.prefix")) + " " + get(getLocale(), message, args));
+        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + get(getLocale(), message, args));
     }
 
     public void consoleMessage(final String message) {
-        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("message.prefix")) + " " + message);
+        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + message);
     }
 }

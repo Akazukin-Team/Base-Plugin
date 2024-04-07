@@ -2,41 +2,30 @@ package net.akazukin.library.doma;
 
 import lombok.Getter;
 import org.seasar.doma.jdbc.Config;
+import org.seasar.doma.jdbc.JdbcLogger;
+import org.seasar.doma.jdbc.UnknownColumnHandler;
 import org.seasar.doma.jdbc.dialect.Dialect;
 import org.seasar.doma.jdbc.dialect.SqliteDialect;
 import org.seasar.doma.jdbc.tx.LocalTransactionDataSource;
 import org.seasar.doma.jdbc.tx.LocalTransactionManager;
-import org.seasar.doma.jdbc.tx.TransactionManager;
+import org.seasar.doma.slf4j.Slf4jJdbcLogger;
 
-import javax.sql.DataSource;
+import java.io.File;
 
 @Getter
-public class SQLConfig implements Config {
-    private static SQLConfig CONFIG;
-
+public abstract class SQLConfig implements Config {
     private final Dialect dialect;
-    private final LocalTransactionDataSource localTransactionDataSource;
-    private final TransactionManager transactionManager;
-    private final DataSource dataSource;
-    private final IJdbcLogger jdbcLogger;
-    private final IUnknownColumnHandler unknownColumnHandler;
+    private final LocalTransactionDataSource dataSource;
+    private final JdbcLogger jdbcLogger;
+    private final LocalTransactionManager transactionManager;
+    private final UnknownColumnHandler unknownColumnHandler;
 
-    public SQLConfig() {
-        this.dialect = new SqliteDialect();
-        this.dataSource = new LocalTransactionDataSource(
-                "jdbc:sqlite://mapart.db",
-                "",
-                ""
-        );
-        this.localTransactionDataSource = new LocalTransactionDataSource(this.dataSource);
-        this.transactionManager = new LocalTransactionManager(this.localTransactionDataSource.getLocalTransaction(getJdbcLogger()));
-        this.jdbcLogger = new IJdbcLogger();
-        this.unknownColumnHandler = new IUnknownColumnHandler();
-    }
-
-    public static SQLConfig singleton() {
-        if (CONFIG == null) CONFIG = new SQLConfig();
-        return CONFIG;
+    public SQLConfig(final File database) {
+        dialect = new SqliteDialect();
+        dataSource = new LocalTransactionDataSource("jdbc:sqlite:" + database.getPath(), null, null);
+        jdbcLogger = new Slf4jJdbcLogger();
+        transactionManager = new LocalTransactionManager(dataSource.getLocalTransaction(jdbcLogger));
+        unknownColumnHandler = new IUnknownColumnHandler();
     }
 
     @Override

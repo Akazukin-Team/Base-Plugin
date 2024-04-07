@@ -1,4 +1,4 @@
-buildscript {
+/*buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath 'org.xerial:sqlite-jdbc:3.45.2.0'
     }
-}
+}*/
 
 plugins {
     id 'buildlogic.java-doma-conventions'

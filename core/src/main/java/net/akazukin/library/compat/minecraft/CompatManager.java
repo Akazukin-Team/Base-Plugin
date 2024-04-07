@@ -10,10 +10,7 @@ import java.util.logging.Level;
 public class CompatManager {
     public static Compat initCompat() {
         final String version = LibraryPlugin.getPlugin().getServer().getClass().getPackage().getName().split("\\.")[3];
-        if (version.startsWith("v1_20_")) {
-            return getCompat("net.akazukin.library.compat.minecraft.v1_20_R3.Compat_v1_20_R3");
-        }
-        return null;
+        return getCompat("net.akazukin.library.compat.minecraft.compats.Compat_" + version);
     }
 
     public static Compat getCompat(final String clazzName) {

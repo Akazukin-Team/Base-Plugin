@@ -1,6 +1,7 @@
 package net.akazukin.library.compat.minecraft.v1_17_R1;
 
 import lombok.AllArgsConstructor;
+import net.akazukin.library.compat.minecraft.compats.Compat_v1_17_R1;
 import net.akazukin.library.compat.minecraft.data.PacketProcessor;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;

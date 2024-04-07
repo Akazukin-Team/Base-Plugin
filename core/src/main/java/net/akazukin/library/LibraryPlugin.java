@@ -5,6 +5,7 @@ import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.CompatManager;
 import net.akazukin.library.event.Events;
 import net.akazukin.library.event.LibraryEventManager;
+import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.i18n.I18nUtils;
 import net.akazukin.library.packetlistener.InjectionUtils;
 import net.akazukin.library.utils.AuthUtils;
@@ -47,10 +48,6 @@ public final class LibraryPlugin extends JavaPlugin {
         CONFIG_UTILS.loadConfigFiles("config.yaml");
         final YamlConfiguration config = CONFIG_UTILS.getConfig("config.yaml");
 
-        I18N_UTILS = new I18nUtils(this, "library");
-        I18N_UTILS.build(config.getList("locales").toArray(new String[0]));
-        MESSAGE_HELPER = new MessageHelper(I18N_UTILS);
-
         getLogManager().info("Authenticating in Akazukin-Team Database...");
         if (!config.contains("token") || !AuthUtils.auth("AkazukinLibraryPlugin", config.getString("token"))) {
             getLogManager().severe("Failed to Authenticate!");
@@ -76,6 +73,11 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Successfully initialized packet listener...");
 
 
+        I18N_UTILS = new I18nUtils(this, "library");
+        I18N_UTILS.build(config.getList("locales").toArray(new String[0]));
+        MESSAGE_HELPER = new MessageHelper(I18N_UTILS);
+
+
         getLogManager().info("Initializing event listeners...");
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
@@ -88,11 +90,17 @@ public final class LibraryPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        GuiManager.singleton().getScreens().keySet().forEach(player -> Bukkit.getPlayer(player).closeInventory());
+
         final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
         if (channels == null) {
             getLogManager().warning("Couldn't get active server's channels !");
         } else {
-            channels.forEach(InjectionUtils::removeCustomHandler);
+            try {
+                channels.forEach(InjectionUtils::removeCustomHandler);
+            } catch (final NoClassDefFoundError e) {
+                getLogManager().warning("Couldn't remove packet listener from server's channels !");
+            }
         }
     }
 }
