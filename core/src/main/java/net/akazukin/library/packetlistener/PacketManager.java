@@ -5,6 +5,7 @@ import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -12,7 +13,7 @@ import org.bukkit.event.server.ServerListPingEvent;
 import java.util.List;
 
 public class PacketManager implements Listenable {
-    @EventTarget
+    @EventTarget(bktPriority = EventPriority.HIGH)
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
@@ -36,7 +37,7 @@ public class PacketManager implements Listenable {
         }
     }
 
-    @EventTarget
+    @EventTarget(bktPriority = EventPriority.HIGH)
     public void onServerListPing(final ServerListPingEvent event) {
         final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
 

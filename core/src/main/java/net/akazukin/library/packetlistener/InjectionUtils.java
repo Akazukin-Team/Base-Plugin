@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Utility used to perform custom channel handler injection.
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class InjectionUtils {
     public static void injectCustomHandler(final Player player, @Nonnull final Channel channel) {
-        LibraryPlugin.getLogManager().info("Injecting connection channel handler to " + player.getName());
+        LibraryPlugin.getLogManager().log(Level.OFF, "Injecting connection channel handler to " + (player == null ? channel.remoteAddress() : player.getName()));
 
         final ChannelPipeline pipeline = channel.pipeline();
         final List<String> registeredHandlers = pipeline.names();
@@ -32,11 +33,11 @@ public class InjectionUtils {
             pipeline.addBefore("packet_handler", RemoteClientChannelHandler.HANDLER_NAME, handler);
         }
 
-        LibraryPlugin.getLogManager().info("Successfully Injected connection channel handler to " + player.getName());
+        LibraryPlugin.getLogManager().log(Level.OFF, "Successfully Injected connection channel handler to " + (player == null ? channel.remoteAddress() : player.getName()));
     }
 
     public static void removeCustomHandler(@Nonnull final Channel channel) {
-        LibraryPlugin.getLogManager().info("Rejecting connection channel handler");
+        LibraryPlugin.getLogManager().log(Level.OFF, "Rejecting connection channel handler of " + channel.remoteAddress());
 
         final ChannelPipeline pipeline = channel.pipeline();
         final List<String> registeredHandlers = pipeline.names();
@@ -44,6 +45,6 @@ public class InjectionUtils {
         if (registeredHandlers.contains(RemoteClientChannelHandler.HANDLER_NAME))
             channel.pipeline().remove(RemoteClientChannelHandler.HANDLER_NAME);
 
-        LibraryPlugin.getLogManager().info("Successfully rejected connection channel handler");
+        LibraryPlugin.getLogManager().log(Level.OFF, "Successfully rejected connection channel handler of " + channel.remoteAddress());
     }
 }

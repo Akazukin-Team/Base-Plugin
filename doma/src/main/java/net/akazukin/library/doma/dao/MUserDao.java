@@ -4,6 +4,7 @@ import net.akazukin.library.doma.entity.MUser;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
+import org.seasar.doma.Script;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
 
@@ -26,4 +27,7 @@ public interface MUserDao {
 
     @Delete
     int delete(MUser entity);
+
+    @Script
+    void create();
 }

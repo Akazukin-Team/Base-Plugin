@@ -3,6 +3,7 @@ package net.akazukin.library.event;
 import net.akazukin.library.LibraryPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public abstract class EventManager {
                 final EventTarget eventTarget = method.getAnnotation(EventTarget.class);
                 final ArrayList<EventHook> invokableEventTargets = (ArrayList<EventHook>) registry.getOrDefault(eventClass, new ArrayList<>());
 
-                invokableEventTargets.add(new EventHook(listener, method, eventTarget.priority(), eventTarget.ignoreCondition()));
+                invokableEventTargets.add(new EventHook(listener, method, eventTarget.priority(), eventTarget.bktPriority(), eventTarget.ignoreCondition()));
                 invokableEventTargets.sort((obj1, obj2) -> obj2.getPriority() - obj1.getPriority());
                 registry.put(eventClass, invokableEventTargets);
             }
@@ -71,12 +72,13 @@ public abstract class EventManager {
      *
      * @param event to call
      */
-    public void callEvent(final Event event) {
+    public void callEvent(final Event event, final EventPriority priority) {
         registry.forEach((key, value) -> {
-            if (!event.getClass().isAssignableFrom(key)) return;
+            //if (!key.isAssignableFrom(event.getClass())) return;
+            if (!key.equals(event.getClass())) return;
 
             //value.sort((a, b) -> a.getPriority() > b.getPriority());
-            value.stream().filter(eventHook -> (eventHook.getEventClass().handleEvents() || eventHook.isIgnoreCondition())).forEach(eventHook -> {
+            value.stream().filter(eventHook -> (eventHook.getEventClass().handleEvents() || eventHook.isIgnoreCondition() || priority == eventHook.getBktPriority())).forEach(eventHook -> {
                 try {
                     eventHook.getMethod().invoke(eventHook.getEventClass(), event);
                 } catch (final Throwable throwable) {

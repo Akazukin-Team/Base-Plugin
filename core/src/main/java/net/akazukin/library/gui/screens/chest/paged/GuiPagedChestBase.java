@@ -57,10 +57,10 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
         rows = itemLeft >= (7 * (maxRows - 2)) ? maxRows : Math.max((int) Math.ceil((double) itemLeft / 7), minRows);
 
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv);
-        InventoryUtils.fillCloseItem(inv);
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
         if (prevGui != null)
-            InventoryUtils.fillPrevGuiItem(inv);
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
 
         inv.setItem(17, prevPageItem);
         inv.setItem(26, nextPageItem);

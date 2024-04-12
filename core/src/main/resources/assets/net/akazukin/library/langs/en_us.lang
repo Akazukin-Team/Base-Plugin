@@ -17,3 +17,6 @@ library.gui.item.undroppable=§6Undroppable
 library.gui.paged.selector.selected=§6§lSelected
 library.gui.yesNo.item.yes=§aYes
 library.gui.yesNo.item.no=§cNo
+library.gui.item.close=§4§lClose Gui
+library.gui.item.back=§c§lBack Gui
+library.gui.item.blank=§7Blank Slot

@@ -123,4 +123,15 @@ public class WorldEditCompat {
             e.printStackTrace();
         }
     }
+
+    public static boolean regenerateChunk(final Location loc, final Location loc2) {
+        final World world_ = BukkitAdapter.adapt(loc.getWorld());
+        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {
+            final BlockVector3 vec = BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            final BlockVector3 vec2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
+            final CuboidRegion region = new CuboidRegion(vec, vec2);
+
+            return world_.regenerate(region, editSession);
+        }
+    }
 }

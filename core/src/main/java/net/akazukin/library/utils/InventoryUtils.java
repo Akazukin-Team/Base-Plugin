@@ -1,27 +1,46 @@
 package net.akazukin.library.utils;
 
+import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.i18n.I18n;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public class InventoryUtils {
-    private static final ItemStack prevItem;
-    private static final ItemStack blankItem;
-    private static final ItemStack closeItem;
+    public static ItemStack getBackItem(final String locale) {
+        ItemStack backItem = new ItemStack(Material.getMaterial("IRON_DOOR"));
+        ItemUtils.setDisplayName(backItem, LibraryPlugin.MESSAGE_HELPER.get(locale, I18n.of("library.gui.item.back")));
+        backItem = ItemUtils.setGuiItem(backItem);
+        return ItemUtils.setGuiItemType(backItem, "BACK");
+    }
 
-    static {
-        final ItemStack prevItem_ = new ItemStack(Material.getMaterial("RED_WOOL"));
-        ItemUtils.setDisplayName(prevItem_, "§c§lOpen Previous Menu");
-        prevItem = ItemUtils.setGuiItem(prevItem_);
+    public static ItemStack getCloseItem(final String locale) {
+        ItemStack closeItem = new ItemStack(Material.getMaterial("BARRIER"));
+        ItemUtils.setDisplayName(closeItem, LibraryPlugin.MESSAGE_HELPER.get(locale, I18n.of("library.gui.item.close")));
+        closeItem = ItemUtils.setGuiItem(closeItem);
+        return ItemUtils.setGuiItemType(closeItem, "CLOSE");
+    }
 
-        final ItemStack blankItem_ = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
-        ItemUtils.setDisplayName(blankItem_, "§7Empty Slot");
-        blankItem = ItemUtils.setGuiItem(blankItem_);
+    public static ItemStack getBlankItem(final String locale) {
+        ItemStack blankItem = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
+        ItemUtils.setDisplayName(blankItem, LibraryPlugin.MESSAGE_HELPER.get(locale, I18n.of("library.gui.item.blank")));
+        blankItem = ItemUtils.setGuiItem(blankItem);
+        return ItemUtils.setGuiItemType(blankItem, "BLANK");
+    }
 
-        final ItemStack closeItem_ = new ItemStack(Material.getMaterial("BARRIER"));
-        ItemUtils.setDisplayName(closeItem_, "§c§lClose Menu");
-        closeItem = ItemUtils.setGuiItem(closeItem_);
+    public static boolean isCloseItem(final ItemStack itemStack) {
+        return Objects.equals(ItemUtils.getGuiItemType(itemStack), "CLOSE");
+    }
+
+    public static boolean isBackItem(final ItemStack itemStack) {
+        return Objects.equals(ItemUtils.getGuiItemType(itemStack), "BACK");
+    }
+
+    public static boolean isBlankItem(final ItemStack itemStack) {
+        return Objects.equals(ItemUtils.getGuiItemType(itemStack), "BLANK");
     }
 
     public static Inventory createInventory(final String name, final int rows) {
@@ -34,27 +53,15 @@ public class InventoryUtils {
         }
     }
 
-    public static void fillBlankItems(final Inventory inventory) {
-        fillItems(inventory, blankItem);
+    public static void fillBlankItems(final Inventory inventory, final String locale) {
+        fillItems(inventory, getBlankItem(locale));
     }
 
-    public static void fillCloseItem(final Inventory inventory) {
-        inventory.setItem(inventory.getSize() - 9, closeItem);
+    public static void fillCloseItem(final Inventory inventory, final String locale) {
+        inventory.setItem(inventory.getSize() - 9, getCloseItem(locale));
     }
 
-    public static void fillPrevGuiItem(final Inventory inventory) {
-        inventory.setItem(inventory.getSize() - 8, prevItem);
-    }
-
-    public static boolean isCloseItem(final ItemStack itemStack) {
-        return closeItem.equals(itemStack);
-    }
-
-    public static boolean isPrevItem(final ItemStack itemStack) {
-        return prevItem.equals(itemStack);
-    }
-
-    public static boolean isBlankItem(final ItemStack itemStack) {
-        return blankItem.equals(itemStack);
+    public static void fillBackItem(final Inventory inventory, final String locale) {
+        inventory.setItem(inventory.getSize() - 8, getBackItem(locale));
     }
 }

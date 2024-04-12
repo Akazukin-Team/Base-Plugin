@@ -28,6 +28,12 @@ repositories {
         name "enginehub-maven" //worldedit
         url "https://maven.enginehub.org/repo"
     }
+    maven {
+        url "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        url "https://jitpack.io/"
+    }
     mavenCentral()
     mavenLocal()
 }
@@ -36,6 +42,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
+    compileOnly("org.seasar.doma:doma-core:2.58.0")
 
     //testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

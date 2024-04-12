@@ -16,6 +16,7 @@ import net.akazukin.library.utils.InventoryUtils;
 import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -48,9 +49,9 @@ public class GuiManager implements Listenable {
         return screens.get(player);
     }
 
-    @EventTarget
+    @EventTarget(bktPriority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (ItemUtils.isGuiItem(event.getCurrentItem())) {
+        if (event.getCurrentItem() != null && ItemUtils.isGuiItem(event.getCurrentItem())) {
             event.setCancelled(true);
         } else if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null) {
             System.out.println("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
@@ -64,7 +65,7 @@ public class GuiManager implements Listenable {
 
         if (InventoryUtils.isCloseItem(event.getCurrentItem())) {
             event.getWhoClicked().closeInventory();
-        } else if (InventoryUtils.isPrevItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
+        } else if (InventoryUtils.isBackItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
             event.getWhoClicked().closeInventory();
             setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
         } else {

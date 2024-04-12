@@ -1,6 +1,7 @@
 package net.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.gui.screens.chest.paged.IGuiSelector;
@@ -22,7 +23,8 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     @Getter
     private final int min;
 
-    private final int defaultSize;
+    @Setter
+    private int defaultSize;
     protected final ItemStack doneItem;
 
     @Getter
@@ -57,9 +59,10 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     @Override
     public Inventory getInventory() {
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv);
-        InventoryUtils.fillCloseItem(inv);
-        InventoryUtils.fillPrevGuiItem(inv);
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
+        if (prevGui != null)
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
 
         inv.setItem(13, amountItem);
 
@@ -139,6 +142,8 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     public boolean reset() {
         final boolean result = defaultSize != size;
         done = false;
+        this.result = defaultSize;
+        size = defaultSize;
         return result;
     }
 }

@@ -24,7 +24,7 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     private boolean done = false;
 
     public YesOrNoGui(final String title, final UUID player, final GuiBase prevGui) {
-        super(title, 5, player, false, prevGui);
+        super(title, 4, player, false, prevGui);
 
         final ItemStack yesItem = new ItemStack(Material.getMaterial("LIME_WOOL"));
         ItemUtils.setDisplayName(yesItem, LibraryPlugin.MESSAGE_HELPER.get(
@@ -33,10 +33,10 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
         ));
         this.yesItem = ItemUtils.setGuiItem(yesItem);
 
-        final ItemStack noItem = new ItemStack(Material.getMaterial("LIME_WOOL"));
+        final ItemStack noItem = new ItemStack(Material.getMaterial("RED_WOOL"));
         ItemUtils.setDisplayName(noItem, LibraryPlugin.MESSAGE_HELPER.get(
                 MessageHelper.getLocale(player),
-                I18n.of("library.gui.yesNo.item.yes")
+                I18n.of("library.gui.yesNo.item.no")
         ));
         this.noItem = ItemUtils.setGuiItem(noItem);
     }
@@ -44,12 +44,12 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     @Override
     protected Inventory getInventory() {
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv);
-        InventoryUtils.fillCloseItem(inv);
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
         if (prevGui != null)
-            InventoryUtils.fillPrevGuiItem(inv);
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
 
-        inv.setItem(13, yesItem);
+        inv.setItem(12, yesItem);
         inv.setItem(14, noItem);
 
         return inv;

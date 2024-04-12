@@ -53,7 +53,7 @@ public class ReflectionUtils {
         return m.invoke(obj, params);
     }
 
-    public static <T> T callMethod_(final Object obj, final String method, final Class<T> type, final Object... params) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public static <T> T callMethod(final Object obj, final String method, final Class<T> type, final Object... params) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         final Class<?>[] paramClasses = new Class<?>[params.length];
         for (int i = 0; i < params.length; i++) {
             paramClasses[i] = params.getClass();

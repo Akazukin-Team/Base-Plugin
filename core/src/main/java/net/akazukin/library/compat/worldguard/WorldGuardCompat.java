@@ -88,6 +88,10 @@ public class WorldGuardCompat {
         getRegion(world, regionId).setFlag(key, value);
     }
 
+    public static void addFlag(final World world, final String regionId, final int priority) {
+        getRegion(world, regionId).setPriority(priority);
+    }
+
     public static ProtectedRegion getRegion(final World world, final String regionId) {
         final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         return container.get(BukkitAdapter.adapt(world)).getRegion(regionId);

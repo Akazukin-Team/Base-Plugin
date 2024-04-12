@@ -8,6 +8,7 @@ softdepend:
   - WorldEdit
   - WorldGuard
   - FastAsyncWorldEdit
+  - GrimAC
 
 database: true
 

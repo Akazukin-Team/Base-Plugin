@@ -1,42 +1,22 @@
 package net.akazukin.library.doma.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.seasar.doma.Column;
 import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
 import org.seasar.doma.Table;
 import org.seasar.doma.Version;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "M_MAPART_LAND")
+@Data
+@Table(name = "M_USER")
 public class MUser {
-    @Column(name = "LAND_ID")
-    @Id
-    private long landId;
-
-    @Column(name = "NAME")
-    private String name;
-    @Column(name = "OWNER_UUID")
+    @Column(name = "PLAYER_UUID")
     private UUID ownerId;
 
-    @Column(name = "CHUNK_X")
-    private long chunkX;
-    @Column(name = "CHUNK_Y")
-    private long chunkY;
-
-    @Column(name = "HEIGHT")
-    private long height;
-    @Column(name = "WIDHT")
-    private long width;
-
-    @Column(name = "CREATED_DATE")
-    private Timestamp createDate;
+    @Column(name = "LOCALE")
+    private String locale;
 
     @Column(name = "VERSION_NO")
     @Version

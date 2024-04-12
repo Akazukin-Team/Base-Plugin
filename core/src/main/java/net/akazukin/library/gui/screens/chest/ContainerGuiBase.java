@@ -3,6 +3,7 @@ package net.akazukin.library.gui.screens.chest;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.event.EventTarget;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -25,7 +26,7 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     protected abstract Inventory getInventory();
 
-    @EventTarget
+    @EventTarget(bktPriority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
         if (!canPickup) event.setCancelled(true);

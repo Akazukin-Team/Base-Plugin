@@ -1,12 +1,12 @@
 package net.akazukin.library.compat.minecraft.data.packets;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 
 @AllArgsConstructor
-@Getter
+@Data
 public class SOpenSignEditorPacket implements Packet {
-    private final WrappedBlockPos wrappedBlockPos;
-    private final boolean frontText;
+    WrappedBlockPos wrappedBlockPos;
+    boolean frontText;
 }
