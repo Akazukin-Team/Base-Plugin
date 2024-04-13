@@ -1,6 +1,6 @@
 package net.akazukin.library.doma.dao;
 
-import net.akazukin.library.doma.entity.MUser;
+import net.akazukin.library.doma.entity.MUserEntity;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
@@ -14,19 +14,19 @@ import java.util.UUID;
 @Dao
 public interface MUserDao {
     @Select
-    List<MUser> selectAll();
+    List<MUserEntity> selectAll();
 
     @Select
-    MUser selectByPlayer(UUID player);
+    MUserEntity selectByPlayer(UUID player);
 
     @Insert
-    int insert(MUser entity);
+    int insert(MUserEntity entity);
 
     @Update
-    int update(MUser entity);
+    int update(MUserEntity entity);
 
     @Delete
-    int delete(MUser entity);
+    int delete(MUserEntity entity);
 
     @Script
     void create();

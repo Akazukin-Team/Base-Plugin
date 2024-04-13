@@ -1,5 +1,9 @@
 package net.akazukin.library.utils;
 
+import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.doma.LibrarySQLConfig;
+import net.akazukin.library.doma.entity.MUserEntity;
+import net.akazukin.library.doma.repo.MUserRepo;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.i18n.I18nUtils;
 import org.bukkit.Bukkit;
@@ -22,7 +26,9 @@ public class MessageHelper {
     }
 
     public static String getLocale(final UUID player) {
-        return "en-us";
+        final MUserEntity entity = LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
+        if (entity != null && entity.getLocale() != null) return entity.getLocale();
+        return getLocale();
     }
 
     public String get(final String locale, final I18n i18n, final Object... args) {
@@ -33,8 +39,8 @@ public class MessageHelper {
         return null;
     }
 
-    public String getLocale() {
-        return "en_us";
+    public static String getLocale() {
+        return LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getString("locale");
     }
 
     public void broadcast(final I18n message) {
@@ -55,7 +61,7 @@ public class MessageHelper {
 
     public void sendMessage(final CommandSender sender, final I18n message, final Object... args) {
         if (sender instanceof Player) {
-            sendMessage(sender, message, args);
+            sendMessage((Player) sender, message, args);
         } else {
             consoleMessage(message, args);
         }
@@ -66,7 +72,7 @@ public class MessageHelper {
     }
 
     public void sendMessage(final HumanEntity player, final String message) {
-        player.sendMessage(get(getLocale(player.getUniqueId()), I18n.of("library.message.prefix")) + " " + message);
+        player.sendMessage("§7[§6§lAKZ§7]§e " + message);
     }
 
     public void sendMessage(final UUID player, final I18n message, final Object... args) {
@@ -78,7 +84,7 @@ public class MessageHelper {
     }
 
     public void consoleMessage(final I18n message, final Object... args) {
-        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + get(getLocale(), message, args));
+        Bukkit.getConsoleSender().sendMessage("§7[§6§lAKZ§7]§e " + get(getLocale(), message, args));
     }
 
     public void consoleMessage(final String message) {

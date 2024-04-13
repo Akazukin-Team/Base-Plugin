@@ -39,10 +39,16 @@ public class GuiManager implements Listenable {
 
     public void setScreen(final UUID player, final GuiBase gui) {
         final Player player_ = Bukkit.getPlayer(player);
-        player_.closeInventory();
+        if (player_ == null) return;
+        Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), player_::closeInventory);
+        
         screens.remove(player);
         screens.put(player, gui);
-        gui.forceOpen();
+        if (gui instanceof ContainerGuiBase) {
+            Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), gui::forceOpen);
+        } else {
+            gui.forceOpen();
+        }
     }
 
     public GuiBase getScreen(final UUID player) {
@@ -53,8 +59,6 @@ public class GuiManager implements Listenable {
     public void onInventoryClick(final InventoryClickEvent event) {
         if (event.getCurrentItem() != null && ItemUtils.isGuiItem(event.getCurrentItem())) {
             event.setCancelled(true);
-        } else if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null) {
-            System.out.println("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
         }
 
         if (event.getCurrentItem() == null) return;
@@ -62,6 +66,10 @@ public class GuiManager implements Listenable {
         final GuiBase gui = screens.get(event.getWhoClicked().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
             return;
+
+        if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null && !ItemUtils.isGuiItem(event.getCurrentItem())) {
+            System.out.println("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
+        }
 
         if (InventoryUtils.isCloseItem(event.getCurrentItem())) {
             event.getWhoClicked().closeInventory();

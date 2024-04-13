@@ -128,6 +128,12 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
+    public boolean hasNBT(final ItemStack itemStack) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.u();
+    }
+
+    @Override
     public ItemStack setNBT(final ItemStack itemStack, final String id, final String value) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         final NBTTagCompound nbt = nmsItemStack.w();
@@ -151,13 +157,13 @@ public class Compat_v1_20_R1 implements Compat {
     @Override
     public String getNBTString(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return nmsItemStack.u() && nmsItemStack.v().e(id) ? nmsItemStack.v().l(id) : null;
+        return containsNBT(itemStack, id) ? nmsItemStack.v().l(id) : null;
     }
 
     @Override
     public Long getNBTLong(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return nmsItemStack.u() && nmsItemStack.v().e(id) ? nmsItemStack.v().i(id) : null;
+        return containsNBT(itemStack, id) ? nmsItemStack.v().i(id) : null;
     }
 
     @Override
@@ -168,7 +174,7 @@ public class Compat_v1_20_R1 implements Compat {
     @Override
     public boolean containsNBT(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return nmsItemStack.u() && nmsItemStack.v().e(id);
+        return hasNBT(itemStack) && nmsItemStack.v().e(id);
     }
 
     @Override

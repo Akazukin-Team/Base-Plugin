@@ -28,7 +28,7 @@ public abstract class Command implements Listenable {
         return Arrays.stream(subCommands).filter(subCommand -> name == null ? subCommand.getName().equalsIgnoreCase("") : subCommand.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
-    public abstract boolean run(CommandSender sender, String... args);
+    public abstract void run(CommandSender sender, String... args);
 
     public abstract SubCommand[] getSubCommands();
 

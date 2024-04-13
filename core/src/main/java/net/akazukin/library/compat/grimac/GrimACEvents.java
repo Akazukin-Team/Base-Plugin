@@ -15,7 +15,6 @@ public class GrimACEvents implements Listenable {
 
     @EventTarget(bktPriority = EventPriority.HIGH)
     public void onACDetect(final FlagEvent event) {
-        System.out.println(event.getCheck().getCheckName());
     }
 
     @Override

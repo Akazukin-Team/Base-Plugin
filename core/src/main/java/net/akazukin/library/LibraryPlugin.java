@@ -1,6 +1,8 @@
 package net.akazukin.library;
 
 import io.netty.channel.Channel;
+import net.akazukin.library.command.Command;
+import net.akazukin.library.command.LibraryCommandManager;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.CompatManager;
 import net.akazukin.library.doma.LibrarySQLConfig;
@@ -9,13 +11,13 @@ import net.akazukin.library.event.Events;
 import net.akazukin.library.event.LibraryEventManager;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.i18n.I18nUtils;
-import net.akazukin.library.managers.TaskManager;
 import net.akazukin.library.packetlistener.InjectionUtils;
 import net.akazukin.library.utils.AuthUtils;
 import net.akazukin.library.utils.ConfigUtils;
 import net.akazukin.library.utils.MessageHelper;
 import net.akazukin.library.utils.PlayerUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +29,7 @@ import java.util.logging.Logger;
 
 public final class LibraryPlugin extends JavaPlugin {
 
+    public static LibraryCommandManager COMMAND_MANAGER;
     public static String PLUGIN_NAME;
     public static ConfigUtils CONFIG_UTILS;
     public static I18nUtils I18N_UTILS;
@@ -45,7 +48,7 @@ public final class LibraryPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         LibraryPlugin.PLUGIN_NAME = getName();
-        
+
 
         getLogManager().info("Initializing version manager...");
         COMPAT = CompatManager.initCompat();
@@ -85,16 +88,23 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Successfully initialized I18n manager");
 
 
+        getLogManager().info("Initializing command manager...");
+        COMMAND_MANAGER = new LibraryCommandManager();
+        COMMAND_MANAGER.registerCommands();
+        for (final Command cmd : COMMAND_MANAGER.getCommands()) {
+            final PluginCommand command = getCommand(cmd.getName());
+            if (command != null) command.setExecutor(COMMAND_MANAGER);
+            final PluginCommand command2 = getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
+            if (command2 != null) command2.setExecutor(COMMAND_MANAGER);
+        }
+        getLogManager().info("Successfully Initialized command manager");
+
+
         getLogManager().info("Initializing event listeners...");
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         getLogManager().info("Successfully initialized event listeners");
-
-
-        getLogManager().info("Starting synchronized threader...");
-        new Thread(TaskManager::runLoop).start();
-        getLogManager().info("Successfully Started synchronized threader");
 
 
         Bukkit.broadcastMessage("Successfully enabled");

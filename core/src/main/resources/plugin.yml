@@ -10,9 +10,14 @@ softdepend:
   - FastAsyncWorldEdit
   - GrimAC
 
-database: true
+database: false
 
 main: net.akazukin.library.LibraryPlugin
 api-version: 1.19
 
 load: STARTUP
+
+commands:
+  akazukin:
+    description: Mapart command
+    usage: /<command> help

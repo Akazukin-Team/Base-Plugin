@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemUtils {
@@ -48,8 +48,9 @@ public class ItemUtils {
         itemStack.setItemMeta(itemMeta);
     }
 
-    @Nullable
+    @Nonnull
     public static List<String> getLore(@Nonnull final ItemStack itemStack) {
+        if (itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null) return new ArrayList<>();
         return itemStack.getItemMeta().getLore();
     }
 }

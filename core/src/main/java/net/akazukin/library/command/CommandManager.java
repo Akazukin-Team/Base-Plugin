@@ -40,9 +40,12 @@ public abstract class CommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(final CommandSender sender, final org.bukkit.command.Command command, final String label, final String[] args) {
-        final Command cmd = getCommand(label);
-        if (cmd == null || !cmd.handleEvents()) return false;
+        new Thread(() -> {
+            final Command cmd = getCommand(label);
+            if (cmd == null || !cmd.handleEvents()) return;
 
-        return cmd.run(sender, args);
+            cmd.run(sender, args);
+        }).start();
+        return true;
     }
 }

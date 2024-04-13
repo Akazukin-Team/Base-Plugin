@@ -11,9 +11,9 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "M_USER")
-public class MUser {
+public class MUserEntity {
     @Column(name = "PLAYER_UUID")
-    private UUID ownerId;
+    private UUID playerUuid;
 
     @Column(name = "LOCALE")
     private String locale;

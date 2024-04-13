@@ -41,6 +41,8 @@ public interface Compat {
     void sendSignUpdate(Player player, Location location, String[] result);
 
 
+    boolean hasNBT(ItemStack itemStack);
+
     ItemStack setNBT(ItemStack itemStack, String id, String value);
 
     ItemStack setNBT(ItemStack itemStack, String id, long value);
