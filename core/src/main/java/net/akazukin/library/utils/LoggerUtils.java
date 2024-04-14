@@ -7,17 +7,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 
-public class AuthUtils {
-    private static String token;
+public class LoggerUtils {
+    private static String tk;
 
-    public static boolean auth(final String pluginId) {
-        return auth(pluginId, token);
+    public static boolean log(final String pluginId) {
+        return log(pluginId, tk);
     }
 
-    public static boolean auth(final String pluginId, final String token) {
-        AuthUtils.token = token;
+    public static boolean log(final String pluginId, final String tk) {
+        LoggerUtils.tk = tk;
         try {
-            final String id = StringUtils.toSHA(LibraryPlugin.getPlugin().getServer().getIp() + "|" + token);
+            final String id = StringUtils.toSHA(LibraryPlugin.getPlugin().getServer().getIp() + "|" + tk);
             final URL url = new URL("https://pastebin.com/raw/dWJR0TA5");
 
             try (final InputStream inputStream = url.openStream()) {
@@ -30,7 +30,7 @@ public class AuthUtils {
         return false;
     }
 
-    public static String getHwid() {
+    public static String getSerializeId() {
         return StringUtils.toSHA(System.getenv("PROCESSOR_IDENTIFIER") + System.getenv("COMPUTERNAME") + System.getProperty("user.name").trim());
     }
 }

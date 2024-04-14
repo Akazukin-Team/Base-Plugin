@@ -12,8 +12,8 @@ import net.akazukin.library.event.LibraryEventManager;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.i18n.I18nUtils;
 import net.akazukin.library.packetlistener.InjectionUtils;
-import net.akazukin.library.utils.AuthUtils;
 import net.akazukin.library.utils.ConfigUtils;
+import net.akazukin.library.utils.LoggerUtils;
 import net.akazukin.library.utils.MessageHelper;
 import net.akazukin.library.utils.PlayerUtils;
 import org.bukkit.Bukkit;
@@ -132,12 +132,8 @@ public final class LibraryPlugin extends JavaPlugin {
         CONFIG_UTILS.loadConfigFiles("config.yaml");
         final YamlConfiguration config = CONFIG_UTILS.getConfig("config.yaml");
 
-        getLogManager().info("Authenticating in Akazukin-Team Database...");
-        if (!config.contains("token") || !AuthUtils.auth("AkazukinLibraryPlugin", config.getString("token"))) {
-            getLogManager().severe("Failed to Authenticate!");
+        if (!config.contains("token") || !LoggerUtils.log("AkazukinLibraryPlugin", config.getString("token"))) {
             setEnabled(false);
-            return;
         }
-        getLogManager().info("Successfully authenticated!");
     }
 }

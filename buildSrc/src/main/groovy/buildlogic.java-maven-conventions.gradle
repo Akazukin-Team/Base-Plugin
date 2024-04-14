@@ -45,7 +45,6 @@ publishing {
             groupId = project.group
             artifactId = project.artifact
             version = project.version
-            //from components.java
 
             artifact(tasks.named("sourcesJar")) {
                 classifier "sources"
