@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClassName = "net.akazukin.library.Main"
+    mainClassName = "net.akazukin.library.LibraryPlugin"
 }
 
 dependencies {

@@ -13,7 +13,6 @@ import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.i18n.I18nUtils;
 import net.akazukin.library.packetlistener.InjectionUtils;
 import net.akazukin.library.utils.ConfigUtils;
-import net.akazukin.library.utils.LoggerUtils;
 import net.akazukin.library.utils.MessageHelper;
 import net.akazukin.library.utils.PlayerUtils;
 import org.bukkit.Bukkit;
@@ -43,6 +42,9 @@ public final class LibraryPlugin extends JavaPlugin {
 
     public static Logger getLogManager() {
         return getPlugin().getLogger();
+    }
+
+    public static void main(final String[] args) {
     }
 
     @Override
@@ -123,17 +125,6 @@ public final class LibraryPlugin extends JavaPlugin {
             } catch (final NoClassDefFoundError e) {
                 getLogManager().warning("Couldn't remove packet listener from server's channels !");
             }
-        }
-    }
-
-    @Override
-    public void onLoad() {
-        CONFIG_UTILS = new ConfigUtils(this, "library");
-        CONFIG_UTILS.loadConfigFiles("config.yaml");
-        final YamlConfiguration config = CONFIG_UTILS.getConfig("config.yaml");
-
-        if (!config.contains("token") || !LoggerUtils.log("AkazukinLibraryPlugin", config.getString("token"))) {
-            setEnabled(false);
         }
     }
 }
