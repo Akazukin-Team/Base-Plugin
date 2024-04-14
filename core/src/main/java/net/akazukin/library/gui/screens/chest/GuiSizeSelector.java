@@ -19,20 +19,17 @@ import java.util.Collections;
 import java.util.UUID;
 
 public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
+    protected final ItemStack doneItem;
+    protected final ItemStack amountItem;
     @Getter
     private final int max;
     @Getter
     private final int min;
-
     @Setter
     private int defaultSize;
-    protected final ItemStack doneItem;
-
     @Getter
     private int result;
     private int size;
-    protected final ItemStack amountItem;
-
     @Getter
     private boolean done;
 

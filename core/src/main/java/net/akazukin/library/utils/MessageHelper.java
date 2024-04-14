@@ -31,16 +31,16 @@ public class MessageHelper {
         return getLocale();
     }
 
+    public static String getLocale() {
+        return LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getString("locale");
+    }
+
     public String get(final String locale, final I18n i18n, final Object... args) {
         for (final I18nUtils i18nUtil : i18nUtils) {
             final String result = i18nUtil.get(locale, i18n, args);
             if (result != null) return result;
         }
         return null;
-    }
-
-    public static String getLocale() {
-        return LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getString("locale");
     }
 
     public void broadcast(final I18n message) {

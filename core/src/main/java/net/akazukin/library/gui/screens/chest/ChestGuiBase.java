@@ -27,16 +27,6 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     }
 
     @Override
-    public boolean forceOpen() {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return false;
-        final Inventory inv = getInventory();
-        if (inv == null) return false;
-        final InventoryView inv2 = player_.openInventory(getInventory());
-        return inv2 != null;
-    }
-
-    @Override
     public void onInventoryClick(final InventoryClickEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
         if (!canPickup) event.setCancelled(true);
@@ -49,5 +39,15 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     public final void onInventoryClose(final InventoryCloseEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
         onGuiClose(event);
+    }
+
+    @Override
+    public boolean forceOpen() {
+        final Player player_ = Bukkit.getPlayer(player);
+        if (player_ == null) return false;
+        final Inventory inv = getInventory();
+        if (inv == null) return false;
+        final InventoryView inv2 = player_.openInventory(getInventory());
+        return inv2 != null;
     }
 }

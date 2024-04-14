@@ -16,6 +16,15 @@ import java.util.logging.Level;
 public abstract class EventManager {
     private final Map<Class<? extends Event>, List<EventHook>> registry = new HashMap<>();
 
+    /**
+     * Call event at bukkit
+     *
+     * @param event to call
+     */
+    public static void callEventToBukkit(final Event event) {
+        Bukkit.getServer().getPluginManager().callEvent(event);
+    }
+
     public abstract void registerListeners();
 
     public void registerListeners(final Class<? extends Listenable>... listeners) {
@@ -86,14 +95,5 @@ public abstract class EventManager {
                 }
             });
         });
-    }
-
-    /**
-     * Call event at bukkit
-     *
-     * @param event to call
-     */
-    public static void callEventToBukkit(final Event event) {
-        Bukkit.getServer().getPluginManager().callEvent(event);
     }
 }

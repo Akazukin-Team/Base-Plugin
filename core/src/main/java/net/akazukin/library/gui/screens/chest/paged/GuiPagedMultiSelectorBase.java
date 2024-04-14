@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGuiSelector {
-    @Getter
-    @Nonnull
-    protected ItemStack[] selected = new ItemStack[0];
     @Nonnull
     protected final List<UUID> selectedUuid = new ArrayList<>();
     @Nonnull
     protected final ItemStack doneItem;
+    @Getter
+    @Nonnull
+    protected ItemStack[] selected = new ItemStack[0];
     @Getter
     private boolean done = false;
 

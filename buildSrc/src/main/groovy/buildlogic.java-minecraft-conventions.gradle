@@ -1,5 +1,4 @@
 plugins {
-    id "dev.rosewood.mojang-remapper"
     id 'buildlogic.java-common-conventions'
 }
 
@@ -7,17 +6,8 @@ minecraft_version = properties.get("minecraft_version")
 craftbukkit_version = properties.get("craftbukkit_version")
 
 dependencies {
-    /*if (minecraft_version.startsWith("1.17") || minecraft_version.startsWith("1.18") || minecraft_version.startsWith("1.19") || minecraft_version.startsWith("1.2")) {
-        mojangToObf "org.spigotmc:minecraft-server:${minecraft_version}:maps-mojang@txt"
-        mojangRemapped "org.spigotmc:spigot:${minecraft_version}:remapped-mojang"
-        obfToRuntime "org.spigotmc:minecraft-server:${minecraft_version}:maps-spigot@csrg"
-        obfRemapped "org.spigotmc:spigot:${minecraft_version}:remapped-obf"
-        compileOnly "org.spigotmc:spigot:${minecraft_version}:remapped-mojang"
-        //compileOnly "org.bukkit:craftbukkit:${craftbukkit_version}"
-    } else {*/
     compileOnly "org.spigotmc:spigot:${minecraft_version}"
     compileOnly "org.bukkit:craftbukkit:${craftbukkit_version}"
-    //}
 
     compileOnly "com.sk89q.worldedit:worldedit-bukkit:${project.worldedit_version}"
     compileOnly "com.sk89q.worldedit:worldedit-core:${project.worldedit_core_version}"

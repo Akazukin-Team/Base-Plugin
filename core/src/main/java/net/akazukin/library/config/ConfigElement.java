@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 public class ConfigElement<T> {
     private final String key;
-    private T value;
     private final T defaultValue;
+    private T value;
 
     public ConfigElement(final String key) {
         this(key, null);

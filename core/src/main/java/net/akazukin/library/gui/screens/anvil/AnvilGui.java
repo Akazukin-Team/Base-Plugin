@@ -49,17 +49,6 @@ public class AnvilGui extends ContainerGuiBase {
     }
 
     @Override
-    public void onInventoryOpen(final InventoryOpenEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-
-        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
-        if (anvil != null) name = anvil.getRenameText();
-        System.out.println("onInventoryOpen - anvil is null: " + (anvil == null));
-
-        super.onInventoryOpen(event);
-    }
-
-    @Override
     public void onInventoryClick(final InventoryClickEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
 
@@ -68,6 +57,17 @@ public class AnvilGui extends ContainerGuiBase {
         System.out.println("onInventoryClick - anvil is null: " + (anvil == null));
 
         super.onInventoryClick(event);
+    }
+
+    @Override
+    public void onInventoryOpen(final InventoryOpenEvent event) {
+        if (!event.getView().getTitle().equals(title)) return;
+
+        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
+        if (anvil != null) name = anvil.getRenameText();
+        System.out.println("onInventoryOpen - anvil is null: " + (anvil == null));
+
+        super.onInventoryOpen(event);
     }
 
     @Override

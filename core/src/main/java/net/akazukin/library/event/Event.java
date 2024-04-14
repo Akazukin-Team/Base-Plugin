@@ -5,6 +5,14 @@ import org.bukkit.event.HandlerList;
 public abstract class Event extends org.bukkit.event.Event {
     private static final HandlerList handlers = new HandlerList();
 
+    public Event() {
+        super(false);
+    }
+
+    public Event(final boolean async) {
+        super(async);
+    }
+
     public static HandlerList getHandlerList() {
         return handlers;
     }
@@ -12,13 +20,5 @@ public abstract class Event extends org.bukkit.event.Event {
     @Override
     public HandlerList getHandlers() {
         return handlers;
-    }
-
-    public Event() {
-        super(false);
-    }
-
-    public Event(final boolean async) {
-        super(async);
     }
 }

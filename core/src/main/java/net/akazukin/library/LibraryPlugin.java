@@ -48,6 +48,22 @@ public final class LibraryPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onDisable() {
+        GuiManager.singleton().getScreens().keySet().forEach(player -> Bukkit.getPlayer(player).closeInventory());
+
+        final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
+        if (channels == null) {
+            getLogManager().warning("Couldn't get active server's channels !");
+        } else {
+            try {
+                channels.forEach(InjectionUtils::removeCustomHandler);
+            } catch (final NoClassDefFoundError e) {
+                getLogManager().warning("Couldn't remove packet listener from server's channels !");
+            }
+        }
+    }
+
+    @Override
     public void onEnable() {
         LibraryPlugin.PLUGIN_NAME = getName();
 
@@ -55,6 +71,12 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Initializing version manager...");
         COMPAT = CompatManager.initCompat();
         getLogManager().info("Successfully Initialized version manager");
+
+
+        getLogManager().info("Initializing configurations...");
+        CONFIG_UTILS = new ConfigUtils(this, "library");
+        CONFIG_UTILS.loadConfigFiles("config.yaml");
+        getLogManager().info("Successfully Initialized configurations");
 
 
         getLogManager().info("Initializing database...");
@@ -110,21 +132,5 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         Bukkit.broadcastMessage("Successfully enabled");
-    }
-
-    @Override
-    public void onDisable() {
-        GuiManager.singleton().getScreens().keySet().forEach(player -> Bukkit.getPlayer(player).closeInventory());
-
-        final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
-        if (channels == null) {
-            getLogManager().warning("Couldn't get active server's channels !");
-        } else {
-            try {
-                channels.forEach(InjectionUtils::removeCustomHandler);
-            } catch (final NoClassDefFoundError e) {
-                getLogManager().warning("Couldn't remove packet listener from server's channels !");
-            }
-        }
     }
 }

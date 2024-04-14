@@ -15,10 +15,10 @@ import java.util.function.Predicate;
 
 @Deprecated
 public class GuiNameSelector extends AnvilGui {
+    private final Predicate<String> isValid;
     @Setter
     @Getter
     private String defaultName;
-    private final Predicate<String> isValid;
 
     public GuiNameSelector(final String title, final UUID player, final String defaultName, final GuiBase prevGui, final Predicate<String> isValid) {
         super(title, player, prevGui, false, 0);

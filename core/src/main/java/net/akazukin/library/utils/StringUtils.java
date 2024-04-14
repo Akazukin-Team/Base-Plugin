@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 public class StringUtils {
     private static final MessageDigest sha3_512;
+    private static final Pattern colorPattern = Pattern.compile("&([0-9a-fk-or])");
+    private static final Pattern colorPattern2 = Pattern.compile("§([0-9a-fk-or])");
 
     static {
         try {
@@ -25,7 +27,6 @@ public class StringUtils {
         }
     }
 
-
     @Nonnull
     public static String toSHA(@Nonnull final String str) {
         final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
@@ -34,14 +35,10 @@ public class StringUtils {
         return String.format("%040x", new BigInteger(1, result));
     }
 
-    private static final Pattern colorPattern = Pattern.compile("&([0-9a-fk-or])");
-
     public static String getColoredString(final String str) {
         final Matcher m = colorPattern.matcher(str);
         return m.find() ? m.replaceAll("§$1") : str;
     }
-
-    private static final Pattern colorPattern2 = Pattern.compile("§([0-9a-fk-or])");
 
     @Nullable
     public static String getUncoloredString(final String str) {

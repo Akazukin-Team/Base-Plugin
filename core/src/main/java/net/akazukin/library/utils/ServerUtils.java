@@ -7,7 +7,7 @@ public class ServerUtils {
     public static int getProtocolVersion() {
         return LibraryPlugin.COMPAT.getProtocolVersion();
     }
-    
+
     public static String getVersion() {
         switch (getProtocolVersion()) {
             case 765:

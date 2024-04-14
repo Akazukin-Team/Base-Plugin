@@ -19,11 +19,10 @@ import java.util.UUID;
 public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final int maxRows;
     protected final int minRows;
-    protected int page = 0;
     protected final ItemStack[] itemStacks;
-
     protected final ItemStack prevPageItem;
     protected final ItemStack nextPageItem;
+    protected int page = 0;
 
     public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final UUID player, final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, Math.max(maxRows, minRows), player, false, prevGui);

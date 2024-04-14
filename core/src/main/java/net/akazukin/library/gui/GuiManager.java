@@ -41,7 +41,7 @@ public class GuiManager implements Listenable {
         final Player player_ = Bukkit.getPlayer(player);
         if (player_ == null) return;
         Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), player_::closeInventory);
-        
+
         screens.remove(player);
         screens.put(player, gui);
         if (gui instanceof ContainerGuiBase) {
