@@ -1,8 +1,8 @@
 -- マップアート土地マスタ
 create table if not exists M_USER (
-  PLAYER_UUID CHAR(36) not null -- プレイヤーUUID
-  , LOCALE VARCHAR(10) -- 言語コード
-  , VERSION_NO BIGINT not null -- バージョン
-  , constraint M_USER_PKC primary key (PLAYER_UUID)
+    PLAYER_UUID CHAR(36) not null -- プレイヤーUUID
+    , LOCALE VARCHAR(10) -- 言語コード
+    , VERSION_NO BIGINT not null -- バージョン
+    , constraint M_USER_PKC primary key (PLAYER_UUID)
 ) -- ユーザーマスタ:ユーザーデータ管理用マスタ
 ;
