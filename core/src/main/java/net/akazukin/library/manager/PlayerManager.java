@@ -3,6 +3,7 @@ package net.akazukin.library.manager;
 import lombok.Getter;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
+import net.akazukin.library.event.events.PlayerLocationChangeEvent;
 import net.akazukin.library.event.events.PlayerRotationEvent;
 import net.akazukin.library.event.events.ServerTickEvent;
 import org.bukkit.Bukkit;
@@ -20,10 +21,12 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public final class PlayerManager implements Listenable {
     public static final PlayerManager SINGLETON = new PlayerManager();
+    public final Map<UUID, Location> prevRot = new HashMap<>();
     public final Map<UUID, Location> prevLoc = new HashMap<>();
     private final Map<UUID, Long> lastDmgTick = new HashMap<>();
     private final Map<UUID, Long> lastRotTick = new HashMap<>();
     private final Map<UUID, Long> lastMoveTick = new HashMap<>();
+    private final Map<UUID, Long> lastLocTick = new HashMap<>();
     private final Map<UUID, Long> lastInteractTick = new HashMap<>();
     @Getter
     private long passedTime = 0L;
@@ -33,15 +36,19 @@ public final class PlayerManager implements Listenable {
     }
 
     public long getLastRotatedTick(final UUID player) {
-        return lastDmgTick.containsKey(player) ? passedTime - lastRotTick.get(player) : -1;
+        return lastRotTick.containsKey(player) ? passedTime - lastRotTick.get(player) : -1;
+    }
+
+    public long getLastPosTick(final UUID player) {
+        return lastLocTick.containsKey(player) ? passedTime - lastLocTick.get(player) : -1;
     }
 
     public long getLastMovedTick(final UUID player) {
-        return lastDmgTick.containsKey(player) ? passedTime - lastMoveTick.get(player) : -1;
+        return lastMoveTick.containsKey(player) ? passedTime - lastMoveTick.get(player) : -1;
     }
 
     public long getLastInteractTick(final UUID player) {
-        return lastDmgTick.containsKey(player) ? passedTime - lastInteractTick.get(player) : -1;
+        return lastInteractTick.containsKey(player) ? passedTime - lastInteractTick.get(player) : -1;
     }
 
     public void reset() {
@@ -55,20 +62,6 @@ public final class PlayerManager implements Listenable {
     @EventTarget(bktPriority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
         passedTime++;
-
-        for (final Player p : Bukkit.getOnlinePlayers()) {
-            final Location prevLoc = this.prevLoc.get(p.getUniqueId());
-            if (p.getLocation().getYaw() != prevLoc.getYaw() ||
-                    p.getLocation().getPitch() != prevLoc.getPitch()) {
-                final PlayerRotationEvent rotEvent = new PlayerRotationEvent(p, prevLoc.getYaw(), prevLoc.getPitch());
-                Bukkit.getPluginManager().callEvent(rotEvent);
-                if (rotEvent.isCancelled()) {
-                    p.getLocation().setYaw(prevLoc.getYaw());
-                    p.getLocation().setPitch(prevLoc.getPitch());
-                }
-            }
-            this.prevLoc.put(p.getUniqueId(), p.getLocation());
-        }
     }
 
     @EventTarget
@@ -80,14 +73,40 @@ public final class PlayerManager implements Listenable {
     }
 
     @EventTarget
-    public void onPlayerRotation(final PlayerRotationEvent event) {
-        if (event.isCancelled()) return;
-        lastRotTick.put(event.getPlayer().getUniqueId(), passedTime);
-    }
-
-    @EventTarget
     public void onPlayerMove(final PlayerMoveEvent event) {
         if (event.isCancelled()) return;
+
+        final Location prevRot = this.prevRot.getOrDefault(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+        if (!this.prevRot.containsKey(event.getPlayer().getUniqueId()) ||
+                event.getPlayer().getLocation().getYaw() != prevRot.getYaw() ||
+                event.getPlayer().getLocation().getPitch() != prevRot.getPitch()) {
+            final PlayerRotationEvent rotEvent = new PlayerRotationEvent(event.getPlayer(), prevRot.getYaw(), prevRot.getPitch());
+            Bukkit.getPluginManager().callEvent(rotEvent);
+            if (rotEvent.isCancelled()) {
+                event.getPlayer().getLocation().setYaw(prevRot.getYaw());
+                event.getPlayer().getLocation().setPitch(prevRot.getPitch());
+            } else {
+                lastRotTick.put(event.getPlayer().getUniqueId(), passedTime);
+                this.prevRot.put(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+            }
+        }
+
+        final Location prevLoc = this.prevLoc.getOrDefault(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+        if (!this.prevLoc.containsKey(event.getPlayer().getUniqueId()) ||
+                event.getPlayer().getLocation().getX() != prevLoc.getX() ||
+                event.getPlayer().getLocation().getY() != prevLoc.getY() ||
+                event.getPlayer().getLocation().getZ() != prevLoc.getZ()) {
+            final PlayerLocationChangeEvent rotEvent = new PlayerLocationChangeEvent(event.getPlayer(), prevLoc.getX(), prevLoc.getY(), prevLoc.getZ());
+            Bukkit.getPluginManager().callEvent(rotEvent);
+            if (rotEvent.isCancelled()) {
+                event.getPlayer().getLocation().setYaw(prevLoc.getYaw());
+                event.getPlayer().getLocation().setPitch(prevLoc.getPitch());
+            } else {
+                lastLocTick.put(event.getPlayer().getUniqueId(), passedTime);
+                this.prevLoc.put(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+            }
+        }
+
         lastMoveTick.put(event.getPlayer().getUniqueId(), passedTime);
     }
 

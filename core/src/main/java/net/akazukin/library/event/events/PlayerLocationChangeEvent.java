@@ -9,17 +9,19 @@ import org.bukkit.event.Cancellable;
 
 @ToString
 @Getter
-public class PlayerRotationEvent extends Event implements Cancellable {
+public class PlayerLocationChangeEvent extends Event implements Cancellable {
     private final Player player;
-    private final float prevYaw;
-    private final float prevPitch;
+    private final double prevX;
+    private final double prevY;
+    private final double prevZ;
     @Setter
     private boolean cancelled = false;
 
-    public PlayerRotationEvent(final Player player, final float prevYaw, final float prevPitch) {
+    public PlayerLocationChangeEvent(final Player player, final double prevX, final double prevY, final double prevZ) {
         super(false);
         this.player = player;
-        this.prevYaw = prevYaw;
-        this.prevPitch = prevPitch;
+        this.prevX = prevX;
+        this.prevY = prevY;
+        this.prevZ = prevZ;
     }
 }

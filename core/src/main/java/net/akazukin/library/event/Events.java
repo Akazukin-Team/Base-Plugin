@@ -10,10 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,6 +26,12 @@ public class Events implements Listener {
     public void onServerTick(final ServerTickEvent event) {
         callEvent(event, EventPriority.HIGHEST);
     }
+
+    @EventHandler
+    public void onEntityDamage(final EntityDamageEvent event) {
+        callEvent(event, EventPriority.NORMAL);
+    }
+
 
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
@@ -59,6 +67,16 @@ public class Events implements Listener {
     public void onPlayerMove(final PlayerMoveEvent event) {
         callEvent(event, EventPriority.NORMAL);
     }
+
+    @EventHandler
+    public void onPlayerInteract(final PlayerInteractEvent event) {
+        callEvent(event, EventPriority.NORMAL);
+    }
+
+    /*@EventHandler
+    public void onPlayerRotation(final PlayerRotationEvent event) {
+        callEvent(event, EventPriority.NORMAL);
+    }*/
 
     @EventHandler
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {

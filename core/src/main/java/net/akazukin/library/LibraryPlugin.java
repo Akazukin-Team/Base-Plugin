@@ -50,13 +50,6 @@ public final class LibraryPlugin extends JavaPlugin {
     }
 
     @Override
-    public void onLoad() {
-        getLogManager().info("Initializing bukkit scheduler...");
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
-        getLogManager().info("Successfully bukkit scheduler");
-    }
-
-    @Override
     public void onDisable() {
         GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
@@ -134,6 +127,8 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         getLogManager().info("Initializing event listeners...");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
