@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public final class PlayerManager implements Listenable {
     public static final PlayerManager SINGLETON = new PlayerManager();
     public final Map<UUID, Location> prevLoc = new HashMap<>();
