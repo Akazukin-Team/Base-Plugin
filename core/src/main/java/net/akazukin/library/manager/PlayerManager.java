@@ -28,19 +28,19 @@ public final class PlayerManager implements Listenable {
     private long passedTime = 0L;
 
     public long getLastDamageTick(final UUID player) {
-        return passedTime - lastDmgTick.getOrDefault(player, -1L);
+        return lastDmgTick.containsKey(player) ? passedTime - lastDmgTick.get(player) : -1;
     }
 
     public long getLastRotatedTick(final UUID player) {
-        return passedTime - lastRotTick.getOrDefault(player, -1L);
+        return lastDmgTick.containsKey(player) ? passedTime - lastRotTick.get(player) : -1;
     }
 
     public long getLastMovedTick(final UUID player) {
-        return passedTime - lastMoveTick.getOrDefault(player, -1L);
+        return lastDmgTick.containsKey(player) ? passedTime - lastMoveTick.get(player) : -1;
     }
 
     public long getLastInteractTick(final UUID player) {
-        return passedTime - lastInteractTick.getOrDefault(player, -1L);
+        return lastDmgTick.containsKey(player) ? passedTime - lastInteractTick.get(player) : -1;
     }
 
     public void reset() {
