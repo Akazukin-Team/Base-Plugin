@@ -4,6 +4,7 @@ import ac.grim.grimac.api.events.FlagEvent;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.event.events.PacketReceiveEvent;
+import net.akazukin.library.event.events.ServerTickEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,6 +20,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public class Events implements Listener {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onServerTick(final ServerTickEvent event) {
+        callEvent(event, EventPriority.HIGHEST);
+    }
+
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
         callEvent(event, EventPriority.NORMAL);

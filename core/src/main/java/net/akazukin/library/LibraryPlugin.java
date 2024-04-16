@@ -9,6 +9,7 @@ import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.dao.MUserDaoImpl;
 import net.akazukin.library.event.Events;
 import net.akazukin.library.event.LibraryEventManager;
+import net.akazukin.library.event.events.ServerTickEvent;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.i18n.I18nUtils;
 import net.akazukin.library.packetlistener.InjectionUtils;
@@ -132,5 +133,12 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         Bukkit.broadcastMessage("Successfully enabled");
+    }
+
+    @Override
+    public void onLoad() {
+        getLogManager().info("Initializing bukkit scheduler...");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+        getLogManager().info("Successfully bukkit scheduler");
     }
 }
