@@ -22,11 +22,11 @@ public class RandomUtils {
     }
 
     public static String randomString(final String chars, final int length) {
-        String str = "";
+        final StringBuilder str = new StringBuilder();
         for (int i = 0; i < length; i++) {
             final int i2 = nextInt(0, chars.length() - 1);
-            str += chars.substring(i2, i2 + 1);
+            str.append(chars.charAt(i2));
         }
-        return str;
+        return str.toString();
     }
 }

@@ -101,6 +101,7 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Channel> getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().getServerConnection();
         try {
@@ -144,12 +145,14 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String getNBTString(final ItemStack itemStack, final String id) {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.getTag().getString(id) : null;
     }
 
     @Override
+    @SuppressWarnings("null")
     public Long getNBTLong(final ItemStack itemStack, final String id) {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.getTag().getLong(id) : null;
@@ -161,6 +164,7 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public boolean containsNBT(final ItemStack itemStack, final String id) {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.hasTag() && nmsItemStack.getTag().hasKey(id);

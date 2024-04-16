@@ -45,6 +45,7 @@ public class WrappedWorldBorder implements WorldBorder {
     }
 
     @Override
+    @SuppressWarnings("null")
     public boolean isInside(@Nonnull final Location location) {
         return location.getWorld().equals(this.center.getWorld()) &&
                 (center.getX() - size) <= location.getX() && location.getX() + size >= location.getX() && (location.getZ() - size) <= location.getZ() && location.getZ() + size >= location.getZ();

@@ -67,7 +67,7 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public net.minecraft.network.protocol.Packet getNMSPacket(final Packet packet) {
+    public net.minecraft.network.protocol.Packet<?> getNMSPacket(final Packet packet) {
         return pktProcessor.processWrapper(packet);
     }
 
@@ -106,6 +106,7 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Channel> getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().ad();
         try {
@@ -149,12 +150,14 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String getNBTString(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.t().l(id) : null;
     }
 
     @Override
+    @SuppressWarnings("null")
     public Long getNBTLong(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.t().i(id) : null;
@@ -166,12 +169,14 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public boolean containsNBT(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return hasNBT(itemStack) && nmsItemStack.t().e(id);
     }
 
     @Override
+    @SuppressWarnings("null")
     public ItemStack removeNBT(final ItemStack itemStack, final String key) {
         if (!containsNBT(itemStack, key)) return itemStack;
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);

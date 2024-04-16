@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class LibraryPlugin extends JavaPlugin {
@@ -49,8 +50,15 @@ public final class LibraryPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        getLogManager().info("Initializing bukkit scheduler...");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+        getLogManager().info("Successfully bukkit scheduler");
+    }
+
+    @Override
     public void onDisable() {
-        GuiManager.singleton().getScreens().keySet().forEach(player -> Bukkit.getPlayer(player).closeInventory());
+        GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
         final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
         if (channels == null) {
@@ -83,9 +91,9 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Initializing database...");
         LibrarySQLConfig.setFile(new File(getDataFolder(), "library.db"));
         final LibrarySQLConfig sqlCfg = LibrarySQLConfig.singleton();
-        sqlCfg.getTransactionManager().required(() -> {
-            new MUserDaoImpl(sqlCfg).create();
-        });
+        sqlCfg.getTransactionManager().required(() ->
+                new MUserDaoImpl(sqlCfg).create()
+        );
         getLogManager().info("Successfully Initialized database");
 
 
@@ -133,12 +141,5 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         Bukkit.broadcastMessage("Successfully enabled");
-    }
-
-    @Override
-    public void onLoad() {
-        getLogManager().info("Initializing bukkit scheduler...");
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
-        getLogManager().info("Successfully bukkit scheduler");
     }
 }

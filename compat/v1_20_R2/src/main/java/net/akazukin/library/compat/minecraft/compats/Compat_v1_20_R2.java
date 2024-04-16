@@ -157,12 +157,14 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String getNBTString(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.v().l(id) : null;
     }
 
     @Override
+    @SuppressWarnings("null")
     public Long getNBTLong(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return containsNBT(itemStack, id) ? nmsItemStack.v().i(id) : null;
