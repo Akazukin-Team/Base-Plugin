@@ -1,5 +1,6 @@
 package net.akazukin.library.compat.minecraft.compats;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
@@ -13,6 +14,7 @@ import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.network.ServerConnection;
+import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -170,5 +172,24 @@ public class Compat_v1_17_R1 implements Compat {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.getTag().remove(key);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public GameProfile getGameProfile(final Player player) {
+        try {
+            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cs", GameProfile.class);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void setGameProfile(final Player player, final GameProfile profile) {
+        try {
+            ReflectionUtils.setField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cs", profile);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

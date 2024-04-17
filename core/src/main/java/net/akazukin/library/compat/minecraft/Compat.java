@@ -1,5 +1,6 @@
 package net.akazukin.library.compat.minecraft;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -61,4 +62,8 @@ public interface Compat {
     boolean containsNBT(ItemStack itemStack, String id);
 
     ItemStack removeNBT(ItemStack itemStack, String key);
+
+    GameProfile getGameProfile(Player player);
+
+    void setGameProfile(Player player, GameProfile profile);
 }

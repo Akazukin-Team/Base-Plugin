@@ -1,5 +1,6 @@
 package net.akazukin.library.compat.minecraft.compats;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
@@ -10,6 +11,7 @@ import net.akazukin.library.utils.ReflectionUtils;
 import net.akazukin.library.utils.StringUtils;
 import net.minecraft.server.v1_16_R3.BlockPosition;
 import net.minecraft.server.v1_16_R3.ContainerAnvil;
+import net.minecraft.server.v1_16_R3.EntityHuman;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NetworkManager;
 import net.minecraft.server.v1_16_R3.ServerConnection;
@@ -176,5 +178,24 @@ public class Compat_v1_16_R3 implements Compat {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.getTag().remove(key);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public GameProfile getGameProfile(final Player player) {
+        try {
+            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "bJ", GameProfile.class);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void setGameProfile(final Player player, final GameProfile profile) {
+        try {
+            ReflectionUtils.setField(((CraftPlayer) player).getHandle(), EntityHuman.class, "bJ", profile);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
