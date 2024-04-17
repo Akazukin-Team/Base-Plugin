@@ -1,0 +1,62 @@
+name: Build application and publish with Java CI and Gradle
+
+
+on:
+  push:
+    branches:
+      - 'main'
+
+    paths:
+      - '**.gradle'
+      - '**.properties'
+      - '**/src/**'
+      - '.github/workflows/**'
+
+  release:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    permissions:
+      contents: read
+      deployments: write
+
+    env:
+      GHA_EVENT: ${{ github.event_name }}
+
+      GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
+      GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 8
+          distribution: 'adopt'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build and Test
+        run: ./gradlew build test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: app/build/libs/
+
+      - name: Upload artifacts to GPR
+        run: ./gradlew publishMavenPublicationToGprRepository
