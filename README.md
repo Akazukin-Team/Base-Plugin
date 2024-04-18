@@ -1,4 +1,4 @@
-# Akazukin Plugin Library
+# Akazukin Library Plugin
 
 Akazukin-Teamが作成するPluginに使用される前提プラグイン
 
