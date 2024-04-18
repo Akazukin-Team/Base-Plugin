@@ -59,9 +59,9 @@ public class HttpUtils {
             }
         } catch (final Throwable e) {
             if (e instanceof SocketTimeoutException || e instanceof ConnectException || e instanceof IllegalStateException) {
-                LibraryPlugin.getLogManager().log(Level.WARNING, "URL: " + url + "  Params: " + query + "  Method: " + method);
+                LibraryPlugin.getLogManager().log(Level.SEVERE, "URL: " + url + "  Params: " + query + "  Method: " + method);
             } else {
-                LibraryPlugin.getLogManager().log(Level.WARNING, e.getMessage(), e);
+                LibraryPlugin.getLogManager().log(Level.SEVERE, e.getMessage(), e);
             }
         } finally {
             if (con != null) con.disconnect();

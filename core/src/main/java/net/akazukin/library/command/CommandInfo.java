@@ -13,4 +13,6 @@ public @interface CommandInfo {
     String description();
 
     String permission() default "";
+
+    CommandExcutor executor() default CommandExcutor.BOTH;
 }

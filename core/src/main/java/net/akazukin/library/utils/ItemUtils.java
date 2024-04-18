@@ -41,13 +41,13 @@ public class ItemUtils {
         final ItemStack skullItem = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
         final SkullMeta skullItemMeta = (SkullMeta) skullItem.getItemMeta();
 
-        if ((player instanceof Player)) {
+        if (player instanceof Player) {
             skullItemMeta.setOwningPlayer(player);
         } else {
             try {
-                final GameProfile profile = ReflectionUtils.getField(skullItemMeta, "profile", GameProfile.class);
+                final GameProfile profile = ReflectionUtils.getField(player, "profile", GameProfile.class);
 
-                if (profile.getProperties().get("textures").isEmpty()) {
+                if (profile != null && profile.getProperties().get("textures").isEmpty()) {
                     final JsonObject prop = new JsonParser()
                             .parse(new String(
                                     HttpUtils.requestGet("https://api.mineskin.org/generate/user/" + player.getUniqueId()),

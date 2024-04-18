@@ -1,6 +1,7 @@
 package net.akazukin.library.command.commands.akazukin;
 
 import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.command.CommandExcutor;
 import net.akazukin.library.command.CommandInfo;
 import net.akazukin.library.command.SubCommand;
 import net.akazukin.library.doma.LibrarySQLConfig;
@@ -14,15 +15,10 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@CommandInfo(name = "language", description = "Change user's language")
+@CommandInfo(name = "language", description = "Change user's language", executor = CommandExcutor.PLAYER)
 public class LanguageSubCommand extends SubCommand {
     @Override
     public void run(final CommandSender sender, final String... args) {
-        if (!(sender instanceof Player)) {
-            LibraryPlugin.MESSAGE_HELPER.consoleMessage(I18n.of("library.command.execute.mustBeByPlayer"));
-            return;
-        }
-
         if (args.length <= 1) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.language.enterLanguage"));
         } else if (LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getStringList("locales").stream().map(String::toLowerCase).noneMatch(locale -> locale.equals(StringUtils.getIndex(Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toList()), 1)))) {

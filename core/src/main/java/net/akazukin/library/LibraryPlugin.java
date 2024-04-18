@@ -22,10 +22,17 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public final class LibraryPlugin extends JavaPlugin {
@@ -47,6 +54,38 @@ public final class LibraryPlugin extends JavaPlugin {
     }
 
     public static void main(final String[] args) {
+    }
+
+    @Override
+    public void onLoad() {
+        getPlugin().getLogger().addHandler(new Handler() {
+            private final File file = new File(getPlugin().getDataFolder(), "error.log");
+
+            @Override
+            public void publish(final LogRecord record) {
+                if (record.getLevel() == Level.SEVERE || record.getThrown() != null) {
+                    try (final FileWriter file = new FileWriter(this.file, true)) {
+                        try (final PrintWriter pw = new PrintWriter(new BufferedWriter(file))) {
+                            pw.println("[" + record.getLevel() + "] " + record.getMessage());
+                            //pw.println(pw);
+                            if (record.getThrown() != null) {
+                                record.getThrown().printStackTrace(pw);
+                            }
+                        }
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() throws SecurityException {
+            }
+        });
     }
 
     @Override

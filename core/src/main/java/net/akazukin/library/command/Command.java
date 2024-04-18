@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.event.Listenable;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
@@ -12,6 +13,8 @@ public abstract class Command implements Listenable {
     private final String name;
     private final String description;
     private final SubCommand[] subCommands;
+    private final String permission;
+    private final CommandExcutor executor;
 
     @Setter
     private boolean toggle = true;
@@ -21,19 +24,36 @@ public abstract class Command implements Listenable {
 
         name = commandInfo.name();
         description = commandInfo.description();
+        permission = commandInfo.permission();
+        executor = commandInfo.executor();
         subCommands = getSubCommands();
     }
 
     public SubCommand getSubCommand(final String name) {
-        return Arrays.stream(subCommands).filter(subCommand -> name == null ? subCommand.getName().equalsIgnoreCase("") : subCommand.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        return Arrays.stream(subCommands).filter(cmd -> name == null ? cmd.getName().equalsIgnoreCase("") : cmd.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public abstract void run(CommandSender sender, String... args);
 
-    public abstract SubCommand[] getSubCommands();
+    public SubCommand[] getSubCommands() {
+        return new SubCommand[]{};
+    }
 
     @Override
     public boolean handleEvents() {
         return toggle;
+    }
+
+    public final boolean hasPermission(final CommandSender sender) {
+        return sender.hasPermission(permission);
+    }
+
+    public final boolean validExecutor(final CommandSender sender) {
+        if (executor == CommandExcutor.CONSOLE && !(sender instanceof Player)) {
+            return true;
+        } else if (executor == CommandExcutor.PLAYER && sender instanceof Player) {
+            return true;
+        }
+        return executor == CommandExcutor.BOTH;
     }
 }

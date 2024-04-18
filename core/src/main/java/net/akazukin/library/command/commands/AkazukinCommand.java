@@ -9,6 +9,7 @@ import net.akazukin.library.command.commands.akazukin.LanguageSubCommand;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.utils.StringUtils;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 @CommandInfo(name = "akazukin", description = "akazukin basically command")
 public final class AkazukinCommand extends Command {
@@ -18,9 +19,13 @@ public final class AkazukinCommand extends Command {
         final SubCommand subCmd = getSubCommand(StringUtils.getIndex(args, 0));
         if (subCmd == null) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.notFound"));
-            return;
+        } else if (!subCmd.validExecutor(sender)) {
+            LibraryPlugin.MESSAGE_HELPER.consoleMessage(I18n.of("library.command.execute.mustBeBy" + (sender instanceof Player ? "Console" : "Player")));
+        } else if (!subCmd.hasPermission(sender)) {
+            LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.message.requirePerm"));
+        } else {
+            subCmd.run(sender, args);
         }
-        subCmd.run(sender, args);
     }
 
     @Override
