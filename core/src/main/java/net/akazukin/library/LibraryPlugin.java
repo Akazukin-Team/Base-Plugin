@@ -7,6 +7,7 @@ import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.CompatManager;
 import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.dao.MUserDaoImpl;
+import net.akazukin.library.doma.dao.MUserProfileDaoImpl;
 import net.akazukin.library.event.Events;
 import net.akazukin.library.event.LibraryEventManager;
 import net.akazukin.library.event.events.ServerTickEvent;
@@ -123,9 +124,10 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Initializing database...");
         LibrarySQLConfig.setFile(new File(getDataFolder(), "library.db"));
         final LibrarySQLConfig sqlCfg = LibrarySQLConfig.singleton();
-        sqlCfg.getTransactionManager().required(() ->
-                new MUserDaoImpl(sqlCfg).create()
-        );
+        sqlCfg.getTransactionManager().required(() -> {
+            new MUserDaoImpl(sqlCfg).create();
+            new MUserProfileDaoImpl(sqlCfg).create();
+        });
         getLogManager().info("Successfully Initialized database");
 
 

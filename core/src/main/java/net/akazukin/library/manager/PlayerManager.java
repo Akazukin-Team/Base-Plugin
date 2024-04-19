@@ -1,17 +1,20 @@
 package net.akazukin.library.manager;
 
 import lombok.Getter;
+import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
 import net.akazukin.library.event.events.PlayerLocationChangeEvent;
 import net.akazukin.library.event.events.PlayerRotationEvent;
 import net.akazukin.library.event.events.ServerTickEvent;
+import net.akazukin.library.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
@@ -114,6 +117,11 @@ public final class PlayerManager implements Listenable {
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.isCancelled()) return;
         lastInteractTick.put(event.getPlayer().getUniqueId(), passedTime);
+    }
+
+    @EventTarget
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        PlayerUtils.save(LibraryPlugin.COMPAT.getGameProfile(event.getPlayer()));
     }
 
     @Override

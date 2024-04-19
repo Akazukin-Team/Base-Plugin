@@ -1,11 +1,8 @@
 package net.akazukin.library.utils;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.utils.http.HttpUtils;
+import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -16,7 +13,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,25 +41,22 @@ public class ItemUtils {
             skullItemMeta.setOwningPlayer(player);
         } else {
             try {
-                final GameProfile profile = ReflectionUtils.getField(player, "profile", GameProfile.class);
-
-                if (profile != null && profile.getProperties().get("textures").isEmpty()) {
-                    final JsonObject prop = new JsonParser()
-                            .parse(new String(
-                                    HttpUtils.requestGet("https://api.mineskin.org/generate/user/" + player.getUniqueId()),
-                                    StandardCharsets.UTF_8))
-                            .getAsJsonObject()
-                            .getAsJsonObject("data")
-                            .getAsJsonObject("texture");
-                    final Property textures = new Property("textures", prop.get("value").getAsString(), null);
-                    profile.getProperties().put("textures", textures);
+                WrappedPlayerProfile profile = PlayerUtils.load(player.getUniqueId());
+                if (profile == null) {
+                    profile = PlayerUtils.fetchProfile(player.getUniqueId());
+                    if (profile != null)
+                        PlayerUtils.save(profile);
+                }
+                if (profile != null) {
+                    final GameProfile profile_ = PlayerUtils.getProfile(profile);
 
                     try {
                         final Method m = skullItemMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
                         m.setAccessible(true);
-                        m.invoke(skullItemMeta, profile);
+                        m.invoke(skullItemMeta, profile_);
                     } catch (final NoSuchMethodException ignored) {
-                        ReflectionUtils.setField(skullItemMeta, "profile", profile);
+                        ignored.printStackTrace();
+                        ReflectionUtils.setField(skullItemMeta, "profile", profile_);
                     }
                 }
             } catch (final NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {

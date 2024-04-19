@@ -52,7 +52,7 @@ public class HttpUtils {
 
             if (200 <= con.getResponseCode() && con.getResponseCode() <= 299) {
                 try (final InputStream is = con.getInputStream()) {
-                    return is != null ? IOUtils.readAllBytes(is) : null;
+                    return is != null && is.available() != 0 ? IOUtils.readAllBytes(is) : null;
                 }
             } else {
                 throw new IllegalStateException("Message: " + con.getResponseMessage() + "  Code: " + con.getResponseCode());

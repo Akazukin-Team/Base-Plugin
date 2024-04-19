@@ -1,10 +1,14 @@
 package net.akazukin.library.compat.minecraft.compats;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
+import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
 import net.akazukin.library.utils.ReflectionUtils;
@@ -14,7 +18,6 @@ import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.network.ServerConnection;
-import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Compat_v1_17_R1 implements Compat {
@@ -175,21 +179,43 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public GameProfile getGameProfile(final Player player) {
-        try {
+    public WrappedPlayerProfile getGameProfile(final Player player) {
+        if (player instanceof CraftPlayer) {
+            final GameProfile profile = ((CraftPlayer) player).getProfile();
+            final Property textures = new ArrayList<>(profile.getProperties().get("textures")).get(0);
+            final JsonObject textures__ = new JsonParser()
+                    .parse(textures.getValue())
+                    .getAsJsonObject();
+            final JsonObject textures_ = textures__.getAsJsonObject("textures");
+            final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
+            profile_.setUniqueId(profile.getId());
+            profile_.setName(profile.getName());
+            if (textures_.has("SKIN"))
+                profile_.setSkin(textures_
+                        .getAsJsonObject("SKIN")
+                        .get("url")
+                        .getAsString());
+            if (textures_.has("SKIN") &&
+                    textures_.getAsJsonObject("SKIN").has("metadata"))
+                profile_.setSkinModel(textures_
+                        .getAsJsonObject("SKIN")
+                        .getAsJsonObject("metadata")
+                        .getAsJsonObject("model")
+                        .getAsString()
+                        .equals("slim") ? "SLIM" : "CLASSIC");
+            if (textures_.has("CAPE"))
+                profile_.setCape(textures_
+                        .getAsJsonObject("CAPE")
+                        .get("url")
+                        .getAsString());
+            profile_.setTimestamp(textures__.get("timestamp").getAsLong());
+            return profile_;
+        }
+        /*try {
             ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cs", GameProfile.class);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
-    }
-
-    @Override
-    public void setGameProfile(final Player player, final GameProfile profile) {
-        try {
-            ReflectionUtils.setField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cs", profile);
-        } catch (final NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 }

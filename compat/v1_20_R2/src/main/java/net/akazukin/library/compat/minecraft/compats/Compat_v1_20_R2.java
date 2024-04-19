@@ -1,10 +1,10 @@
 package net.akazukin.library.compat.minecraft.compats;
 
-import com.mojang.authlib.GameProfile;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
+import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_20_R2.PacketProcessor_v1_20_R2;
 import net.akazukin.library.utils.ReflectionUtils;
@@ -16,7 +16,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConnection;
-import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,6 +27,7 @@ import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.profile.PlayerProfile;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -192,21 +192,26 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
-    public GameProfile getGameProfile(final Player player) {
-        try {
+    public WrappedPlayerProfile getGameProfile(final Player player) {
+        if (player instanceof CraftPlayer) {
+            final PlayerProfile profile = player.getPlayerProfile();
+            final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
+            profile_.setUniqueId(profile.getUniqueId());
+            profile_.setName(profile.getName());
+            if (profile.getTextures().getSkin() != null)
+                profile_.setSkin(profile.getTextures().getSkin().getPath());
+            profile_.setSkinModel(profile.getTextures().getSkinModel().name());
+            if (profile.getTextures().getCape() != null)
+                profile_.setSkin(profile.getTextures().getCape().getPath());
+            profile_.setTimestamp(profile.getTextures().getTimestamp());
+            return profile_;
+        }
+        return null;
+        /*try {
             ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cr", GameProfile.class);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    public void setGameProfile(final Player player, final GameProfile profile) {
-        try {
-            ReflectionUtils.setField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cr", profile);
-        } catch (final NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        return null;*/
     }
 }

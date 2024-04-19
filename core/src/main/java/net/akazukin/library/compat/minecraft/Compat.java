@@ -1,9 +1,9 @@
 package net.akazukin.library.compat.minecraft;
 
-import com.mojang.authlib.GameProfile;
 import io.netty.channel.Channel;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
+import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -63,7 +63,5 @@ public interface Compat {
 
     ItemStack removeNBT(ItemStack itemStack, String key);
 
-    GameProfile getGameProfile(Player player);
-
-    void setGameProfile(Player player, GameProfile profile);
+    WrappedPlayerProfile getGameProfile(Player player);
 }
