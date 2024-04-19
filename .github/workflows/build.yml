@@ -45,6 +45,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Clean build
+        run: ./gradlew clean
+
       - name: Build and Test
         run: ./gradlew build test
 
@@ -56,6 +59,3 @@ jobs:
         with:
           name: artifact
           path: publish/build/libs/
-
-      - name: Clean build
-        run: ./gradlew clean

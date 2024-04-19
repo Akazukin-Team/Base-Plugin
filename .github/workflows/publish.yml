@@ -38,11 +38,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Clean build
+        run: ./gradlew clean
+
       - name: Build and Test
         run: ./gradlew build test
 
       - name: Upload artifacts to GPR
         run: ./gradlew publishMavenPublicationToGprRepository
-
-      - name: Clean build
-        run: ./gradlew clean
