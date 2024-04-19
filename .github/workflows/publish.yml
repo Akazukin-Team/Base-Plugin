@@ -1,4 +1,4 @@
-name: Build application and publish with Java CI and Gradle
+name: Publish to GPR
 
 
 on:

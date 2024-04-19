@@ -1,4 +1,4 @@
-name: Build application and publish with Java CI and Gradle
+name: Build and Upload artifacts
 
 
 on:
