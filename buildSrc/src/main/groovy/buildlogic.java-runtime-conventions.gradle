@@ -12,20 +12,6 @@ configurations {
     compileOnly.extendsFrom(pluginImpl)
 }
 
-dependencies {
-    pluginImpl "net.akazukin:plugin-library:1.0.0"
-}
-
-tasks.register("updateAPL") {
-    group "minecraft"
-    doFirst {
-        copy {
-            from "${System.getenv().get("USERPROFILE")}\\.m2\\repository\\net\\akazukin\\plugin-library\\1.0.0\\plugin-library-1.0.0.jar"
-            into Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}/plugins")
-        }
-    }
-}
-
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
