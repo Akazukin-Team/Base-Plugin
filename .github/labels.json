@@ -1,0 +1,87 @@
+[
+  {
+    "color": "00ff00",
+    "description": "ci処理をスキップする",
+    "name": "ci/skip"
+  },
+  {
+    "color": "ff8eff",
+    "description": "外部設計",
+    "name": "design/external"
+  },
+  {
+    "color": "ff8eff",
+    "description": "内部設計",
+    "name": "design/internal"
+  },
+  {
+    "color": "7fff7f",
+    "description": "優先度: 高",
+    "name": "priority/high"
+  },
+  {
+    "color": "7fff7f",
+    "description": "優先度: 低",
+    "name": "priority/low"
+  },
+  {
+    "color": "7fff7f",
+    "description": "優先度: 中",
+    "name": "priority/middle"
+  },
+  {
+    "color": "ff7a7a",
+    "description": "結合テスト",
+    "name": "test/integration"
+  },
+  {
+    "color": "ff7a7a",
+    "description": "総合テスト",
+    "name": "test/system"
+  },
+  {
+    "color": "ff7a7a",
+    "description": "単体テスト",
+    "name": "test/unit"
+  },
+  {
+    "color": "66ffff",
+    "description": "バグ報告・修正",
+    "name": "type/bug"
+  },
+  {
+    "color": "66ffff",
+    "description": "設計",
+    "name": "type/design"
+  },
+  {
+    "color": "66ffff",
+    "description": "ドキュメント関連",
+    "name": "type/document"
+  },
+  {
+    "color": "66ffff",
+    "description": "新規機能",
+    "name": "type/enhancement"
+  },
+  {
+    "color": "66ffff",
+    "description": "保守管理",
+    "name": "type/maintenance"
+  },
+  {
+    "color": "66ffff",
+    "description": "環境関連",
+    "name": "type/runtime"
+  },
+  {
+    "color": "66ffff",
+    "description": "テスト",
+    "name": "type/test"
+  },
+  {
+    "color": "66ffff",
+    "description": "リファクタリング",
+    "name": "type/refactor"
+  }
+]
