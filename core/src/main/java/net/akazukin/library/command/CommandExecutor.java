@@ -1,6 +1,6 @@
 package net.akazukin.library.command;
 
-public enum CommandExcutor {
+public enum CommandExecutor {
     PLAYER,
     CONSOLE,
     BOTH

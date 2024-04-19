@@ -1,7 +1,7 @@
 package net.akazukin.library.command.commands.akazukin;
 
 import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.command.CommandExcutor;
+import net.akazukin.library.command.CommandExecutor;
 import net.akazukin.library.command.CommandInfo;
 import net.akazukin.library.command.SubCommand;
 import net.akazukin.library.doma.LibrarySQLConfig;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@CommandInfo(name = "language", description = "Change user's language", executor = CommandExcutor.PLAYER)
+@CommandInfo(name = "language", description = "Change user's language", executor = CommandExecutor.PLAYER)
 public class LanguageSubCommand extends SubCommand {
     @Override
     public void run(final CommandSender sender, final String... args) {

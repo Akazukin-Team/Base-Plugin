@@ -14,5 +14,5 @@ public @interface CommandInfo {
 
     String permission() default "";
 
-    CommandExcutor executor() default CommandExcutor.BOTH;
+    CommandExecutor executor() default CommandExecutor.BOTH;
 }

@@ -14,7 +14,7 @@ public abstract class Command implements Listenable {
     private final String description;
     private final SubCommand[] subCommands;
     private final String permission;
-    private final CommandExcutor executor;
+    private final CommandExecutor executor;
 
     @Setter
     private boolean toggle = true;
@@ -49,11 +49,11 @@ public abstract class Command implements Listenable {
     }
 
     public final boolean validExecutor(final CommandSender sender) {
-        if (executor == CommandExcutor.CONSOLE && !(sender instanceof Player)) {
+        if (executor == CommandExecutor.CONSOLE && !(sender instanceof Player)) {
             return true;
-        } else if (executor == CommandExcutor.PLAYER && sender instanceof Player) {
+        } else if (executor == CommandExecutor.PLAYER && sender instanceof Player) {
             return true;
         }
-        return executor == CommandExcutor.BOTH;
+        return executor == CommandExecutor.BOTH;
     }
 }
