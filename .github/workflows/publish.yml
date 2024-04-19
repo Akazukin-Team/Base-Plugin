@@ -39,7 +39,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test
-        run: ./gradlew clean build test
+        run: ./gradlew build test
 
       - name: Upload artifacts to GPR
         run: ./gradlew publishMavenPublicationToGprRepository
+
+      - name: Clean build
+        run: ./gradlew clean
