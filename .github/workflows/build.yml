@@ -46,7 +46,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test
-        run: ./gradlew build test publishToMavenLocal
+        run: ./gradlew clean build test publishToMavenLocal
 
       - name: Make jars
         run: ./gradlew publishToMavenLocal
