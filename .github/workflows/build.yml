@@ -12,8 +12,6 @@ on:
       - '**/src/**'
       - '.github/workflows/**'
 
-  release:
-
 
 jobs:
   build:

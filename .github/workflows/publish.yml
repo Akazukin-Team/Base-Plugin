@@ -3,6 +3,11 @@ name: Publish to GPR
 
 on:
   release:
+    published:
+    created:
+    edited:
+    prereleased:
+    released:
 
 
 jobs:
