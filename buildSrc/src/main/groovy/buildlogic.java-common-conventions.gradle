@@ -60,7 +60,7 @@ tasks.named('test') {
 
 jar.enabled = true
 
-//compileJava.dependsOn(processResources)
+jar.dependsOn(processResources)
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

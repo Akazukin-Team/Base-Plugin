@@ -19,7 +19,6 @@ jar {
     enabled = true
 }
 
-compileJava.dependsOn(processResources)
 processResources {
     filesMatching("plugin.yml") {
         expand(NAME: parent.getProperties().plugin_name, VERSION: parent.getProperties().version, PACKAGE: project.group.toString())

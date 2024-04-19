@@ -7,8 +7,13 @@ plugins {
 
 configurations {
     include
+    pluginImpl
     implementation.extendsFrom(include)
-    implementation.canBeResolved = true
+    compileOnly.extendsFrom(pluginImpl)
+}
+
+dependencies {
+    pluginImpl "net.akazukin:plugin-library:1.0.0"
 }
 
 tasks.register("updateAPL") {
@@ -31,14 +36,50 @@ runServer {
         }
     }
 
-    Files.createDirectories(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}"))
+    pluginJars(configurations.pluginImpl)
+
+    beforeEvaluate {
+        Files.createDirectories(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}"))
+    }
+
     minecraftVersion(project.minecraft_version)
     runDirectory.set(file(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}")))
     downloadPlugins {
         url("https://github.com/TheBlackEntity/PlugManX/releases/download/2.3.7/PlugManX.jar")
-        url("https://download.luckperms.net/1533/bukkit/loader/LuckPerms-Bukkit-5.4.120.jar")
+        url("https://download.luckperms.net/1534/bukkit/loader/LuckPerms-Bukkit-5.4.121.jar")
+        url("https://mediafilez.forgecdn.net/files/4978/992/Dynmap-3.7-beta-4-spigot.jar")
+        url("https://mediafilez.forgecdn.net/files/3635/984/Dynmap-WorldGuard-1.4-beta-1.jar")
     }
     jvmArgs = [
-            "-Dcom.mojang.eula.agree=true"
+            "-server",
+            "-XX:+UseCompressedOops",
+            "-XX:+OptimizeStringConcat",
+            "-XX:-UseGCOverheadLimit",
+            "-XX:NewRatio=2",
+            "-XX:MaxTenuringThreshold=16",
+            "-XX:TargetSurvivorRatio=90",
+            "-Dcom.mojang.eula.agree=true",
+            "-Xmn2G",
+            "-Xms4G",
+            "-Xmx4G",
+            "-XX:+UseG1GC",
+            "-XX:+ParallelRefProcEnabled",
+            "-XX:MaxGCPauseMillis=400",
+            "-XX:+UnlockExperimentalVMOptions",
+            "-XX:+DisableExplicitGC",
+            "-XX:+AlwaysPreTouch",
+            "-XX:G1HeapWastePercent=5",
+            "-XX:G1MixedGCCountTarget=4",
+            "-XX:G1MixedGCLiveThresholdPercent=90",
+            "-XX:G1RSetUpdatingPauseTimePercent=5",
+            "-XX:SurvivorRatio=16",
+            "-XX:+PerfDisableSharedMem",
+            "-XX:G1NewSizePercent=40",
+            "-XX:G1MaxNewSizePercent=50",
+            "-XX:G1HeapRegionSize=16M",
+            "-XX:G1ReservePercent=15",
+            "-XX:InitiatingHeapOccupancyPercent=20",
+            "-Dusing.aikars.flags=https://mcflags.emc.gs",
+            "-Daikars.new.flags=true"
     ]
 }
