@@ -1,9 +1,7 @@
 name: Setup labels
 
-
 on:
   workflow_dispatch:
-
 
 jobs:
   setup_labels:

@@ -1,17 +1,15 @@
 name: Build and Upload artifacts
 
-
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'main'
-
     paths:
       - '**.gradle'
       - '**.properties'
       - '**/src/**'
       - '.github/workflows/**'
-
 
 jobs:
   build:
