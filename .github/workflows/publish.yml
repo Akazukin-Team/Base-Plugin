@@ -2,16 +2,6 @@ name: Build application and publish with Java CI and Gradle
 
 
 on:
-  push:
-    branches:
-      - 'main'
-
-    paths:
-      - '**.gradle'
-      - '**.properties'
-      - '**/src/**'
-      - '.github/workflows/**'
-
   release:
 
 
@@ -48,13 +38,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test
-        run: ./gradlew build test publishToMavenLocal
+        run: ./gradlew build test
 
-      - name: Make jars
-        run: ./gradlew publishToMavenLocal
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact
-          path: publish/build/libs/
+      - name: Upload artifacts to GPR
+        run: ./gradlew publishMavenPublicationToGprRepository
