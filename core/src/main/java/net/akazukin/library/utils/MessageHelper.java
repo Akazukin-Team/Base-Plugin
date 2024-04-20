@@ -36,15 +36,11 @@ public class MessageHelper {
     }
 
     public String get(final String locale, final I18n i18n, final Object... args) {
-        System.out.println(locale + " | " + i18n.getKey());
         for (final I18nUtils i18nUtil : i18nUtils) {
-            System.out.println(i18nUtil.getPluginId());
             final String result = i18nUtil.get(locale, i18n, args);
             if (StringUtils.getLength(result) > 0) return result;
         }
-        System.out.println("loading from default localization sets");
         for (final I18nUtils i18nUtil : i18nUtils) {
-            System.out.println(i18nUtil.getPluginId());
             final String result = i18nUtil.get(i18n, args);
             if (StringUtils.getLength(result) > 0) return result;
         }
