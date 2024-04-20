@@ -1,9 +1,12 @@
 package net.akazukin.library.i18n;
 
+import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.utils.StringUtils;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -15,12 +18,13 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public class I18nUtils {
     private static final Pattern otherI18 = Pattern.compile("<\\$[a-zA-Z0-9.]+>");
     private static final Pattern argsRegex = Pattern.compile("<args\\[[0-9]+]>");
 
-    private static final Properties defaultLocale = new Properties();
-    private static final Map<String, Properties> language = new HashMap<>();
+    private final Properties defaultLocale = new Properties();
+    private final Map<String, Properties> language = new HashMap<>();
 
     private final Plugin plugin;
     private final String pluginId;
@@ -30,24 +34,21 @@ public class I18nUtils {
         this.pluginId = pluginId;
     }
 
-    /*public String get(final String id) {
-        return get("en_us", id);
+    public String get(final I18n i18n, final Object... args) {
+        return get(defaultLocale, i18n.getKey(), args);
     }
 
-    public String get(final String id, final I18n i18n) {
-        return get(id, i18n.getKey());
-    }*/
-
-    public String get(final String id, final I18n i18n, final Object... args) {
-        return get(id, i18n.getKey(), args);
+    public String get(final String locale, final I18n i18n, final Object... args) {
+        return get(language.get(locale), i18n.getKey(), args);
     }
 
-    public String get(final String locale, final String id, final Object... args) {
-        if ((!language.containsKey(locale) || !language.get(locale).containsKey(id)) && !defaultLocale.containsKey(id))
-            return null;
+    public String get(final Properties locale, final String id, final Object... args) {
+        //if ((!language.containsKey(locale) || !language.get(locale).containsKey(id)) && !defaultLocale.containsKey(id))
+        //    return id;
+        if (locale == null || !locale.containsKey(id)) return null;
 
-        String i18n = String.valueOf((language.containsKey(locale) && language.get(locale).containsKey(id) ? language.get(locale) : defaultLocale).getProperty(id));
-        if (i18n == null || i18n.isEmpty()) return null;
+        String i18n = String.valueOf(locale.getProperty(id));
+        if (StringUtils.getLength(i18n) <= 0) return null;
 
         i18n = i18n.replaceAll("\\\\n", "\n");
 
@@ -56,13 +57,10 @@ public class I18nUtils {
         for (int i = 0; i < args.length; i++) {
             if (!m.find()) break;
 
-            //if (args[i] == null) continue;
-
             final Pattern pattern = Pattern.compile(Pattern.quote("<args[" + i + "]>"));
             final Matcher m2 = pattern.matcher(i18n);
             if (m2.find()) {
                 if (args[i] instanceof I18n) args[i] = get(locale, ((I18n) args[i]).getKey());
-                //if (args[i] == null) continue;
                 i18n = m2.replaceAll(String.valueOf(args[i]));
             }
 
@@ -72,7 +70,7 @@ public class I18nUtils {
 
         final Matcher m2 = otherI18.matcher(i18n);
         if (m2.find()) i18n = m2.replaceAll(get(locale, m2.group().substring(2, m2.group().length() - 1)));
-        return (i18n == null || i18n.isEmpty()) ? null : i18n;
+        return (StringUtils.getLength(i18n) > 0) ? i18n : null;
     }
 
     public void build(final String... locales) {
@@ -88,16 +86,28 @@ public class I18nUtils {
         for (final String locale : locales) {
             final String langsFile = "langs/" + locale + ".lang";
             final Properties props = new Properties();
-            try (final InputStream is = new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile).exists() ?
-                    Files.newInputStream(new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile).toPath()) :
-                    plugin.getResource("assets/net/akazukin/" + pluginId + "/" + langsFile)) {
-                try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                    props.load(isr);
-                    language.put(locale, props);
+
+            try (final InputStream is = plugin.getResource("assets/net/akazukin/" + pluginId + "/" + langsFile)) {
+                if (is != null && is.available() > 0) {
+                    try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                        props.load(isr);
+                    }
                 }
-            } catch (final Exception e) {
+            } catch (final IOException e) {
                 LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load localization file | " + langsFile, e);
             }
+
+            final File file = new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile);
+            if (file.exists()) {
+                try (final InputStream is = Files.newInputStream(new File(LibraryPlugin.getPlugin().getDataFolder(), langsFile).toPath())) {
+                    try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                        props.load(isr);
+                    }
+                } catch (final IOException e) {
+                    LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load custom localization file | " + langsFile, e);
+                }
+            }
+            language.put(locale, props);
         }
 
         LibraryPlugin.getLogManager().info("Loaded " + language.size() + " languages");

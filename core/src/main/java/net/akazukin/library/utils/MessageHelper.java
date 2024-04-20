@@ -36,11 +36,19 @@ public class MessageHelper {
     }
 
     public String get(final String locale, final I18n i18n, final Object... args) {
+        System.out.println(locale + " | " + i18n.getKey());
         for (final I18nUtils i18nUtil : i18nUtils) {
+            System.out.println(i18nUtil.getPluginId());
             final String result = i18nUtil.get(locale, i18n, args);
-            if (result != null) return result;
+            if (StringUtils.getLength(result) > 0) return result;
         }
-        return null;
+        System.out.println("loading from default localization sets");
+        for (final I18nUtils i18nUtil : i18nUtils) {
+            System.out.println(i18nUtil.getPluginId());
+            final String result = i18nUtil.get(i18n, args);
+            if (StringUtils.getLength(result) > 0) return result;
+        }
+        return i18n.getKey();
     }
 
     public void broadcast(final I18n message) {
@@ -48,7 +56,7 @@ public class MessageHelper {
     }
 
     public void broadcast(final String message) {
-        Bukkit.broadcastMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + message);
+        Bukkit.broadcastMessage("§7[§6§lAKZ§7]§e " + message);
     }
 
     public void sendMessage(final CommandSender sender, final String message) {
@@ -71,12 +79,12 @@ public class MessageHelper {
         sendMessage(player, get(getLocale(player.getUniqueId()), message, args));
     }
 
-    public void sendMessage(final HumanEntity player, final String message) {
-        player.sendMessage("§7[§6§lAKZ§7]§e " + message);
-    }
-
     public void sendMessage(final UUID player, final I18n message, final Object... args) {
         sendMessage(player, get(getLocale(player), message, args));
+    }
+
+    public void sendMessage(final HumanEntity player, final String message) {
+        player.sendMessage("§7[§6§lAKZ§7]§e " + message);
     }
 
     public void sendMessage(final UUID player, final String message) {
@@ -84,10 +92,10 @@ public class MessageHelper {
     }
 
     public void consoleMessage(final I18n message, final Object... args) {
-        Bukkit.getConsoleSender().sendMessage("§7[§6§lAKZ§7]§e " + get(getLocale(), message, args));
+        consoleMessage(get(getLocale(), message, args));
     }
 
     public void consoleMessage(final String message) {
-        Bukkit.getConsoleSender().sendMessage(get(getLocale(), I18n.of("library.message.prefix")) + " " + message);
+        Bukkit.getConsoleSender().sendMessage("§7[§6§lAKZ§7]§e " + message);
     }
 }
