@@ -1,12 +1,11 @@
 package net.akazukin.library.command;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.event.Listenable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
 
 @Getter
 public abstract class Command implements Listenable {
@@ -29,15 +28,15 @@ public abstract class Command implements Listenable {
         subCommands = getSubCommands();
     }
 
+    public SubCommand[] getSubCommands() {
+        return new SubCommand[]{};
+    }
+
     public SubCommand getSubCommand(final String name) {
         return Arrays.stream(subCommands).filter(cmd -> name == null ? cmd.getName().equalsIgnoreCase("") : cmd.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public abstract void run(CommandSender sender, String... args);
-
-    public SubCommand[] getSubCommands() {
-        return new SubCommand[]{};
-    }
 
     @Override
     public boolean handleEvents() {
@@ -45,7 +44,7 @@ public abstract class Command implements Listenable {
     }
 
     public final boolean hasPermission(final CommandSender sender) {
-        return sender.hasPermission(permission);
+        return permission.isEmpty() || !(sender instanceof Player) || sender.hasPermission(permission);
     }
 
     public final boolean validExecutor(final CommandSender sender) {
