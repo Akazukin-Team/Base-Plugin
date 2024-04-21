@@ -1,12 +1,11 @@
 package net.akazukin.library.doma;
 
+import java.sql.SQLException;
 import org.seasar.doma.jdbc.JdbcLogger;
 import org.seasar.doma.jdbc.Sql;
 import org.seasar.doma.jdbc.SqlExecutionSkipCause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
 
 public class IJdbcLogger implements JdbcLogger {
     private final Logger log = LoggerFactory.getLogger(JdbcLogger.class);

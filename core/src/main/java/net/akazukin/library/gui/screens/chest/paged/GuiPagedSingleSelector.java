@@ -1,5 +1,7 @@
 package net.akazukin.library.gui.screens.chest.paged;
 
+import java.util.Arrays;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.LibraryPlugin;
@@ -7,9 +9,6 @@ import net.akazukin.library.gui.screens.chest.GuiBase;
 import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 @Getter
 @Setter

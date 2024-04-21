@@ -1,5 +1,7 @@
 package net.akazukin.library.gui.screens.chest;
 
+import java.util.UUID;
+import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.event.EventTarget;
@@ -8,9 +10,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
-
-import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Getter
 public abstract class ContainerGuiBase extends GuiBase {
@@ -43,13 +42,13 @@ public abstract class ContainerGuiBase extends GuiBase {
         onGuiOpen(event);
     }
 
+    protected void onGuiOpen(final InventoryOpenEvent event) {
+    }
+
     @EventTarget
     public void onInventoryClose(final InventoryCloseEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
         onGuiClose(event);
-    }
-
-    protected void onGuiOpen(final InventoryOpenEvent event) {
     }
 
     protected void onGuiClose(final InventoryCloseEvent event) {

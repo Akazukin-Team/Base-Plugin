@@ -1,10 +1,9 @@
 package net.akazukin.library.config;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LibraryConfig {
     public final static ConfigElement<List<String>> LOCALES = new ConfigElement<>("locales");

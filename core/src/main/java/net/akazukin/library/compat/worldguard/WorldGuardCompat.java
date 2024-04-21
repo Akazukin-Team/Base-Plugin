@@ -11,13 +11,12 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 public class WorldGuardCompat {
     public static void createRegion(final String name, final Location loc, final Location loc2) {
@@ -42,6 +41,11 @@ public class WorldGuardCompat {
         final DefaultDomain owners = getRegion(world, regionId).getOwners();
         owners.addPlayer(player);
         getRegion(world, regionId).setOwners(owners);
+    }
+
+    public static ProtectedRegion getRegion(final World world, final String regionId) {
+        final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        return container.get(BukkitAdapter.adapt(world)).getRegion(regionId);
     }
 
     public static void removeOwner(final World world, final String regionId, final UUID player) {
@@ -90,11 +94,6 @@ public class WorldGuardCompat {
 
     public static void addFlag(final World world, final String regionId, final int priority) {
         getRegion(world, regionId).setPriority(priority);
-    }
-
-    public static ProtectedRegion getRegion(final World world, final String regionId) {
-        final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        return container.get(BukkitAdapter.adapt(world)).getRegion(regionId);
     }
 
     public static List<Set<ProtectedRegion>> removeRegion(final World world) {

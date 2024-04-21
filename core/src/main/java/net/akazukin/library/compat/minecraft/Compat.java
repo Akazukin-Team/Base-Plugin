@@ -1,6 +1,8 @@
 package net.akazukin.library.compat.minecraft;
 
 import io.netty.channel.Channel;
+import java.util.List;
+import javax.annotation.Nullable;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
@@ -10,9 +12,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public interface Compat {
     int getProtocolVersion();

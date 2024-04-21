@@ -1,5 +1,7 @@
 package net.akazukin.library.gui;
 
+import java.util.HashMap;
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
@@ -25,9 +27,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 @Getter
 public class GuiManager implements Listenable {
     private static final GuiManager SINGLETON = new GuiManager();
@@ -35,20 +34,6 @@ public class GuiManager implements Listenable {
 
     public static GuiManager singleton() {
         return SINGLETON;
-    }
-
-    public void setScreen(final UUID player, final GuiBase gui) {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return;
-        Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), player_::closeInventory);
-
-        screens.remove(player);
-        screens.put(player, gui);
-        if (gui instanceof ContainerGuiBase) {
-            Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), gui::forceOpen);
-        } else {
-            gui.forceOpen();
-        }
     }
 
     public GuiBase getScreen(final UUID player) {
@@ -78,6 +63,20 @@ public class GuiManager implements Listenable {
             setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
         } else {
             ((ContainerGuiBase) gui).onInventoryClick(event);
+        }
+    }
+
+    public void setScreen(final UUID player, final GuiBase gui) {
+        final Player player_ = Bukkit.getPlayer(player);
+        if (player_ == null) return;
+        Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), player_::closeInventory);
+
+        screens.remove(player);
+        screens.put(player, gui);
+        if (gui instanceof ContainerGuiBase) {
+            Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), gui::forceOpen);
+        } else {
+            gui.forceOpen();
         }
     }
 

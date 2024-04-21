@@ -1,5 +1,8 @@
 package net.akazukin.library.gui.screens.chest.paged;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.screens.chest.GuiBase;
@@ -10,10 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {

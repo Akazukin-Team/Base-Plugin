@@ -1,5 +1,7 @@
 package net.akazukin.library.gui.screens.chest.paged;
 
+import java.util.Arrays;
+import java.util.UUID;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.screens.chest.ChestGuiBase;
 import net.akazukin.library.gui.screens.chest.GuiBase;
@@ -12,9 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final int maxRows;
@@ -51,6 +50,24 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
     }
 
     @Override
+    protected boolean onGuiClick(final InventoryClickEvent event) {
+        if (prevPageItem.equals(event.getCurrentItem())) {
+            if (page > 0) {
+                page--;
+                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
+            }
+            return true;
+        } else if (nextPageItem.equals(event.getCurrentItem())) {
+            if (((page + 1) * 4 * 7) < itemStacks.length) {
+                page++;
+                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     protected Inventory getInventory() {
         final int itemLeft = (itemStacks.length / (4 * 7));
         rows = itemLeft >= (7 * (maxRows - 2)) ? maxRows : Math.max((int) Math.ceil((double) itemLeft / 7), minRows);
@@ -68,23 +85,5 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
             inv.setItem(i + 10 + ((i / 7) * 2), itemStacks[(page * 28) + i].clone());
         }
         return inv;
-    }
-
-    @Override
-    protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (prevPageItem.equals(event.getCurrentItem())) {
-            if (page > 0) {
-                page--;
-                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
-            }
-            return true;
-        } else if (nextPageItem.equals(event.getCurrentItem())) {
-            if (((page + 1) * 4 * 7) < itemStacks.length) {
-                page++;
-                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
-            }
-            return true;
-        }
-        return false;
     }
 }

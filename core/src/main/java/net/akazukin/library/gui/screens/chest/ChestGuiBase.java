@@ -1,5 +1,6 @@
 package net.akazukin.library.gui.screens.chest;
 
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.utils.InventoryUtils;
@@ -10,8 +11,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
-import java.util.UUID;
-
 @Getter
 public abstract class ChestGuiBase extends ContainerGuiBase {
     protected int rows;
@@ -19,6 +18,16 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     public ChestGuiBase(final String title, final int rows, final UUID player, final boolean canPickup, final GuiBase prevGui) {
         super(title, player, canPickup, prevGui);
         this.rows = rows;
+    }
+
+    @Override
+    public boolean forceOpen() {
+        final Player player_ = Bukkit.getPlayer(player);
+        if (player_ == null) return false;
+        final Inventory inv = getInventory();
+        if (inv == null) return false;
+        final InventoryView inv2 = player_.openInventory(getInventory());
+        return inv2 != null;
     }
 
     @Override
@@ -39,15 +48,5 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     public final void onInventoryClose(final InventoryCloseEvent event) {
         if (!event.getView().getTitle().equals(title)) return;
         onGuiClose(event);
-    }
-
-    @Override
-    public boolean forceOpen() {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return false;
-        final Inventory inv = getInventory();
-        if (inv == null) return false;
-        final InventoryView inv2 = player_.openInventory(getInventory());
-        return inv2 != null;
     }
 }

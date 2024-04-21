@@ -1,14 +1,13 @@
 package net.akazukin.library.command;
 
-import lombok.Getter;
-import net.akazukin.library.LibraryPlugin;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import lombok.Getter;
+import net.akazukin.library.LibraryPlugin;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 @Getter
 public abstract class CommandManager implements CommandExecutor {
@@ -30,10 +29,6 @@ public abstract class CommandManager implements CommandExecutor {
         commands.add(command);
     }
 
-    public Command getCommand(final String name) {
-        return commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-    }
-
     public Command getCommand(final Class<? extends Command> aClass) {
         return commands.stream().filter(cmd -> cmd.getClass().equals(aClass)).findFirst().orElse(null);
     }
@@ -47,5 +42,9 @@ public abstract class CommandManager implements CommandExecutor {
             cmd.run(sender, args);
         }).start();
         return true;
+    }
+
+    public Command getCommand(final String name) {
+        return commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 }

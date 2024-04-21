@@ -1,5 +1,6 @@
 package net.akazukin.library.gui.screens.chest;
 
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.GuiManager;
@@ -12,8 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     private final ItemStack yesItem;

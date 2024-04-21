@@ -1,10 +1,5 @@
 package net.akazukin.library.utils;
 
-import lombok.Getter;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import lombok.Getter;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public class ConfigUtils {
 
@@ -71,6 +70,15 @@ public class ConfigUtils {
         }
     }
 
+    private void printException(final Exception e, final String filename) {
+        if (e instanceof IOException) {
+            plugin.getLogger().severe("I/O exception while handling " + filename);
+        } else if (e instanceof InvalidConfigurationException) {
+            plugin.getLogger().severe("Invalid configuration in " + filename);
+        }
+        e.printStackTrace();
+    }
+
     public void reload(final String filename) {
         if (configs.containsKey(filename)) {
             try {
@@ -86,15 +94,6 @@ public class ConfigUtils {
             return configs.get(filename).getConfig();
         else
             return null;
-    }
-
-    private void printException(final Exception e, final String filename) {
-        if (e instanceof IOException) {
-            plugin.getLogger().severe("I/O exception while handling " + filename);
-        } else if (e instanceof InvalidConfigurationException) {
-            plugin.getLogger().severe("Invalid configuration in " + filename);
-        }
-        e.printStackTrace();
     }
 
     public List<String> getFiles() {

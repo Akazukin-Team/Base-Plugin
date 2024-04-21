@@ -1,11 +1,10 @@
 package net.akazukin.library.gui.screens.chat;
 
+import java.util.UUID;
+import java.util.function.Predicate;
 import lombok.Getter;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.gui.screens.chest.GuiBase;
-
-import java.util.UUID;
-import java.util.function.Predicate;
 
 @Getter
 @Deprecated

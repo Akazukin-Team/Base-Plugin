@@ -1,5 +1,7 @@
 package net.akazukin.library.gui.screens.sign;
 
+import java.util.Arrays;
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -9,9 +11,6 @@ import net.akazukin.library.event.events.PacketReceiveEvent;
 import net.akazukin.library.gui.screens.chest.GuiBase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 @Getter
 public class SignStringSelectorGui extends GuiBase {

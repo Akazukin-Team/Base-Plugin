@@ -9,10 +9,6 @@ public class RandomUtils {
         return RANDOM.nextBoolean();
     }
 
-    public static int nextInt(final int i1, final int i2) {
-        return RANDOM.nextInt(Math.max(i1, i2) - Math.min(i1, i2)) + Math.min(i1, i2);
-    }
-
     public static double nextDouble(final double d1, final double d2) {
         return (RANDOM.nextDouble() * (Math.max(d1, d2) - Math.min(d1, d2))) + Math.min(d1, d2);
     }
@@ -28,5 +24,9 @@ public class RandomUtils {
             str.append(chars.charAt(i2));
         }
         return str.toString();
+    }
+
+    public static int nextInt(final int i1, final int i2) {
+        return RANDOM.nextInt(Math.max(i1, i2) - Math.min(i1, i2)) + Math.min(i1, i2);
     }
 }

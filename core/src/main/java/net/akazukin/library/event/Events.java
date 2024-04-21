@@ -27,11 +27,14 @@ public class Events implements Listener {
         callEvent(event, EventPriority.HIGHEST);
     }
 
+    private void callEvent(final Event event, final EventPriority priority) {
+        LibraryPlugin.EVENT_MANAGER.callEvent(event, priority);
+    }
+
     @EventHandler
     public void onEntityDamage(final EntityDamageEvent event) {
         callEvent(event, EventPriority.NORMAL);
     }
-
 
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
@@ -68,15 +71,15 @@ public class Events implements Listener {
         callEvent(event, EventPriority.NORMAL);
     }
 
-    @EventHandler
-    public void onPlayerInteract(final PlayerInteractEvent event) {
-        callEvent(event, EventPriority.NORMAL);
-    }
-
     /*@EventHandler
     public void onPlayerRotation(final PlayerRotationEvent event) {
         callEvent(event, EventPriority.NORMAL);
     }*/
+
+    @EventHandler
+    public void onPlayerInteract(final PlayerInteractEvent event) {
+        callEvent(event, EventPriority.NORMAL);
+    }
 
     @EventHandler
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
@@ -97,9 +100,5 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onGrimACDetect(final FlagEvent event) {
         callEvent(event, EventPriority.HIGH);
-    }
-
-    private void callEvent(final Event event, final EventPriority priority) {
-        LibraryPlugin.EVENT_MANAGER.callEvent(event, priority);
     }
 }

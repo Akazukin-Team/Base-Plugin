@@ -1,11 +1,10 @@
 package net.akazukin.library.packetlistener;
 
+import java.net.InetSocketAddress;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.entity.Player;
-
-import javax.annotation.Nullable;
-import java.net.InetSocketAddress;
 
 @Getter
 @AllArgsConstructor

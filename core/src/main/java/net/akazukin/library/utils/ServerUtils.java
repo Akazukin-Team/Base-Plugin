@@ -4,10 +4,6 @@ import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.exception.UnsupportedVersionException;
 
 public class ServerUtils {
-    public static int getProtocolVersion() {
-        return LibraryPlugin.COMPAT.getProtocolVersion();
-    }
-
     public static String getVersion() {
         switch (getProtocolVersion()) {
             case 765:
@@ -107,5 +103,9 @@ public class ServerUtils {
                 return "1.7.1/1.7";
         }
         throw new UnsupportedVersionException();
+    }
+
+    public static int getProtocolVersion() {
+        return LibraryPlugin.COMPAT.getProtocolVersion();
     }
 }

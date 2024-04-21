@@ -2,13 +2,12 @@ package net.akazukin.library.packetlistener;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
-import net.akazukin.library.LibraryPlugin;
-import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
+import net.akazukin.library.LibraryPlugin;
+import org.bukkit.entity.Player;
 
 /**
  * Utility used to perform custom channel handler injection.

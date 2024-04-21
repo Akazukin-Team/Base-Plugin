@@ -1,6 +1,18 @@
 package net.akazukin.library;
 
 import io.netty.channel.Channel;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import net.akazukin.library.command.Command;
 import net.akazukin.library.command.LibraryCommandManager;
 import net.akazukin.library.compat.minecraft.Compat;
@@ -23,19 +35,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 public final class LibraryPlugin extends JavaPlugin {
 
     public static LibraryCommandManager COMMAND_MANAGER;
@@ -45,14 +44,6 @@ public final class LibraryPlugin extends JavaPlugin {
     public static LibraryEventManager EVENT_MANAGER;
     public static Compat COMPAT;
     public static MessageHelper MESSAGE_HELPER;
-
-    public static LibraryPlugin getPlugin() {
-        return getPlugin(LibraryPlugin.class);
-    }
-
-    public static Logger getLogManager() {
-        return getPlugin().getLogger();
-    }
 
     public static void main(final String[] args) {
     }
@@ -89,6 +80,10 @@ public final class LibraryPlugin extends JavaPlugin {
         });
     }
 
+    public static LibraryPlugin getPlugin() {
+        return getPlugin(LibraryPlugin.class);
+    }
+
     @Override
     public void onDisable() {
         GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
@@ -103,6 +98,10 @@ public final class LibraryPlugin extends JavaPlugin {
                 getLogManager().warning("Couldn't remove packet listener from server's channels !");
             }
         }
+    }
+
+    public static Logger getLogManager() {
+        return getPlugin().getLogger();
     }
 
     @Override

@@ -4,6 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.entity.MUserProfileEntity;
@@ -11,10 +14,6 @@ import net.akazukin.library.doma.repo.MUserProfileRepo;
 import net.akazukin.library.utils.http.HttpUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 public class PlayerUtils {
     public static Player getPlayerFromAddress(final InetSocketAddress addr) {

@@ -1,6 +1,7 @@
 package net.akazukin.library.packetlistener;
 
 import io.netty.channel.Channel;
+import java.util.List;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
@@ -9,8 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
-
-import java.util.List;
 
 public class PacketManager implements Listenable {
     @EventTarget(bktPriority = EventPriority.HIGH)

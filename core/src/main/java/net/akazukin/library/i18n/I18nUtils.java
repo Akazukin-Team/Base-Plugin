@@ -1,10 +1,5 @@
 package net.akazukin.library.i18n;
 
-import lombok.Getter;
-import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.utils.StringUtils;
-import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +12,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Getter;
+import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.utils.StringUtils;
+import org.bukkit.plugin.Plugin;
 
 @Getter
 public class I18nUtils {

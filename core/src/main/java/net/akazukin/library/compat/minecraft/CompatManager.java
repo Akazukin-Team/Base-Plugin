@@ -1,10 +1,9 @@
 package net.akazukin.library.compat.minecraft;
 
-import lombok.Getter;
-import net.akazukin.library.LibraryPlugin;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
+import lombok.Getter;
+import net.akazukin.library.LibraryPlugin;
 
 @Getter
 public class CompatManager {

@@ -1,10 +1,6 @@
 package net.akazukin.library.utils.http;
 
 import com.google.gson.JsonObject;
-import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.utils.IOUtils;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,8 +10,15 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
+import javax.net.ssl.HttpsURLConnection;
+import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.utils.IOUtils;
 
 public class HttpUtils {
+    public static byte[] requestPost(final String url, final JsonObject query, final HttpContentType contentType) {
+        return request(url, query, HttpMethod.POST, contentType);
+    }
+
     public static byte[] request(final String url, final Object query, final HttpMethod method, final HttpContentType contentType) {
         HttpURLConnection con = null;
         try {
@@ -69,14 +72,6 @@ public class HttpUtils {
         return null;
     }
 
-    public static byte[] requestPost(final String url, final JsonObject query, final HttpContentType contentType) {
-        return request(url, query, HttpMethod.POST, contentType);
-    }
-
-    public static byte[] requestGet(final String url, final JsonObject query, final HttpContentType contentType) {
-        return request(url, query, HttpMethod.GET, contentType);
-    }
-
     public static byte[] requestPost(final String url, final JsonObject query) {
         return request(url, query, HttpMethod.POST, HttpContentType.JSON);
     }
@@ -87,5 +82,9 @@ public class HttpUtils {
 
     public static byte[] requestGet(final String url) {
         return requestGet(url, null, null);
+    }
+
+    public static byte[] requestGet(final String url, final JsonObject query, final HttpContentType contentType) {
+        return request(url, query, HttpMethod.GET, contentType);
     }
 }

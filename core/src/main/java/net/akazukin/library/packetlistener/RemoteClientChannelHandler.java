@@ -46,13 +46,6 @@ public class RemoteClientChannelHandler extends ChannelDuplexHandler {
             super.write(ctx, msgPointer.content, promise);
     }
 
-    @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        final Pointer<Object> msgPointer = new Pointer<>(msg);
-        if (this.handle(msgPointer, PacketReceiveEvent.class))
-            super.channelRead(ctx, msgPointer.content);
-    }
-
     /**
      * Custom job to execute before continuing netty's job.
      *
@@ -83,5 +76,12 @@ public class RemoteClientChannelHandler extends ChannelDuplexHandler {
         }
 
         return shouldContinue;
+    }
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+        final Pointer<Object> msgPointer = new Pointer<>(msg);
+        if (this.handle(msgPointer, PacketReceiveEvent.class))
+            super.channelRead(ctx, msgPointer.content);
     }
 }

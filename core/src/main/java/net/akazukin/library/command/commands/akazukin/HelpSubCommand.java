@@ -1,5 +1,6 @@
 package net.akazukin.library.command.commands.akazukin;
 
+import java.util.Arrays;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.command.Command;
 import net.akazukin.library.command.CommandInfo;
@@ -7,8 +8,6 @@ import net.akazukin.library.command.SubCommand;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.utils.StringUtils;
 import org.bukkit.command.CommandSender;
-
-import java.util.Arrays;
 
 @CommandInfo(name = "help", description = "Show list of commands and descriptions")
 public class HelpSubCommand extends SubCommand {

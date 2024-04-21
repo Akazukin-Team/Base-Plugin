@@ -1,5 +1,10 @@
 package net.akazukin.library.gui.screens.chest.paged;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import javax.annotation.Nonnull;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.GuiManager;
@@ -12,12 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGuiSelector {
     @Nonnull
@@ -37,13 +36,6 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
         final ItemStack doneItem_ = new ItemStack(Material.getMaterial("LIME_WOOL"));
         ItemUtils.setDisplayName(doneItem_, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.paged.selector.item.done")));
         doneItem = ItemUtils.setGuiItem(doneItem_);
-    }
-
-    @Override
-    protected Inventory getInventory() {
-        final Inventory inv = super.getInventory();
-        inv.setItem(inv.getSize() - 7, doneItem);
-        return inv;
     }
 
     @Override
@@ -93,6 +85,13 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
             }
         }
         return false;
+    }
+
+    @Override
+    protected Inventory getInventory() {
+        final Inventory inv = super.getInventory();
+        inv.setItem(inv.getSize() - 7, doneItem);
+        return inv;
     }
 
     @Override

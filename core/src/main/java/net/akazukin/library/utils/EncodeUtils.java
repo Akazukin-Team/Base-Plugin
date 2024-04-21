@@ -22,6 +22,17 @@ public class EncodeUtils {
     /**
      * String Base64 判定.
      *
+     * @param str 対象 String
+     * @return true=Base64文字列
+     */
+    public static boolean isBase64(final String str) {
+        if (str == null) return false;
+        return isBase64(str.getBytes()) && base64pattern.matcher(str).matches();
+    }
+
+    /**
+     * String Base64 判定.
+     *
      * @param array 対象 byte[]
      * @return true=Base64文字列
      */
@@ -35,17 +46,6 @@ public class EncodeUtils {
             }
         }
         return true;
-    }
-
-    /**
-     * String Base64 判定.
-     *
-     * @param str 対象 String
-     * @return true=Base64文字列
-     */
-    public static boolean isBase64(final String str) {
-        if (str == null) return false;
-        return isBase64(str.getBytes()) && base64pattern.matcher(str).matches();
     }
 
     public static byte[] decodeBase64(final String str) {

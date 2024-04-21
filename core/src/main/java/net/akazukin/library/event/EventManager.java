@@ -1,10 +1,5 @@
 package net.akazukin.library.event;
 
-import net.akazukin.library.LibraryPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import net.akazukin.library.LibraryPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 
 public abstract class EventManager {
     private final Map<Class<? extends Event>, List<EventHook>> registry = new HashMap<>();
@@ -28,10 +27,6 @@ public abstract class EventManager {
     public abstract void registerListeners();
 
     public void registerListeners(final Class<? extends Listenable>... listeners) {
-        Arrays.stream(listeners).forEach(this::registerListener);
-    }
-
-    public void registerListeners(final Listenable... listeners) {
         Arrays.stream(listeners).forEach(this::registerListener);
     }
 
@@ -61,6 +56,10 @@ public abstract class EventManager {
                 registry.put(eventClass, invokableEventTargets);
             }
         }
+    }
+
+    public void registerListeners(final Listenable... listeners) {
+        Arrays.stream(listeners).forEach(this::registerListener);
     }
 
     /**

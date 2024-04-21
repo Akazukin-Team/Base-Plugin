@@ -1,5 +1,7 @@
 package net.akazukin.library.gui.screens.anvil;
 
+import java.util.UUID;
+import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.gui.GuiManager;
@@ -9,9 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
-import java.util.function.Predicate;
 
 @Deprecated
 public class GuiNameSelector extends AnvilGui {

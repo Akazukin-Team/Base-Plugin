@@ -1,11 +1,10 @@
 package net.akazukin.library.compat.minecraft.data.world;
 
+import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
-
-import javax.annotation.Nonnull;
 
 @Getter
 @Setter

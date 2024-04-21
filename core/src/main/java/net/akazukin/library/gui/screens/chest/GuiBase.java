@@ -1,10 +1,9 @@
 package net.akazukin.library.gui.screens.chest;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.akazukin.library.event.Listenable;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @Getter

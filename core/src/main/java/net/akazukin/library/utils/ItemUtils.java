@@ -1,6 +1,11 @@
 package net.akazukin.library.utils;
 
 import com.mojang.authlib.GameProfile;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.bukkit.Material;
@@ -9,12 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import javax.annotation.Nonnull;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemUtils {
     public static ItemStack setGuiItemType(@Nonnull final ItemStack itemStack, @Nonnull final String type) {

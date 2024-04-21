@@ -15,6 +15,14 @@ import org.bukkit.entity.Player;
 public final class AkazukinCommand extends Command {
 
     @Override
+    public SubCommand[] getSubCommands() {
+        return new SubCommand[]{
+                new HelpSubCommand(),
+                new LanguageSubCommand()
+        };
+    }
+
+    @Override
     public void run(final CommandSender sender, final String... args) {
         final SubCommand subCmd = getSubCommand(StringUtils.getIndex(args, 0));
         if (subCmd == null) {
@@ -26,13 +34,5 @@ public final class AkazukinCommand extends Command {
         } else {
             subCmd.run(sender, args);
         }
-    }
-
-    @Override
-    public SubCommand[] getSubCommands() {
-        return new SubCommand[]{
-                new HelpSubCommand(),
-                new LanguageSubCommand()
-        };
     }
 }

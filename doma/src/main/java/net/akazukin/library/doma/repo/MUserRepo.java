@@ -1,12 +1,11 @@
 package net.akazukin.library.doma.repo;
 
+import java.util.List;
+import java.util.UUID;
 import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.dao.MUserDao;
 import net.akazukin.library.doma.dao.MUserDaoImpl;
 import net.akazukin.library.doma.entity.MUserEntity;
-
-import java.util.List;
-import java.util.UUID;
 
 public class MUserRepo {
     private static final MUserDao M_USER_DAO = new MUserDaoImpl(LibrarySQLConfig.singleton());

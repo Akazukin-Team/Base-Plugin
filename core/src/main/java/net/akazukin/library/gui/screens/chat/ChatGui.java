@@ -1,12 +1,11 @@
 package net.akazukin.library.gui.screens.chat;
 
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.gui.screens.chest.GuiBase;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import java.util.UUID;
 
 @Getter
 @Deprecated

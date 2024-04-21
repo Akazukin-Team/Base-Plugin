@@ -1,6 +1,7 @@
 package net.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
+import java.util.List;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -27,8 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.profile.PlayerProfile;
-
-import java.util.List;
 
 public class Compat_v1_18_R2 implements Compat {
     private final PacketProcessor_v1_18_R2 pktProcessor;

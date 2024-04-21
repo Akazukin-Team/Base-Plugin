@@ -1,5 +1,6 @@
 package net.akazukin.library.gui.screens.anvil;
 
+import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
@@ -11,8 +12,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-
-import java.util.UUID;
 
 public class AnvilGui extends ContainerGuiBase {
     private final Integer cost;

@@ -13,12 +13,12 @@ public class TimerUtils {
         }
     }
 
-    public boolean hasTimePassed(final long MS) {
-        return System.currentTimeMillis() >= start + MS;
-    }
-
     public boolean isPaused() {
         return pauseTime != 0;
+    }
+
+    public boolean hasTimePassed(final long MS) {
+        return System.currentTimeMillis() >= start + MS;
     }
 
     public void pause() {
