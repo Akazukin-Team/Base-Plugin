@@ -21,7 +21,6 @@ import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.dao.MUserDaoImpl;
 import net.akazukin.library.doma.dao.MUserProfileDaoImpl;
 import net.akazukin.library.event.Events;
-import net.akazukin.library.event.GrimACEvents;
 import net.akazukin.library.event.LibraryEventManager;
 import net.akazukin.library.event.events.ServerTickEvent;
 import net.akazukin.library.gui.GuiManager;
@@ -173,9 +172,6 @@ public final class LibraryPlugin extends JavaPlugin {
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
-        final GrimACEvents grimACEvents = new GrimACEvents();
-        if (grimACEvents.isHandleEvents())
-            Bukkit.getPluginManager().registerEvents(grimACEvents, this);
         getLogManager().info("Successfully initialized event listeners");
 
 
