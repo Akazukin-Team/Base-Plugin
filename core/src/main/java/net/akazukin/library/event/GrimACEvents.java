@@ -1,4 +1,4 @@
-package net.akazukin.library.compat.grimac;
+package net.akazukin.library.event;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
