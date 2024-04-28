@@ -173,9 +173,9 @@ public final class LibraryPlugin extends JavaPlugin {
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
-        final GrimACEvents grim = new GrimACEvents();
-        if (grim.isHandleEvents())
-            Bukkit.getPluginManager().registerEvents(grim, this);
+        final GrimACEvents grimACEvents = new GrimACEvents();
+        if (grimACEvents.isHandleEvents())
+            Bukkit.getPluginManager().registerEvents(grimACEvents, this);
         getLogManager().info("Successfully initialized event listeners");
 
 
