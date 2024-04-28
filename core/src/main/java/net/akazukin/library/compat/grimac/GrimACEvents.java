@@ -1,24 +1,14 @@
 package net.akazukin.library.compat.grimac;
 
-import ac.grim.grimac.api.events.FlagEvent;
-import net.akazukin.library.event.EventTarget;
-import net.akazukin.library.event.Listenable;
+import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
-public class GrimACEvents implements Listenable {
+@Getter
+public class GrimACEvents implements Listener {
     private final boolean handleEvents;
 
     public GrimACEvents() {
-        handleEvents = Bukkit.getPluginManager().isPluginEnabled("GrimAC");
-    }
-
-    @EventTarget(bktPriority = EventPriority.HIGH)
-    public void onACDetect(final FlagEvent event) {
-    }
-
-    @Override
-    public boolean handleEvents() {
-        return handleEvents;
+        this.handleEvents = Bukkit.getPluginManager().isPluginEnabled("GrimAC");
     }
 }

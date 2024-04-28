@@ -1,6 +1,5 @@
 package net.akazukin.library.event;
 
-import ac.grim.grimac.api.events.FlagEvent;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.event.events.PacketReceiveEvent;
@@ -24,7 +23,7 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
-        callEvent(event, EventPriority.HIGHEST);
+        this.callEvent(event, EventPriority.HIGHEST);
     }
 
     private void callEvent(final Event event, final EventPriority priority) {
@@ -33,42 +32,42 @@ public class Events implements Listener {
 
     @EventHandler
     public void onEntityDamage(final EntityDamageEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        callEvent(event, EventPriority.HIGH);
+        this.callEvent(event, EventPriority.HIGH);
     }
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        callEvent(event, EventPriority.HIGH);
+        this.callEvent(event, EventPriority.HIGH);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onServerListPing(final ServerListPingEvent event) {
-        callEvent(event, EventPriority.HIGH);
+        this.callEvent(event, EventPriority.HIGH);
     }
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     /*@EventHandler
@@ -78,27 +77,22 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onSignChange(final SignChangeEvent event) {
-        callEvent(event, EventPriority.HIGH);
+        this.callEvent(event, EventPriority.HIGH);
     }
 
     @EventHandler
     public void onPacketReceive(final PacketReceiveEvent event) {
-        callEvent(event, EventPriority.NORMAL);
+        this.callEvent(event, EventPriority.NORMAL);
         final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onGrimACDetect(final FlagEvent event) {
-        callEvent(event, EventPriority.HIGH);
     }
 }

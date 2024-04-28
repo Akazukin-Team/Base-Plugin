@@ -15,6 +15,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import net.akazukin.library.command.Command;
 import net.akazukin.library.command.LibraryCommandManager;
+import net.akazukin.library.compat.grimac.GrimACEvents;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.CompatManager;
 import net.akazukin.library.doma.LibrarySQLConfig;
@@ -106,7 +107,7 @@ public final class LibraryPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        LibraryPlugin.PLUGIN_NAME = getName();
+        LibraryPlugin.PLUGIN_NAME = this.getName();
 
 
         getLogManager().info("Initializing version manager...");
@@ -121,7 +122,7 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         getLogManager().info("Initializing database...");
-        LibrarySQLConfig.setFile(new File(getDataFolder(), "library.db"));
+        LibrarySQLConfig.setFile(new File(this.getDataFolder(), "library.db"));
         final LibrarySQLConfig sqlCfg = LibrarySQLConfig.singleton();
         sqlCfg.getTransactionManager().required(() -> {
             new MUserDaoImpl(sqlCfg).create();
@@ -158,9 +159,9 @@ public final class LibraryPlugin extends JavaPlugin {
         COMMAND_MANAGER = new LibraryCommandManager();
         COMMAND_MANAGER.registerCommands();
         for (final Command cmd : COMMAND_MANAGER.getCommands()) {
-            final PluginCommand command = getCommand(cmd.getName());
+            final PluginCommand command = this.getCommand(cmd.getName());
             if (command != null) command.setExecutor(COMMAND_MANAGER);
-            final PluginCommand command2 = getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
+            final PluginCommand command2 = this.getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
             if (command2 != null) command2.setExecutor(COMMAND_MANAGER);
         }
         getLogManager().info("Successfully Initialized command manager");
@@ -172,6 +173,9 @@ public final class LibraryPlugin extends JavaPlugin {
         EVENT_MANAGER = new LibraryEventManager();
         EVENT_MANAGER.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
+        final GrimACEvents grim = new GrimACEvents();
+        if (grim.isHandleEvents())
+            Bukkit.getPluginManager().registerEvents(grim, this);
         getLogManager().info("Successfully initialized event listeners");
 
 
