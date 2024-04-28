@@ -48,6 +48,11 @@ dependencies {
     //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(properties.getOrDefault("java_version", 8) as int)
 compileJava.sourceCompatibility = compileJava.targetCompatibility = properties.getOrDefault("java_version", 8)
