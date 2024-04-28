@@ -12,6 +12,7 @@ publish/build
 compat/*/build
 module/*/build
 build
+**/src/main/generated
 
 # Ignore Gradle build output directory
 core/.settings

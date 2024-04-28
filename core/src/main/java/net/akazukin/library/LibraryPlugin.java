@@ -106,7 +106,7 @@ public final class LibraryPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        LibraryPlugin.PLUGIN_NAME = getName();
+        LibraryPlugin.PLUGIN_NAME = this.getName();
 
 
         getLogManager().info("Initializing version manager...");
@@ -121,7 +121,7 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         getLogManager().info("Initializing database...");
-        LibrarySQLConfig.setFile(new File(getDataFolder(), "library.db"));
+        LibrarySQLConfig.setFile(new File(this.getDataFolder(), "library.db"));
         final LibrarySQLConfig sqlCfg = LibrarySQLConfig.singleton();
         sqlCfg.getTransactionManager().required(() -> {
             new MUserDaoImpl(sqlCfg).create();
@@ -158,9 +158,9 @@ public final class LibraryPlugin extends JavaPlugin {
         COMMAND_MANAGER = new LibraryCommandManager();
         COMMAND_MANAGER.registerCommands();
         for (final Command cmd : COMMAND_MANAGER.getCommands()) {
-            final PluginCommand command = getCommand(cmd.getName());
+            final PluginCommand command = this.getCommand(cmd.getName());
             if (command != null) command.setExecutor(COMMAND_MANAGER);
-            final PluginCommand command2 = getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
+            final PluginCommand command2 = this.getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
             if (command2 != null) command2.setExecutor(COMMAND_MANAGER);
         }
         getLogManager().info("Successfully Initialized command manager");
