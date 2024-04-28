@@ -3,12 +3,12 @@ package net.akazukin.library.event;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.event.events.PacketReceiveEvent;
+import net.akazukin.library.event.events.PacketSendEvent;
 import net.akazukin.library.event.events.ServerTickEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -70,11 +70,6 @@ public class Events implements Listener {
         this.callEvent(event, EventPriority.NORMAL);
     }
 
-    /*@EventHandler
-    public void onPlayerRotation(final PlayerRotationEvent event) {
-        callEvent(event, EventPriority.NORMAL);
-    }*/
-
     @EventHandler
     public void onPlayerInteract(final PlayerInteractEvent event) {
         this.callEvent(event, EventPriority.NORMAL);
@@ -85,13 +80,14 @@ public class Events implements Listener {
         this.callEvent(event, EventPriority.NORMAL);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onSignChange(final SignChangeEvent event) {
-        this.callEvent(event, EventPriority.HIGH);
+    @EventHandler
+    public void onPacketReceive(final PacketReceiveEvent event) {
+        this.callEvent(event, EventPriority.NORMAL);
+        final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
     }
 
     @EventHandler
-    public void onPacketReceive(final PacketReceiveEvent event) {
+    public void onPackeSend(final PacketSendEvent event) {
         this.callEvent(event, EventPriority.NORMAL);
         final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
     }
