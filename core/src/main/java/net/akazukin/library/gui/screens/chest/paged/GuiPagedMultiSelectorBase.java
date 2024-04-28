@@ -34,8 +34,8 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
                 Arrays.stream(itemStacks).map(ItemUtils::setGuiItem).toArray(ItemStack[]::new), prevGui);
 
         final ItemStack doneItem_ = new ItemStack(Material.getMaterial("LIME_WOOL"));
-        ItemUtils.setDisplayName(doneItem_, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.paged.selector.item.done")));
-        doneItem = ItemUtils.setGuiItem(doneItem_);
+        ItemUtils.setDisplayName(doneItem_, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.item.done")));
+        this.doneItem = ItemUtils.setGuiItem(doneItem_);
     }
 
     @Override
@@ -44,35 +44,35 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
         if (event.getCurrentItem() == null) return false;
 
-        if (doneItem.equals(event.getCurrentItem())) {
-            done = true;
-            GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), prevGui);
+        if (this.doneItem.equals(event.getCurrentItem())) {
+            this.done = true;
+            GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), this.prevGui);
             return true;
         } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
-            if (!selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
+            if (!this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
 
-                selected = Arrays.stream(itemStacks.clone())
-                        .filter(item -> selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
+                this.selected = Arrays.stream(this.itemStacks.clone())
+                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
                         .map(item -> LibraryPlugin.COMPAT.removeNBT(item, "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
                 if (lore == null) lore = new ArrayList<>();
-                lore.add(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.paged.selector.selected")));
+                lore.add(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player), I18n.of("library.gui.paged.selector.selected")));
                 ItemUtils.setLore(event.getCurrentItem(), lore);
 
                 return true;
             } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
-                    selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
+                    this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
 
-                selected = Arrays.stream(itemStacks)
-                        .filter(item -> selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
+                this.selected = Arrays.stream(this.itemStacks)
+                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
                         .map(item -> LibraryPlugin.COMPAT.removeNBT(item, "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
-                Arrays.stream(itemStacks)
+                Arrays.stream(this.itemStacks)
                         .filter(itemStack -> LibraryPlugin.COMPAT.containsNBT(itemStack, "AKZ_GUI_ITEM_UUID"))
                         .filter(itemStack ->
                                 LibraryPlugin.COMPAT.getNBTString(itemStack, "AKZ_GUI_ITEM_UUID").equals(
@@ -90,16 +90,16 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
     @Override
     protected Inventory getInventory() {
         final Inventory inv = super.getInventory();
-        inv.setItem(inv.getSize() - 7, doneItem);
+        inv.setItem(inv.getSize() - 7, this.doneItem);
         return inv;
     }
 
     @Override
     public boolean reset() {
-        final boolean result = selected.length != 0 || !selectedUuid.isEmpty();
-        selected = new ItemStack[0];
-        selectedUuid.clear();
-        done = false;
+        final boolean result = this.selected.length != 0 || !this.selectedUuid.isEmpty();
+        this.selected = new ItemStack[0];
+        this.selectedUuid.clear();
+        this.done = false;
         return result;
     }
 }
