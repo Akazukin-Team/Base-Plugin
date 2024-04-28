@@ -34,11 +34,11 @@ public class I18nUtils {
     }
 
     public String get(final I18n i18n, final Object... args) {
-        return get(defaultLocale, i18n.getKey(), args);
+        return this.get(this.defaultLocale, i18n.getKey(), args);
     }
 
     public String get(final String locale, final I18n i18n, final Object... args) {
-        return get(language.get(locale), i18n.getKey(), args);
+        return this.get(this.language.get(locale), i18n.getKey(), args);
     }
 
     public String get(final Properties locale, final String id, final Object... args) {
@@ -59,7 +59,7 @@ public class I18nUtils {
             final Pattern pattern = Pattern.compile(Pattern.quote("<args[" + i + "]>"));
             final Matcher m2 = pattern.matcher(i18n);
             if (m2.find()) {
-                if (args[i] instanceof I18n) args[i] = get(locale, ((I18n) args[i]).getKey());
+                if (args[i] instanceof I18n) args[i] = this.get(locale, ((I18n) args[i]).getKey());
                 i18n = m2.replaceAll(String.valueOf(args[i]));
             }
 
@@ -68,14 +68,16 @@ public class I18nUtils {
 
 
         final Matcher m2 = otherI18.matcher(i18n);
-        if (m2.find()) i18n = m2.replaceAll(get(locale, m2.group().substring(2, m2.group().length() - 1)));
+        if (m2.find()) i18n = m2.replaceAll(this.get(locale, m2.group().substring(2, m2.group().length() - 1)));
         return (StringUtils.getLength(i18n) > 0) ? i18n : null;
     }
 
     public void build(final String... locales) {
-        try (final InputStream is = plugin.getResource("assets/net/akazukin/" + pluginId + "/langs/en_us.lang")) {
-            try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                defaultLocale.load(isr);
+        try (final InputStream is = this.plugin.getResource("assets/net/akazukin/" + this.pluginId + "/langs/en_us.lang")) {
+            if (is != null && is.available() > 0) {
+                try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                    this.defaultLocale.load(isr);
+                }
             }
         } catch (final Exception e) {
             LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load default localization file", e);
@@ -86,7 +88,7 @@ public class I18nUtils {
             final String langsFile = "langs/" + locale + ".lang";
             final Properties props = new Properties();
 
-            try (final InputStream is = plugin.getResource("assets/net/akazukin/" + pluginId + "/" + langsFile)) {
+            try (final InputStream is = this.plugin.getResource("assets/net/akazukin/" + this.pluginId + "/" + langsFile)) {
                 if (is != null && is.available() > 0) {
                     try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                         props.load(isr);
@@ -106,9 +108,9 @@ public class I18nUtils {
                     LibraryPlugin.getLogManager().log(Level.SEVERE, "Failed to load custom localization file | " + langsFile, e);
                 }
             }
-            language.put(locale, props);
+            this.language.put(locale, props);
         }
 
-        LibraryPlugin.getLogManager().info("Loaded " + language.size() + " languages");
+        LibraryPlugin.getLogManager().info("Loaded " + this.language.size() + " languages");
     }
 }
