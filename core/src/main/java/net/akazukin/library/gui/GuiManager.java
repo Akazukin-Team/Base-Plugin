@@ -10,6 +10,7 @@ import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
 import net.akazukin.library.event.events.PacketReceiveEvent;
+import net.akazukin.library.event.events.PacketSendEvent;
 import net.akazukin.library.gui.screens.chat.ChatGui;
 import net.akazukin.library.gui.screens.chest.ContainerGuiBase;
 import net.akazukin.library.gui.screens.chest.GuiBase;
@@ -37,7 +38,7 @@ public class GuiManager implements Listenable {
     }
 
     public GuiBase getScreen(final UUID player) {
-        return screens.get(player);
+        return this.screens.get(player);
     }
 
     @EventTarget(bktPriority = EventPriority.HIGH)
@@ -48,41 +49,39 @@ public class GuiManager implements Listenable {
 
         if (event.getCurrentItem() == null) return;
 
-        final GuiBase gui = screens.get(event.getWhoClicked().getUniqueId());
+        final GuiBase gui = this.screens.get(event.getWhoClicked().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
             return;
 
         if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null && !ItemUtils.isGuiItem(event.getCurrentItem())) {
-            System.out.println("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
+            LibraryPlugin.getLogManager().warning("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
         }
 
         if (InventoryUtils.isCloseItem(event.getCurrentItem())) {
             event.getWhoClicked().closeInventory();
         } else if (InventoryUtils.isBackItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
             event.getWhoClicked().closeInventory();
-            setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
+            this.setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
         } else {
             ((ContainerGuiBase) gui).onInventoryClick(event);
         }
     }
 
     public void setScreen(final UUID player, final GuiBase gui) {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return;
-        Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), player_::closeInventory);
+        Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () -> {
+            final Player player_ = Bukkit.getPlayer(player);
+            if (player_ == null) return;
+            player_.closeInventory();
 
-        screens.remove(player);
-        screens.put(player, gui);
-        if (gui instanceof ContainerGuiBase) {
-            Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), gui::forceOpen);
-        } else {
+            this.screens.remove(player);
+            this.screens.put(player, gui);
             gui.forceOpen();
-        }
+        });
     }
 
     @EventTarget
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        final GuiBase gui = screens.get(event.getPlayer().getUniqueId());
+        final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
             return;
 
@@ -91,47 +90,56 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onInventoryClose(final InventoryCloseEvent event) {
-        final GuiBase gui = screens.get(event.getPlayer().getUniqueId());
+        final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
             return;
 
-        screens.remove(event.getPlayer().getUniqueId());
+        this.screens.remove(event.getPlayer().getUniqueId());
         ((ContainerGuiBase) gui).onInventoryClose(event);
     }
 
     @EventTarget
     public void onPlayerMove(final PlayerMoveEvent event) {
-        final GuiBase prevGui = screens.get(event.getPlayer().getUniqueId());
+        final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
         if (prevGui instanceof ChatGui) ((ChatGui) prevGui).onPlayerMove(event);
     }
 
     @EventTarget
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-        final GuiBase prevGui = screens.get(event.getPlayer().getUniqueId());
+        final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
         if (prevGui instanceof ChatGui) ((ChatGui) prevGui).onChat(event);
     }
 
     @EventTarget
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        screens.remove(event.getPlayer().getUniqueId());
+        this.screens.remove(event.getPlayer().getUniqueId());
     }
 
     @EventTarget
     public void onPacketReceive(final PacketReceiveEvent event) {
-        final GuiBase gui = screens.get(event.getClient().getPlayer().getUniqueId());
+        final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
+        if (gui instanceof SignStringSelectorGui) {
+            final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+            if (pkt instanceof CUpdateSignPacket) {
+                ((SignStringSelectorGui) gui).onGuiClose(event);
+                if (gui.getPrevGui() == null) {
+                    this.screens.remove(event.getClient().getPlayer().getUniqueId());
+                } else {
+                    this.screens.put(event.getClient().getPlayer().getUniqueId(), gui.getPrevGui());
+                    Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () ->
+                            this.screens.get(event.getClient().getPlayer().getUniqueId()).forceOpen());
+                }
+            }
+        }
+    }
+
+    @EventTarget
+    public void onPacketSend(final PacketSendEvent event) {
+        final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
             if (pkt instanceof SOpenSignEditorPacket) {
                 ((SignStringSelectorGui) gui).onGuiOpen();
-            } else if (pkt instanceof CUpdateSignPacket) {
-                ((SignStringSelectorGui) gui).onGuiClose(event);
-                if (gui.getPrevGui() == null) {
-                    screens.remove(event.getClient().getPlayer().getUniqueId());
-                } else {
-                    screens.put(event.getClient().getPlayer().getUniqueId(), gui.getPrevGui());
-                    Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () ->
-                            screens.get(event.getClient().getPlayer().getUniqueId()).forceOpen());
-                }
             }
         }
     }
