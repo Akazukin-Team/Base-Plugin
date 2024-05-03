@@ -84,6 +84,22 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Initializing event handler...");
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
         getLogManager().info("Successfully initialized event handler");
+
+
+        getLogManager().info("Initializing packet handler...");
+        final List<Channel> channels = COMPAT.getServerChannels();
+        if (channels == null) {
+            getLogManager().warning("Couldn't get active server's channels !");
+            getLogManager().info("Failed to initialize packet listener");
+            return;
+        } else {
+            channels.forEach((ch) -> {
+                final Player player = PlayerUtils.getPlayerFromAddress((InetSocketAddress) ch.remoteAddress());
+                if (player != null)
+                    InjectionUtils.injectCustomHandler(player, ch);
+            });
+        }
+        getLogManager().info("Successfully initialized packet handler");
     }
 
     public static LibraryPlugin getPlugin() {
@@ -134,22 +150,6 @@ public final class LibraryPlugin extends JavaPlugin {
         I18N_UTILS.build(config.getList("locales").toArray(new String[0]));
         MESSAGE_HELPER = new MessageHelper(I18N_UTILS);
         getLogManager().info("Successfully initialized I18n manager");
-
-
-        getLogManager().info("Initializing packet listener...");
-        final List<Channel> channels = COMPAT.getServerChannels();
-        if (channels == null) {
-            getLogManager().warning("Couldn't get active server's channels !");
-            getLogManager().info("Failed to initialize packet listener");
-            return;
-        } else {
-            channels.forEach((ch) -> {
-                final Player player = PlayerUtils.getPlayerFromAddress((InetSocketAddress) ch.remoteAddress());
-                if (player != null)
-                    InjectionUtils.injectCustomHandler(player, ch);
-            });
-        }
-        getLogManager().info("Successfully initialized packet listener");
 
 
         getLogManager().info("Initializing event listeners...");
