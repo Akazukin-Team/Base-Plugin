@@ -77,9 +77,11 @@ public final class LibraryPlugin extends JavaPlugin {
             }
         });
 
+
         getLogManager().info("Initializing version manager...");
         COMPAT = CompatManager.initCompat();
         getLogManager().info("Successfully Initialized version manager");
+
 
         getLogManager().info("Initializing event handler...");
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
