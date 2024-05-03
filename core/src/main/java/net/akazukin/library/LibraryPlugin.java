@@ -77,19 +77,13 @@ public final class LibraryPlugin extends JavaPlugin {
             }
         });
 
-
-        getLogManager().info("Initializing event listeners...");
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
-
-        EVENT_MANAGER = new LibraryEventManager();
-        EVENT_MANAGER.registerListeners();
-        Bukkit.getPluginManager().registerEvents(new Events(), this);
-        getLogManager().info("Successfully initialized event listeners");
-
-
         getLogManager().info("Initializing version manager...");
         COMPAT = CompatManager.initCompat();
         getLogManager().info("Successfully Initialized version manager");
+
+        getLogManager().info("Initializing event handler...");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+        getLogManager().info("Successfully initialized event handler");
     }
 
     public static LibraryPlugin getPlugin() {
@@ -156,6 +150,13 @@ public final class LibraryPlugin extends JavaPlugin {
             });
         }
         getLogManager().info("Successfully initialized packet listener");
+
+
+        getLogManager().info("Initializing event listeners...");
+        EVENT_MANAGER = new LibraryEventManager();
+        EVENT_MANAGER.registerListeners();
+        Bukkit.getPluginManager().registerEvents(new Events(), this);
+        getLogManager().info("Successfully initialized event listeners");
 
 
         getLogManager().info("Initializing command manager...");
