@@ -91,7 +91,6 @@ public final class LibraryPlugin extends JavaPlugin {
         if (channels == null) {
             getLogManager().warning("Couldn't get active server's channels !");
             getLogManager().info("Failed to initialize packet listener");
-            return;
         } else {
             channels.forEach((ch) -> {
                 final Player player = PlayerUtils.getPlayerFromAddress((InetSocketAddress) ch.remoteAddress());
