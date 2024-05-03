@@ -25,6 +25,10 @@ import net.minecraft.server.v1_16_R3.SharedConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventory;
@@ -37,7 +41,7 @@ public class Compat_v1_16_R3 implements Compat {
     private final PacketProcessor_v1_16_R3 pktProcessor;
 
     public Compat_v1_16_R3() {
-        pktProcessor = new PacketProcessor_v1_16_R3(this);
+        this.pktProcessor = new PacketProcessor_v1_16_R3(this);
     }
 
     @Override
@@ -73,17 +77,17 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     public net.minecraft.server.v1_16_R3.Packet<?> getNMSPacket(final Packet packet) {
-        return pktProcessor.processWrapper(packet);
+        return this.pktProcessor.processWrapper(packet);
     }
 
     @Override
     public Packet getWrappedPacket(final Object packet) {
-        return pktProcessor.processPacket((net.minecraft.server.v1_16_R3.Packet<?>) packet);
+        return this.pktProcessor.processPacket((net.minecraft.server.v1_16_R3.Packet<?>) packet);
     }
 
     @Override
     public void sendPacket(final Player player, final Packet packet) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(getNMSPacket(packet));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(this.getNMSPacket(packet));
     }
 
     @Override
@@ -146,26 +150,26 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     public ItemStack setNBT(final ItemStack itemStack, final String id, final boolean value) {
-        return setNBT(itemStack, id, String.valueOf(value));
+        return this.setNBT(itemStack, id, String.valueOf(value));
     }
 
     @Override
     @SuppressWarnings("null")
     public String getNBTString(final ItemStack itemStack, final String id) {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return containsNBT(itemStack, id) ? nmsItemStack.getTag().getString(id) : null;
+        return this.containsNBT(itemStack, id) ? nmsItemStack.getTag().getString(id) : null;
     }
 
     @Override
     @SuppressWarnings("null")
     public Long getNBTLong(final ItemStack itemStack, final String id) {
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return containsNBT(itemStack, id) ? nmsItemStack.getTag().getLong(id) : null;
+        return this.containsNBT(itemStack, id) ? nmsItemStack.getTag().getLong(id) : null;
     }
 
     @Override
     public Boolean getNBTBoolean(final ItemStack itemStack, final String id) {
-        return StringUtils.getBoolean(getNBTString(itemStack, id));
+        return StringUtils.getBoolean(this.getNBTString(itemStack, id));
     }
 
     @Override
@@ -177,7 +181,7 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     public ItemStack removeNBT(final ItemStack itemStack, final String key) {
-        if (!containsNBT(itemStack, key)) return itemStack;
+        if (!this.containsNBT(itemStack, key)) return itemStack;
         final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.getTag().remove(key);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
@@ -222,5 +226,10 @@ public class Compat_v1_16_R3 implements Compat {
             e.printStackTrace();
         }*/
         return null;
+    }
+
+    @Override
+    public BossBar createBossBar(final String title, final BarColor color, final BarStyle style, final BarFlag... flags) {
+        return Bukkit.createBossBar(title, color, style, flags);
     }
 }
