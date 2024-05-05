@@ -81,26 +81,6 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Initializing version manager...");
         COMPAT = CompatManager.initCompat();
         getLogManager().info("Successfully Initialized version manager");
-
-
-        getLogManager().info("Initializing event handler...");
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
-        getLogManager().info("Successfully initialized event handler");
-
-
-        getLogManager().info("Initializing packet handler...");
-        final List<Channel> channels = COMPAT.getServerChannels();
-        if (channels == null) {
-            getLogManager().warning("Couldn't get active server's channels !");
-            getLogManager().info("Failed to initialize packet listener");
-        } else {
-            channels.forEach((ch) -> {
-                final Player player = PlayerUtils.getPlayerFromAddress((InetSocketAddress) ch.remoteAddress());
-                if (player != null)
-                    InjectionUtils.injectCustomHandler(player, ch);
-            });
-        }
-        getLogManager().info("Successfully initialized packet handler");
     }
 
     public static LibraryPlugin getPlugin() {
@@ -170,6 +150,26 @@ public final class LibraryPlugin extends JavaPlugin {
             if (command2 != null) command2.setExecutor(COMMAND_MANAGER);
         }
         getLogManager().info("Successfully Initialized command manager");
+
+
+        getLogManager().info("Initializing event handler...");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+        getLogManager().info("Successfully initialized event handler");
+
+
+        getLogManager().info("Initializing packet handler...");
+        final List<Channel> channels = COMPAT.getServerChannels();
+        if (channels == null) {
+            getLogManager().warning("Couldn't get active server's channels !");
+            getLogManager().info("Failed to initialize packet listener");
+        } else {
+            channels.forEach((ch) -> {
+                final Player player = PlayerUtils.getPlayerFromAddress((InetSocketAddress) ch.remoteAddress());
+                if (player != null)
+                    InjectionUtils.injectCustomHandler(player, ch);
+            });
+        }
+        getLogManager().info("Successfully initialized packet handler");
 
 
         Bukkit.broadcastMessage("Successfully enabled");

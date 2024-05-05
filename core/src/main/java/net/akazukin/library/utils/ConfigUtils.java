@@ -3,7 +3,9 @@ package net.akazukin.library.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,34 +26,37 @@ public class ConfigUtils {
     public ConfigUtils(final Plugin plugin, final String id) {
         this.plugin = plugin;
         this.id = id;
-        configFolder = plugin.getDataFolder();
-        if (!configFolder.exists()) {
-            configFolder.mkdirs();
+        this.configFolder = plugin.getDataFolder();
+        if (!this.configFolder.exists()) {
+            this.configFolder.mkdirs();
         }
     }
 
     public void loadConfigFiles(final String... filenames) {
         for (final String filename : filenames) {
-            final File configFile = new File(configFolder, filename);
+            final File configFile = new File(this.configFolder, filename);
             try {
                 if (!configFile.exists()) {
                     if (filename.contains("/")) {
-                        Files.createDirectories(configFolder.toPath().resolve(filename.substring(0, filename.lastIndexOf("/"))));
+                        Files.createDirectories(this.configFolder.toPath().resolve(filename.substring(0, filename.lastIndexOf("/"))));
                     }
                     configFile.createNewFile();
-                    try (final InputStream in = plugin.getResource("assets/net/akazukin/" + id + "/configs/" + filename)) {
-                        try (final OutputStream out = Files.newOutputStream(configFile.toPath())) {
-                            final byte[] buf = new byte[1024];
-                            int len;
-                            while ((len = in.read(buf)) > 0) {
-                                out.write(buf, 0, len);
-                            }
+                    try (final InputStream is = this.plugin.getResource("assets/net/akazukin/" + this.id + "/configs/" + filename)) {
+                        try (final OutputStream os = Files.newOutputStream(configFile.toPath())) {
+                            os.write(IOUtils.readAllBytes(is));
                         }
                     }
                 }
                 final Configuration config = new Configuration(configFile);
                 config.load();
-                configs.put(filename, config);
+                try (final InputStream is = this.plugin.getResource("assets/net/akazukin/" + this.id + "/configs/" + filename)) {
+                    try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                        final YamlConfiguration def = new YamlConfiguration();
+                        def.load(isr);
+                        config.getConfig().setDefaults(def);
+                    }
+                }
+                this.configs.put(filename, config);
             } catch (final NullPointerException e) {
                 throw new RuntimeException("Not found default configuration!  " + filename);
             } catch (final IOException | InvalidConfigurationException e) {
@@ -61,44 +66,44 @@ public class ConfigUtils {
     }
 
     public void save(final String filename) {
-        if (configs.containsKey(filename)) {
+        if (this.configs.containsKey(filename)) {
             try {
-                configs.get(filename).save();
+                this.configs.get(filename).save();
             } catch (final Exception e) {
-                printException(e, filename);
+                this.printException(e, filename);
             }
         }
     }
 
     private void printException(final Exception e, final String filename) {
         if (e instanceof IOException) {
-            plugin.getLogger().severe("I/O exception while handling " + filename);
+            this.plugin.getLogger().severe("I/O exception while handling " + filename);
         } else if (e instanceof InvalidConfigurationException) {
-            plugin.getLogger().severe("Invalid configuration in " + filename);
+            this.plugin.getLogger().severe("Invalid configuration in " + filename);
         }
         e.printStackTrace();
     }
 
     public void reload(final String filename) {
-        if (configs.containsKey(filename)) {
+        if (this.configs.containsKey(filename)) {
             try {
-                configs.get(filename).load();
+                this.configs.get(filename).load();
             } catch (final Exception e) {
-                printException(e, filename);
+                this.printException(e, filename);
             }
         }
     }
 
     public YamlConfiguration getConfig(final String filename) {
-        if (configs.containsKey(filename))
-            return configs.get(filename).getConfig();
+        if (this.configs.containsKey(filename))
+            return this.configs.get(filename).getConfig();
         else
             return null;
     }
 
     public List<String> getFiles() {
         final List<String> files = new ArrayList<>();
-        for (final Entry<String, Configuration> config : configs.entrySet()) {
+        for (final Entry<String, Configuration> config : this.configs.entrySet()) {
             files.add(config.getKey());
         }
         return files;
@@ -111,15 +116,16 @@ public class ConfigUtils {
 
         public Configuration(final File configFile) {
             this.configFile = new File(configFile.getPath());
-            config = new YamlConfiguration();
+            this.config = new YamlConfiguration();
         }
 
         public void load() throws IOException, InvalidConfigurationException {
-            config.load(configFile);
+            if (this.configFile == null) return;
+            this.config.load(this.configFile);
         }
 
         public void save() throws IOException {
-            config.save(configFile);
+            this.config.save(this.configFile);
         }
     }
 }
