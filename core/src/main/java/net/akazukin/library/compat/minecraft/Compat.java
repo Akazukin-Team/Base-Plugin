@@ -9,6 +9,10 @@ import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -63,4 +67,6 @@ public interface Compat {
     ItemStack removeNBT(ItemStack itemStack, String key);
 
     WrappedPlayerProfile getGameProfile(Player player);
+
+    BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags);
 }

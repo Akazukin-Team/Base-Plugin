@@ -8,7 +8,7 @@ import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
-import net.akazukin.library.compat.minecraft.v1_20_R1.PacketProcessor_v1_20_R1;
+import net.akazukin.library.compat.minecraft.v1_20_R3.PacketProcessor_v1_20_R3;
 import net.akazukin.library.utils.ReflectionUtils;
 import net.akazukin.library.utils.StringUtils;
 import net.minecraft.SharedConstants;
@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConnection;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
@@ -25,20 +26,20 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.profile.PlayerProfile;
 
-public class Compat_v1_20_R1 implements Compat {
-    public PacketProcessor_v1_20_R1 pktProcessor;
+public class Compat_v1_20_R3 implements Compat {
+    public PacketProcessor_v1_20_R3 pktProcessor;
 
-    public Compat_v1_20_R1() {
-        this.pktProcessor = new PacketProcessor_v1_20_R1(this);
+    public Compat_v1_20_R3() {
+        this.pktProcessor = new PacketProcessor_v1_20_R3(this);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class Compat_v1_20_R1 implements Compat {
 
     @Override
     public void sendPacket(final Player player, final Packet packet) {
-        ((CraftPlayer) player).getHandle().c.a(this.getNMSPacket(packet));
+        ((CraftPlayer) player).getHandle().c.b(this.getNMSPacket(packet));
     }
 
     @Override
@@ -108,8 +109,8 @@ public class Compat_v1_20_R1 implements Compat {
     public Channel getPlayerChannel(final Player player) {
         final PlayerConnection connection = ((CraftPlayer) player).getHandle().c;
         try {
-            final NetworkManager network = ReflectionUtils.getField(connection, PlayerConnection.class, "h", NetworkManager.class);
-            return network.m;
+            final NetworkManager network = ReflectionUtils.getField(connection, ServerCommonPacketListenerImpl.class, "c", NetworkManager.class);
+            return network.n;
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
@@ -117,13 +118,13 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Channel> getServerChannels() {
-        final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().ad();
+        final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().af();
         try {
             final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g", List.class);
-            return networks.stream().map(network -> network.m).toList();
+            return networks.stream().map(network -> network.n).toList();
         } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -175,7 +176,6 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Boolean getNBTBoolean(final ItemStack itemStack, final String id) {
         return StringUtils.getBoolean(this.getNBTString(itemStack, id));
     }
@@ -211,7 +211,7 @@ public class Compat_v1_20_R1 implements Compat {
         }
         return null;
         /*try {
-            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cp", GameProfile.class);
+            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cr", GameProfile.class);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
