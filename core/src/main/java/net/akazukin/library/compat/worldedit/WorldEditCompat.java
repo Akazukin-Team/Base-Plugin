@@ -46,8 +46,8 @@ public class WorldEditCompat {
         final BlockVector3 vec2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
 
         final CuboidRegion selection = new CuboidRegion(world_, vec, vec2);
-        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_,
-                -1)) {
+        try (final EditSession editSession =
+                     WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {
             final RandomPattern pat = new RandomPattern();
             for (final ChancePattern pattern : chancePattern) {
                 pat.add(BukkitAdapter.adapt(pattern.getBlockData()), pattern.getChance());
@@ -75,8 +75,9 @@ public class WorldEditCompat {
     public static void paste(final Clipboard clipboard, final Location loc) {
         try (final EditSession editSession =
                      WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(loc.getWorld()), -1)) {
-            final Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
-                    .to(BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())).ignoreAirBlocks(true).build();
+            final Operation operation =
+                    new ClipboardHolder(clipboard).createPaste(editSession)
+                            .to(BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())).ignoreAirBlocks(true).build();
             try {
                 Operations.complete(operation);
             } catch (final WorldEditException e) {
@@ -127,8 +128,8 @@ public class WorldEditCompat {
 
     public static boolean regenerateChunk(final Location loc, final Location loc2) {
         final World world_ = BukkitAdapter.adapt(loc.getWorld());
-        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_,
-                -1)) {
+        try (final EditSession editSession =
+                     WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {
             final BlockVector3 vec = BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             final BlockVector3 vec2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
             final CuboidRegion region = new CuboidRegion(vec, vec2);
