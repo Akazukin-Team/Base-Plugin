@@ -46,12 +46,14 @@ public class WorldEditCompat {
         final BlockVector3 vec2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
 
         final CuboidRegion selection = new CuboidRegion(world_, vec, vec2);
-        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {
+        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_,
+                -1)) {
             final RandomPattern pat = new RandomPattern();
             for (final ChancePattern pattern : chancePattern) {
                 pat.add(BukkitAdapter.adapt(pattern.getBlockData()), pattern.getChance());
             }
             editSession.setBlocks(selection, pat);
+            editSession.commit();
         } catch (final MaxChangedBlocksException ex) {
             ex.printStackTrace();
         }
@@ -101,7 +103,8 @@ public class WorldEditCompat {
         final CuboidRegion region = new CuboidRegion(vec, vec2);
         final BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
 
-        final ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(world, region, clipboard, region.getMinimumPoint());
+        final ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(world, region, clipboard,
+                region.getMinimumPoint());
 
         try {
             Operations.complete(forwardExtentCopy);
@@ -124,7 +127,8 @@ public class WorldEditCompat {
 
     public static boolean regenerateChunk(final Location loc, final Location loc2) {
         final World world_ = BukkitAdapter.adapt(loc.getWorld());
-        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {
+        try (final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_,
+                -1)) {
             final BlockVector3 vec = BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             final BlockVector3 vec2 = BlockVector3.at(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
             final CuboidRegion region = new CuboidRegion(vec, vec2);
