@@ -15,7 +15,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public interface Compat {
     int getProtocolVersion();
@@ -45,26 +44,26 @@ public interface Compat {
     void sendSignUpdate(Player player, Location location, String[] result);
 
 
-    boolean hasNBT(ItemStack itemStack);
+    Boolean hasNBT(Object itemStack);
 
-    ItemStack setNBT(ItemStack itemStack, String id, String value);
+    <T> T setNBT(T itemStack, String id, String value);
 
-    ItemStack setNBT(ItemStack itemStack, String id, long value);
+    <T> T setNBT(T itemStack, String id, long value);
 
-    ItemStack setNBT(ItemStack itemStack, String id, boolean value);
-
-    @Nullable
-    String getNBTString(ItemStack itemStack, String id);
+    <T> T setNBT(T itemStack, String id, boolean value);
 
     @Nullable
-    Long getNBTLong(ItemStack itemStack, String id);
+    String getNBTString(Object itemStack, String id);
 
     @Nullable
-    Boolean getNBTBoolean(ItemStack itemStack, String id);
+    Long getNBTLong(Object itemStack, String id);
 
-    boolean containsNBT(ItemStack itemStack, String id);
+    @Nullable
+    Boolean getNBTBoolean(Object itemStack, String id);
 
-    ItemStack removeNBT(ItemStack itemStack, String key);
+    Boolean containsNBT(Object itemStack, String id);
+
+    <T> T removeNBT(T itemStack, String key);
 
     WrappedPlayerProfile getGameProfile(Player player);
 
