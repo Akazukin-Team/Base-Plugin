@@ -67,7 +67,8 @@ public class Compat_v1_18_R2 implements Compat {
     public Inventory getBukkitAnvil(final WrappedAnvilInventory inventory) {
         ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).v = inventory.getRenameText();
         ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).w.a(inventory.getRepairCost());
-        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).maximumRepairCost = inventory.getMaximumRepairCost();
+        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).maximumRepairCost =
+                inventory.getMaximumRepairCost();
         return inventory.getInventory();
     }
 
@@ -115,7 +116,8 @@ public class Compat_v1_18_R2 implements Compat {
     public List<Channel> getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().ad();
         try {
-            final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g", List.class);
+            final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g",
+                    List.class);
             return networks.stream().map(network -> network.m).toList();
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return null;
@@ -128,65 +130,135 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public boolean hasNBT(final ItemStack itemStack) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+    public Boolean hasNBT(final Object itemStack) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
         return nmsItemStack.s();
     }
 
     @Override
-    public ItemStack setNBT(final ItemStack itemStack, final String id, final String value) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+    public <T> T setNBT(final T itemStack, final String id, final String value) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
         final NBTTagCompound nbt = nmsItemStack.u();
         nbt.a(id, value);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (T) nmsItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        else
+            return null;
     }
 
     @Override
-    public ItemStack setNBT(final ItemStack itemStack, final String id, final long value) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+    public <T> T setNBT(final T itemStack, final String id, final long value) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
         final NBTTagCompound nbt = nmsItemStack.u();
         nbt.a(id, value);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (T) nmsItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        else
+            return null;
     }
 
     @Override
-    public ItemStack setNBT(final ItemStack itemStack, final String id, final boolean value) {
+    public <T> T setNBT(final T itemStack, final String id, final boolean value) {
         return this.setNBT(itemStack, id, String.valueOf(value));
     }
 
     @Override
     @SuppressWarnings("null")
-    public String getNBTString(final ItemStack itemStack, final String id) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.containsNBT(itemStack, id) ? nmsItemStack.t().l(id) : null;
+    public String getNBTString(final Object itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
+        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.t().l(id) : null;
     }
 
     @Override
     @SuppressWarnings("null")
-    public Long getNBTLong(final ItemStack itemStack, final String id) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.containsNBT(itemStack, id) ? nmsItemStack.t().i(id) : null;
+    public Long getNBTLong(final Object itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
+        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.t().i(id) : null;
     }
 
     @Override
-    public Boolean getNBTBoolean(final ItemStack itemStack, final String id) {
+    public Boolean getNBTBoolean(final Object itemStack, final String id) {
         return StringUtils.getBoolean(this.getNBTString(itemStack, id));
     }
 
     @Override
     @SuppressWarnings("null")
-    public boolean containsNBT(final ItemStack itemStack, final String id) {
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.hasNBT(itemStack) && nmsItemStack.t().e(id);
+    public Boolean containsNBT(final Object itemStack, final String id) {
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
+        return this.hasNBT(nmsItemStack) && nmsItemStack.t().e(id);
     }
 
     @Override
     @SuppressWarnings("null")
-    public ItemStack removeNBT(final ItemStack itemStack, final String key) {
+    public <T> T removeNBT(final T itemStack, final String key) {
         if (!this.containsNBT(itemStack, key)) return itemStack;
-        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        nmsItemStack.t().r(key);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+
+        final net.minecraft.world.item.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
+        final NBTTagCompound nbt = nmsItemStack.u();
+        nbt.r(key);
+
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (T) nmsItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        else
+            return null;
     }
 
     @Override
@@ -213,7 +285,8 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public BossBar createBossBar(final String title, final BarColor color, final BarStyle style, final BarFlag... flags) {
+    public BossBar createBossBar(final String title, final BarColor color, final BarStyle style,
+                                 final BarFlag... flags) {
         return Bukkit.createBossBar(title, color, style, flags);
     }
 }
