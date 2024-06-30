@@ -27,6 +27,11 @@ public class CompatManager {
     }
 
     public static String getMappingVersion() {
+        final String clazz = LibraryPlugin.getPlugin().getServer().getClass().getName();
+        if (clazz.matches("org\\.bukkit\\.craftbukkit\\.v_1_[0-9]+_R[0-4]\\.CraftServer")) {
+            return clazz.replaceFirst("org\\.bukkit\\.craftbukkit\\.(v_1_[0-9]+_R[0-4])\\.CraftServer", "$1");
+        }
+
         switch (Bukkit.getServer().getBukkitVersion().split("-")[0]) {
             case "1.21": {
                 return "v_1_21_R1";
