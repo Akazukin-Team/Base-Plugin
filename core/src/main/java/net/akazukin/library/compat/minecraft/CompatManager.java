@@ -34,46 +34,46 @@ public class CompatManager {
 
         switch (Bukkit.getServer().getBukkitVersion().split("-")[0]) {
             case "1.21": {
-                return "v_1_21_R1";
+                return "v1_21_R1";
             }
 
             case "1.20.5":
             case "1.20.6": {
-                return "v_1_20_R4";
+                return "v1_20_R4";
             }
 
             case "1.20.3":
             case "1.20.4": {
-                return "v_1_20_R3";
+                return "v1_20_R3";
             }
 
             case "1.20.2": {
-                return "v_1_20_R2";
+                return "v1_20_R2";
             }
 
             case "1.20":
             case "1.20.1": {
-                return "v_1_20_R1";
+                return "v1_20_R1";
             }
 
             case "1.19.4": {
-                return "v_1_19_R3";
+                return "v1_19_R3";
             }
 
             case "1.19.3": {
-                return "v_1_19_R2";
+                return "v1_19_R2";
             }
 
             case "1.19":
             case "1.19.1":
             case "1.19.2": {
-                return "v_1_19_R1";
+                return "v1_19_R1";
             }
 
             case "1.18":
             case "1.18.1":
             case "1.18.2": {
-                return "v_1_18_R1";
+                return "v1_18_R1";
             }
 
 
