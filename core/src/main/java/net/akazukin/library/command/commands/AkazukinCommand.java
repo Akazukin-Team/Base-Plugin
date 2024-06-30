@@ -24,7 +24,7 @@ public final class AkazukinCommand extends Command {
 
     @Override
     public void run(final CommandSender sender, final String... args) {
-        final SubCommand subCmd = getSubCommand(StringUtils.getIndex(args, 0));
+        final SubCommand subCmd = this.getSubCommand(StringUtils.getIndex(args, 0));
         if (subCmd == null) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.notFound"));
         } else if (!subCmd.validExecutor(sender)) {
