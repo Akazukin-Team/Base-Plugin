@@ -2,6 +2,7 @@ package net.akazukin.library.gui;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.Supplier;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
@@ -54,28 +55,30 @@ public class GuiManager implements Listenable {
             return;
 
         if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null && !ItemUtils.isGuiItem(event.getCurrentItem())) {
-            LibraryPlugin.getLogManager().warning("Not cancelled  | Title: " + event.getView().getTitle() + "  | DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
+            LibraryPlugin.getLogManager().warning("Not cancelled  | Title: " + event.getView().getTitle() + "  | " +
+                    "DisplayName: " + event.getCurrentItem().getItemMeta().getDisplayName());
         }
 
         if (InventoryUtils.isCloseItem(event.getCurrentItem())) {
             event.getWhoClicked().closeInventory();
         } else if (InventoryUtils.isBackItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
             event.getWhoClicked().closeInventory();
-            this.setScreen(event.getWhoClicked().getUniqueId(), gui.getPrevGui());
+            this.setScreen(event.getWhoClicked().getUniqueId(), gui::getPrevGui);
         } else {
             ((ContainerGuiBase) gui).onInventoryClick(event);
         }
     }
 
-    public void setScreen(final UUID player, final GuiBase gui) {
+    public void setScreen(final UUID player, final Supplier<GuiBase> gui) {
         Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () -> {
             final Player player_ = Bukkit.getPlayer(player);
             if (player_ == null) return;
             player_.closeInventory();
 
+            final GuiBase guI = gui.get();
             this.screens.remove(player);
-            this.screens.put(player, gui);
-            gui.forceOpen();
+            this.screens.put(player, guI);
+            guI.forceOpen();
         });
     }
 

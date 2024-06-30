@@ -19,16 +19,16 @@ public class ChatGui extends GuiBase {
     }
 
     public void onChat(final AsyncPlayerChatEvent event) {
-        if (cancelChat) event.setCancelled(true);
-        close(event.getMessage());
+        if (this.cancelChat) event.setCancelled(true);
+        this.close(event.getMessage());
     }
 
     private void close(final String msg) {
-        result = msg;
-        GuiManager.singleton().setScreen(player, prevGui);
+        this.result = msg;
+        GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
     }
 
     public void onPlayerMove(final PlayerMoveEvent event) {
-        close(null);
+        this.close(null);
     }
 }

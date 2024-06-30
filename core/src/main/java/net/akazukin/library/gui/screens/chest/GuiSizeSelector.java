@@ -32,53 +32,62 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     @Getter
     private boolean done;
 
-    public GuiSizeSelector(final String title, final UUID player, final int min, final int max, final int defaulT, final GuiBase prevGui) {
+    public GuiSizeSelector(final String title, final UUID player, final int min, final int max, final int defaulT,
+                           final GuiBase prevGui) {
         super(title, 6, player, false, prevGui);
         this.min = Math.min(min, max);
         this.max = Math.max(min, max);
 
-        defaultSize = defaulT;
-        size = defaulT;
-        result = defaulT;
+        this.defaultSize = defaulT;
+        this.size = defaulT;
+        this.result = defaulT;
 
         final ItemStack amountItem = new ItemStack(Material.getMaterial("WHITE_WOOL"));
-        ItemUtils.setDisplayName(amountItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.amount"), size));
+        ItemUtils.setDisplayName(amountItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player),
+                I18n.of("library.gui.selector.amount"), this.size));
         ItemUtils.setLore(amountItem, Arrays.asList(
-                LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.max"), max),
-                LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.min"), min)
+                LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.max")
+                        , max),
+                LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.min")
+                        , min)
         ));
-        amountItem.setAmount(size);
+        amountItem.setAmount(this.size);
         this.amountItem = ItemUtils.setGuiItem(amountItem);
 
         final ItemStack doneItem = new ItemStack(Material.getMaterial("LIME_WOOL"));
-        ItemUtils.setDisplayName(doneItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.item.done")));
+        ItemUtils.setDisplayName(doneItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of(
+                "library.gui.selector.item.done")));
         this.doneItem = ItemUtils.setGuiItem(doneItem);
 
-        done = false;
+        this.done = false;
     }
 
     @Override
     public Inventory getInventory() {
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
-        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
-        if (prevGui != null)
-            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(this.player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(this.player));
+        if (this.prevGui != null)
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(this.player));
 
-        inv.setItem(13, amountItem);
+        inv.setItem(13, this.amountItem);
 
 
         ItemStack increaseItem = new ItemStack(Material.getMaterial("WATER_BUCKET"));
-        ItemUtils.setLore(increaseItem, Collections.singletonList(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.size.max"), max)));
+        ItemUtils.setLore(increaseItem,
+                Collections.singletonList(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player),
+                        I18n.of("library.gui.selector.size.max"), this.max)));
         increaseItem = ItemUtils.setGuiItem(increaseItem);
 
         ItemStack decreaseItem = new ItemStack(Material.getMaterial("LAVA_BUCKET"));
-        ItemUtils.setLore(decreaseItem, Collections.singletonList(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.size.min"), max)));
+        ItemUtils.setLore(decreaseItem,
+                Collections.singletonList(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player),
+                        I18n.of("library.gui.selector.size.min"), this.max)));
         decreaseItem = ItemUtils.setGuiItem(decreaseItem);
 
         int index = 19;
-        for (int i = 1; i <= max; i = i * 4) {
-            if (min > i) continue;
+        for (int i = 1; i <= this.max; i = i * 4) {
+            if (this.min > i) continue;
 
             ItemUtils.setDisplayName(increaseItem, "§a" + i);
             increaseItem.setAmount(i);
@@ -90,7 +99,7 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
 
             index++;
         }
-        inv.setItem(inv.getSize() - 7, doneItem);
+        inv.setItem(inv.getSize() - 7, this.doneItem);
 
         return inv;
     }
@@ -99,39 +108,45 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     protected boolean onGuiClick(final InventoryClickEvent event) {
         if (event.getCurrentItem() == null) return false;
 
-        if (event.getCurrentItem().equals(doneItem)) {
-            result = size;
-            GuiManager.singleton().setScreen(player, prevGui);
+        if (event.getCurrentItem().equals(this.doneItem)) {
+            this.result = this.size;
+            GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
             return true;
         } else if (event.getCurrentItem().getType() == Material.getMaterial("WATER_BUCKET") &&
                 event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§a")) {
             final int amount = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().substring(2));
-            if (size >= max) {
-                LibraryPlugin.MESSAGE_HELPER.sendMessage(event.getWhoClicked(), I18n.of("library.gui.selector.size.cantIncrease"));
+            if (this.size >= this.max) {
+                LibraryPlugin.MESSAGE_HELPER.sendMessage(event.getWhoClicked(), I18n.of("library.gui.selector.size" +
+                        ".cantIncrease"));
             } else {
-                size += amount;
-                if (size > max) size = max;
+                this.size += amount;
+                if (this.size > this.max) this.size = this.max;
 
-                if (amountItem.equals(event.getView().getItem(13))) {
-                    ItemUtils.setDisplayName(amountItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.amount"), size));
-                    amountItem.setAmount(size);
-                    event.getView().setItem(13, amountItem);
+                if (this.amountItem.equals(event.getView().getItem(13))) {
+                    ItemUtils.setDisplayName(this.amountItem,
+                            LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player), I18n.of("library" +
+                                    ".gui.selector.amount"), this.size));
+                    this.amountItem.setAmount(this.size);
+                    event.getView().setItem(13, this.amountItem);
                 }
             }
             return true;
         } else if (event.getCurrentItem().getType() == Material.getMaterial("LAVA_BUCKET") &&
                 event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§c")) {
             final int amount = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().substring(2));
-            if (size <= min) {
-                LibraryPlugin.MESSAGE_HELPER.sendMessage(event.getWhoClicked(), I18n.of("library.gui.selector.size.cantDecrease"));
+            if (this.size <= this.min) {
+                LibraryPlugin.MESSAGE_HELPER.sendMessage(event.getWhoClicked(), I18n.of("library.gui.selector.size" +
+                        ".cantDecrease"));
             } else {
-                size -= amount;
-                if (size < min) size = min;
+                this.size -= amount;
+                if (this.size < this.min) this.size = this.min;
 
-                if (amountItem.equals(event.getView().getItem(13))) {
-                    ItemUtils.setDisplayName(amountItem, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.amount"), size));
-                    amountItem.setAmount(size);
-                    event.getView().setItem(13, amountItem);
+                if (this.amountItem.equals(event.getView().getItem(13))) {
+                    ItemUtils.setDisplayName(this.amountItem,
+                            LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player), I18n.of("library" +
+                                    ".gui.selector.amount"), this.size));
+                    this.amountItem.setAmount(this.size);
+                    event.getView().setItem(13, this.amountItem);
                 }
             }
             return true;
@@ -141,10 +156,10 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
 
     @Override
     public boolean reset() {
-        final boolean result = defaultSize != size;
-        done = false;
-        this.result = defaultSize;
-        size = defaultSize;
+        final boolean result = this.defaultSize != this.size;
+        this.done = false;
+        this.result = this.defaultSize;
+        this.size = this.defaultSize;
         return result;
     }
 }

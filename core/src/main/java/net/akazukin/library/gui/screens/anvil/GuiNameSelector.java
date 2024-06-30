@@ -19,7 +19,8 @@ public class GuiNameSelector extends AnvilGui {
     @Getter
     private String defaultName;
 
-    public GuiNameSelector(final String title, final UUID player, final String defaultName, final GuiBase prevGui, final Predicate<String> isValid) {
+    public GuiNameSelector(final String title, final UUID player, final String defaultName, final GuiBase prevGui,
+                           final Predicate<String> isValid) {
         super(title, player, prevGui, false, 0);
         this.isValid = isValid;
         if (defaultName == null || defaultName.isEmpty()) {
@@ -27,7 +28,7 @@ public class GuiNameSelector extends AnvilGui {
         } else {
             this.defaultName = defaultName;
         }
-        name = defaultName;
+        this.name = defaultName;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class GuiNameSelector extends AnvilGui {
         final Inventory inv = super.getInventory();
 
         final ItemStack item = new ItemStack(Material.PAPER);
-        ItemUtils.setDisplayName(item, defaultName);
+        ItemUtils.setDisplayName(item, this.defaultName);
         inv.setItem(0, item);
 
         return inv;
@@ -43,9 +44,9 @@ public class GuiNameSelector extends AnvilGui {
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (event.getSlot() == 2 && isValid.test(name)) defaultName = name;
+        if (event.getSlot() == 2 && this.isValid.test(this.name)) this.defaultName = this.name;
 
-        GuiManager.singleton().setScreen(player, prevGui);
+        GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
         return true;
     }
 }

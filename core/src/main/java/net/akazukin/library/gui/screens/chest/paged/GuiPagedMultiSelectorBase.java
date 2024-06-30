@@ -29,12 +29,14 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
     @Getter
     private boolean done = false;
 
-    public GuiPagedMultiSelectorBase(final String title, final int maxRows, final int minRows, final UUID player, @Nonnull final ItemStack[] itemStacks, @Nonnull final GuiBase prevGui) {
+    public GuiPagedMultiSelectorBase(final String title, final int maxRows, final int minRows, final UUID player,
+                                     @Nonnull final ItemStack[] itemStacks, @Nonnull final GuiBase prevGui) {
         super(title, maxRows, minRows, player,
                 Arrays.stream(itemStacks).map(ItemUtils::setGuiItem).toArray(ItemStack[]::new), prevGui);
 
         final ItemStack doneItem_ = new ItemStack(Material.getMaterial("LIME_WOOL"));
-        ItemUtils.setDisplayName(doneItem_, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player), I18n.of("library.gui.selector.item.done")));
+        ItemUtils.setDisplayName(doneItem_, LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(player),
+                I18n.of("library.gui.selector.item.done")));
         this.doneItem = ItemUtils.setGuiItem(doneItem_);
     }
 
@@ -46,11 +48,12 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
         if (this.doneItem.equals(event.getCurrentItem())) {
             this.done = true;
-            GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), this.prevGui);
+            GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), () -> this.prevGui);
             return true;
         } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
             if (!this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
+                this.selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(),
+                        "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks.clone())
                         .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
@@ -59,13 +62,15 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
                 if (lore == null) lore = new ArrayList<>();
-                lore.add(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player), I18n.of("library.gui.paged.selector.selected")));
+                lore.add(LibraryPlugin.MESSAGE_HELPER.get(MessageHelper.getLocale(this.player), I18n.of("library.gui" +
+                        ".paged.selector.selected")));
                 ItemUtils.setLore(event.getCurrentItem(), lore);
 
                 return true;
             } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
                     this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")));
+                this.selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(),
+                        "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks)
                         .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
@@ -79,7 +84,8 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
                                         LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")
                                 ))
                         .findFirst()
-                        .ifPresent(itemStack -> ItemUtils.setLore(event.getCurrentItem(), ItemUtils.getLore(itemStack)));
+                        .ifPresent(itemStack -> ItemUtils.setLore(event.getCurrentItem(),
+                                ItemUtils.getLore(itemStack)));
 
                 return true;
             }
