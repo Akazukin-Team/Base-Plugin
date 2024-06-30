@@ -13,7 +13,7 @@ configurations {
 }
 
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 runServer {
     jar {
@@ -32,7 +32,7 @@ runServer {
     runDirectory.set(file(Paths.get(parent.parent.projectDir.path, "run/${project.minecraft_version}")))
     downloadPlugins {
         url("https://github.com/TheBlackEntity/PlugManX/releases/download/2.3.7/PlugManX.jar")
-        url("https://download.luckperms.net/1534/bukkit/loader/LuckPerms-Bukkit-5.4.121.jar")
+        url("https://download.luckperms.net/1549/bukkit/loader/LuckPerms-Bukkit-5.4.134.jar")
         url("https://mediafilez.forgecdn.net/files/4978/992/Dynmap-3.7-beta-4-spigot.jar")
         url("https://mediafilez.forgecdn.net/files/3635/984/Dynmap-WorldGuard-1.4-beta-1.jar")
     }

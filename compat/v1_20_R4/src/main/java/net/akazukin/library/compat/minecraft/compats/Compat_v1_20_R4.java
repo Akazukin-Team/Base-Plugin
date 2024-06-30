@@ -1,26 +1,27 @@
 package net.akazukin.library.compat.minecraft.compats;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.List;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
-import net.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
+import net.akazukin.library.compat.minecraft.v1_20_R4.PacketProcessor_v1_20_R4;
 import net.akazukin.library.utils.ReflectionUtils;
 import net.akazukin.library.utils.StringUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConnection;
 import net.minecraft.world.inventory.ContainerAnvil;
+import net.minecraft.world.item.component.CustomData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -28,19 +29,20 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.profile.PlayerProfile;
 
-public class Compat_v1_17_R1 implements Compat {
-    private final PacketProcessor_v1_17_R1 pktProcessor;
+public class Compat_v1_20_R4 implements Compat {
+    public PacketProcessor_v1_20_R4 pktProcessor;
 
-    public Compat_v1_17_R1() {
-        this.pktProcessor = new PacketProcessor_v1_17_R1(this);
+    public Compat_v1_20_R4() {
+        this.pktProcessor = new PacketProcessor_v1_20_R4(this);
     }
 
     @Override
@@ -56,12 +58,16 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public WrappedAnvilInventory getWrappedAnvil(final Inventory inventory) {
         if (!(inventory instanceof CraftInventory)) return null;
+        for (final Method method : inventory.getClass().getMethods()) {
+            System.out.println(method.getName());
+        }
+        System.out.println(((CraftInventory) inventory).getInventory());
         if (!(((CraftInventory) inventory).getInventory() instanceof ContainerAnvil)) return null;
-
+        System.out.println("create Instance");
         return new WrappedAnvilInventory(
                 inventory,
                 ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).v,
-                ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).w.get(),
+                ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).w.b(),
                 ((ContainerAnvil) ((CraftInventory) inventory).getInventory()).maximumRepairCost
         );
     }
@@ -69,7 +75,7 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public Inventory getBukkitAnvil(final WrappedAnvilInventory inventory) {
         ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).v = inventory.getRenameText();
-        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).w.set(inventory.getRepairCost());
+        ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).w.a(inventory.getRepairCost());
         ((ContainerAnvil) ((CraftInventory) inventory.getInventory()).getInventory()).maximumRepairCost =
                 inventory.getMaximumRepairCost();
         return inventory.getInventory();
@@ -87,7 +93,7 @@ public class Compat_v1_17_R1 implements Compat {
 
     @Override
     public void sendPacket(final Player player, final Packet packet) {
-        ((CraftPlayer) player).getHandle().b.sendPacket(this.getNMSPacket(packet));
+        ((CraftPlayer) player).getHandle().c.b(this.getNMSPacket(packet));
     }
 
     @Override
@@ -95,34 +101,43 @@ public class Compat_v1_17_R1 implements Compat {
         if (!(pos instanceof final BlockPosition pos2))
             throw new IllegalArgumentException("Invalid argument position must be a block position");
 
-        return new WrappedBlockPos(pos2.getX(), pos2.getY(), pos2.getZ());
+        return new WrappedBlockPos(pos2.u(), pos2.v(), pos2.w());
     }
 
     @Override
-    public BlockPosition getNMSBlockPos(final WrappedBlockPos pos) {
-        return new BlockPosition(pos.getX(), pos.getY(), pos.getZ());
+    public BlockPosition getNMSBlockPos(final WrappedBlockPos position) {
+        return new BlockPosition(position.getX(), position.getY(), position.getZ());
     }
 
     @Override
     public Channel getPlayerChannel(final Player player) {
-        return ((CraftPlayer) player).getHandle().b.a.k;
-    }
-
-    @Override
-    public List<Channel> getServerChannels() {
-        final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().getServerConnection();
+        final PlayerConnection connection = ((CraftPlayer) player).getHandle().c;
         try {
-            final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g",
-                    List.class);
-            return networks.stream().map(network -> network.k).toList();
+            final NetworkManager network = ReflectionUtils.getField(connection, ServerCommonPacketListenerImpl.class,
+                    "e", NetworkManager.class);
+            return network.n;
         } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public void sendSignUpdate(final Player player, final Location location, final String[] result) {
-        player.sendSignChange(location, result);
+    public List<Channel> getServerChannels() {
+        final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().ai();
+        try {
+            final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g",
+                    List.class);
+            return networks.stream().map(network -> network.n).toList();
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void sendSignUpdate(final Player player, final Location location, final String[] lines) {
+        ((CraftPlayer) player).sendSignChange(location, lines);
     }
 
     @Override
@@ -135,7 +150,7 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return nmsItemStack.hasTag();
+        return nmsItemStack.a(DataComponents.b) != null;
     }
 
     @Override
@@ -148,8 +163,10 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setString(id, value);
+        final CustomData itemNBT = nmsItemStack.a(DataComponents.b);
+        final NBTTagCompound tag = itemNBT != null ? itemNBT.c() : new NBTTagCompound();
+        tag.a(id, value);
+        nmsItemStack.b(DataComponents.b, CustomData.a(tag));
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -169,8 +186,10 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setLong(id, value);
+        final CustomData itemNBT = nmsItemStack.a(DataComponents.b);
+        final NBTTagCompound tag = itemNBT != null ? itemNBT.c() : new NBTTagCompound();
+        tag.a(id, value);
+        nmsItemStack.b(DataComponents.b, CustomData.a(tag));
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -186,6 +205,7 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String getNBTString(final Object itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
@@ -195,10 +215,14 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.containsNBT(itemStack, id) ? nmsItemStack.getTag().getString(id) : null;
+        if (!this.hasNBT(nmsItemStack) || !this.containsNBT(nmsItemStack, id)) return null;
+
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return nbt.e("akazukin") ? nbt.p("akazukin").l(id) : null;
     }
 
     @Override
+    @SuppressWarnings("null")
     public Long getNBTLong(final Object itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
@@ -208,7 +232,10 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.getTag().getLong(id) : null;
+        if (!this.hasNBT(nmsItemStack) || !this.containsNBT(nmsItemStack, id)) return null;
+
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return nbt.e("akazukin") ? nbt.p("akazukin").i(id) : null;
     }
 
     @Override
@@ -226,7 +253,8 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.hasNBT(nmsItemStack) && nmsItemStack.getTag().hasKey(id);
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return this.hasNBT(itemStack) && nbt.e("akazukin") && nbt.p("akazukin").e(id);
     }
 
     @Override
@@ -239,9 +267,12 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        if (!this.containsNBT(itemStack, key)) return itemStack;
+        if (!hasNBT(nmsItemStack)) return itemStack;
 
-        nmsItemStack.getTag().remove(key);
+        final CustomData itemNBT = nmsItemStack.a(DataComponents.b);
+        final NBTTagCompound tag = itemNBT.c();
+        tag.r(key);
+        nmsItemStack.b(DataComponents.b, CustomData.a(tag));
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -254,42 +285,25 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public WrappedPlayerProfile getGameProfile(final Player player) {
         if (player instanceof CraftPlayer) {
-            final GameProfile profile = ((CraftPlayer) player).getProfile();
-            final Property textures = new ArrayList<>(profile.getProperties().get("textures")).get(0);
-            final JsonObject textures__ = new JsonParser()
-                    .parse(textures.getValue())
-                    .getAsJsonObject();
-            final JsonObject textures_ = textures__.getAsJsonObject("textures");
+            final PlayerProfile profile = player.getPlayerProfile();
             final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
-            profile_.setUniqueId(profile.getId());
+            profile_.setUniqueId(profile.getUniqueId());
             profile_.setName(profile.getName());
-            if (textures_.has("SKIN"))
-                profile_.setSkin(textures_
-                        .getAsJsonObject("SKIN")
-                        .get("url")
-                        .getAsString());
-            if (textures_.has("SKIN") &&
-                    textures_.getAsJsonObject("SKIN").has("metadata"))
-                profile_.setSkinModel(textures_
-                        .getAsJsonObject("SKIN")
-                        .getAsJsonObject("metadata")
-                        .getAsJsonObject("model")
-                        .getAsString()
-                        .equals("slim") ? "SLIM" : "CLASSIC");
-            if (textures_.has("CAPE"))
-                profile_.setCape(textures_
-                        .getAsJsonObject("CAPE")
-                        .get("url")
-                        .getAsString());
-            profile_.setTimestamp(textures__.get("timestamp").getAsLong());
+            if (profile.getTextures().getSkin() != null)
+                profile_.setSkin(profile.getTextures().getSkin().getPath());
+            profile_.setSkinModel(profile.getTextures().getSkinModel().name());
+            if (profile.getTextures().getCape() != null)
+                profile_.setSkin(profile.getTextures().getCape().getPath());
+            profile_.setTimestamp(profile.getTextures().getTimestamp());
             return profile_;
         }
+        return null;
         /*try {
-            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cs", GameProfile.class);
+            ReflectionUtils.getField(((CraftPlayer) player).getHandle(), EntityHuman.class, "cr", GameProfile.class);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-        }*/
-        return null;
+        }
+        return null;*/
     }
 
     @Override

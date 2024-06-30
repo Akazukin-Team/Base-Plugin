@@ -43,13 +43,13 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     @Override
     protected Inventory getInventory() {
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
-        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
-        if (prevGui != null)
-            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(this.player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(this.player));
+        if (this.prevGui != null)
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(this.player));
 
-        inv.setItem(12, yesItem);
-        inv.setItem(14, noItem);
+        inv.setItem(12, this.yesItem);
+        inv.setItem(14, this.noItem);
 
         return inv;
     }
@@ -59,21 +59,21 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
         final boolean rs = super.onGuiClick(event);
         if (rs) return true;
         if (event.getCurrentItem() == null) return false;
-        if (yesItem.equals(event.getCurrentItem())) {
-            result = true;
-            GuiManager.singleton().setScreen(player, prevGui);
-        } else if (noItem.equals(event.getCurrentItem())) {
-            result = false;
-            GuiManager.singleton().setScreen(player, prevGui);
+        if (this.yesItem.equals(event.getCurrentItem())) {
+            this.result = true;
+            GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
+        } else if (this.noItem.equals(event.getCurrentItem())) {
+            this.result = false;
+            GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
         }
         return false;
     }
 
     @Override
     public boolean reset() {
-        final boolean rs = result != null;
-        result = null;
-        done = false;
+        final boolean rs = this.result != null;
+        this.result = null;
+        this.done = false;
         return rs;
     }
 }

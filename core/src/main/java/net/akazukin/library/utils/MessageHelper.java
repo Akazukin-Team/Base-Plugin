@@ -25,7 +25,7 @@ public class MessageHelper {
     }
 
     public void broadcast(final I18n message) {
-        broadcast(get(getLocale(), message));
+        this.broadcast(this.get(getLocale(), message));
     }
 
     public void broadcast(final String message) {
@@ -33,13 +33,13 @@ public class MessageHelper {
     }
 
     public String get(final String locale, final I18n i18n, final Object... args) {
-        for (final I18nUtils i18nUtil : i18nUtils) {
+        for (final I18nUtils i18nUtil : this.i18nUtils) {
             final String result = i18nUtil.get(locale, i18n, args);
-            if (StringUtils.getLength(result) > 0) return result;
+            if (StringUtils.getLength(result) > 0) return StringUtils.getColoredString(result);
         }
-        for (final I18nUtils i18nUtil : i18nUtils) {
+        for (final I18nUtils i18nUtil : this.i18nUtils) {
             final String result = i18nUtil.get(i18n, args);
-            if (StringUtils.getLength(result) > 0) return result;
+            if (StringUtils.getLength(result) > 0) return StringUtils.getColoredString(result);
         }
         return i18n.getKey();
     }
@@ -50,9 +50,9 @@ public class MessageHelper {
 
     public void sendMessage(final CommandSender sender, final String message) {
         if (sender instanceof Player) {
-            sendMessage((Player) sender, message);
+            this.sendMessage((Player) sender, message);
         } else {
-            consoleMessage(message);
+            this.consoleMessage(message);
         }
     }
 
@@ -66,31 +66,32 @@ public class MessageHelper {
 
     public void sendMessage(final CommandSender sender, final I18n message, final Object... args) {
         if (sender instanceof Player) {
-            sendMessage((Player) sender, message, args);
+            this.sendMessage((Player) sender, message, args);
         } else {
-            consoleMessage(message, args);
+            this.consoleMessage(message, args);
         }
     }
 
     public void sendMessage(final HumanEntity player, final I18n message, final Object... args) {
-        sendMessage(player, get(getLocale(player.getUniqueId()), message, args));
+        this.sendMessage(player, this.get(getLocale(player.getUniqueId()), message, args));
     }
 
     public void consoleMessage(final I18n message, final Object... args) {
-        consoleMessage(get(getLocale(), message, args));
+        this.consoleMessage(this.get(getLocale(), message, args));
     }
 
     public static String getLocale(final UUID player) {
-        final MUserEntity entity = LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
+        final MUserEntity entity =
+                LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
         if (entity != null && entity.getLocale() != null) return entity.getLocale();
         return getLocale();
     }
 
     public void sendMessage(final UUID player, final I18n message, final Object... args) {
-        sendMessage(player, get(getLocale(player), message, args));
+        this.sendMessage(player, this.get(getLocale(player), message, args));
     }
 
     public void sendMessage(final UUID player, final String message) {
-        sendMessage(Bukkit.getPlayer(player), message);
+        this.sendMessage(Bukkit.getPlayer(player), message);
     }
 }
