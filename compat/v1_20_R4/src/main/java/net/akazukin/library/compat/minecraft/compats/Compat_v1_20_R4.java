@@ -13,6 +13,7 @@ import net.akazukin.library.utils.ReflectionUtils;
 import net.akazukin.library.utils.StringUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.network.PlayerConnection;
@@ -140,23 +141,23 @@ public class Compat_v1_20_R4 implements Compat {
     @Override
     public boolean hasNBT(final ItemStack itemStack) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return nmsItemStack.u();
+        return nmsItemStack.e();
     }
 
     @Override
     public ItemStack setNBT(final ItemStack itemStack, final String id, final String value) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        final NBTTagCompound nbt = nmsItemStack.w();
-        nbt.a(id, value);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        nbt.p("components").a(id, value);
+        return CraftItemStack.asBukkitCopy(net.minecraft.world.item.ItemStack.a(VanillaRegistries.a(), nbt));
     }
 
     @Override
     public ItemStack setNBT(final ItemStack itemStack, final String id, final long value) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        final NBTTagCompound nbt = nmsItemStack.w();
-        nbt.a(id, value);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        nbt.p("components").a(id, value);
+        return CraftItemStack.asBukkitCopy(net.minecraft.world.item.ItemStack.a(VanillaRegistries.a(), nbt));
     }
 
     @Override
@@ -167,15 +168,21 @@ public class Compat_v1_20_R4 implements Compat {
     @Override
     @SuppressWarnings("null")
     public String getNBTString(final ItemStack itemStack, final String id) {
+        if (!this.hasNBT(itemStack) || !this.containsNBT(itemStack, id)) return null;
+
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.containsNBT(itemStack, id) ? nmsItemStack.v().l(id) : null;
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return nbt.l(id);
     }
 
     @Override
     @SuppressWarnings("null")
     public Long getNBTLong(final ItemStack itemStack, final String id) {
+        if (!this.hasNBT(itemStack) || !this.containsNBT(itemStack, id)) return null;
+
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.containsNBT(itemStack, id) ? nmsItemStack.v().i(id) : null;
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return nbt.i(id);
     }
 
     @Override
@@ -186,15 +193,16 @@ public class Compat_v1_20_R4 implements Compat {
     @Override
     public boolean containsNBT(final ItemStack itemStack, final String id) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        return this.hasNBT(itemStack) && nmsItemStack.v().e(id);
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        return this.hasNBT(itemStack) && nbt.e(id);
     }
 
     @Override
     public ItemStack removeNBT(final ItemStack itemStack, final String key) {
-        if (!this.containsNBT(itemStack, key)) return itemStack;
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        nmsItemStack.v().r(key);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        final NBTTagCompound nbt = ((NBTTagCompound) nmsItemStack.b(VanillaRegistries.a()));
+        nbt.p("components").r(key);
+        return CraftItemStack.asBukkitCopy(net.minecraft.world.item.ItemStack.a(VanillaRegistries.a(), nbt));
     }
 
     @Override

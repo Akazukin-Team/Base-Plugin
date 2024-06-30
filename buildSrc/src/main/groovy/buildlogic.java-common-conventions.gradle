@@ -18,21 +18,21 @@ repositories {
         url "https://repo.opencollab.dev/main/"
     }
     maven {
-        name "ProtocolSupport"
-        url "https://repo.minebench.de/"
+        name = "ProtocolSupport"
+        url = "https://repo.minebench.de/"
     }
     maven {
-        url 'https://repo.codemc.io/repository/nms/'
+        url = 'https://repo.codemc.io/repository/nms/'
     }
     maven {
-        name "enginehub-maven" //worldedit
-        url "https://maven.enginehub.org/repo"
+        name = "enginehub-maven" //worldedit
+        url = "https://maven.enginehub.org/repo"
     }
     maven {
-        url "https://repo.papermc.io/repository/maven-public/"
+        url = "https://repo.papermc.io/repository/maven-public/"
     }
     maven {
-        url "https://jitpack.io/"
+        url = "https://jitpack.io/"
     }
     mavenCentral()
     mavenLocal()
@@ -42,7 +42,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
-    compileOnly("org.seasar.doma:doma-core:2.58.0")
+    compileOnly("org.seasar.doma:doma-core:2.60.1")
 
     //testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
