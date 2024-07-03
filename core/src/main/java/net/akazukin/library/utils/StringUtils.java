@@ -87,4 +87,8 @@ public class StringUtils {
         if (str == null) return null;
         return UUID.fromString(str);
     }
+
+    public static String toStringOrEmpty(@Nullable final String obj) {
+        return (obj == null) ? "" : obj;
+    }
 }
