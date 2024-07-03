@@ -21,6 +21,7 @@ import net.minecraft.server.network.ServerConnection;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -33,13 +34,18 @@ import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 
 public class Compat_v1_20_R3 implements Compat {
+    private final JavaPlugin plugin;
     public PacketProcessor_v1_20_R3 pktProcessor;
 
-    public Compat_v1_20_R3() {
+    public Compat_v1_20_R3(final JavaPlugin plugin) {
         this.pktProcessor = new PacketProcessor_v1_20_R3(this);
+        this.plugin = plugin;
     }
 
     @Override
@@ -294,5 +300,84 @@ public class Compat_v1_20_R3 implements Compat {
     public BossBar createBossBar(final String title, final BarColor color, final BarStyle style,
                                  final BarFlag... flags) {
         return Bukkit.createBossBar(title, color, style, flags);
+    }
+
+    @Override
+    public <I> I setPDCData(final I itemStack, final String id, final String value) {
+        return this.setPDCData(itemStack, PersistentDataType.STRING, id, value);
+    }
+
+    @Override
+    public <I> I setPDCData(final I itemStack, final String id, final Integer value) {
+        return this.setPDCData(itemStack, PersistentDataType.INTEGER, id, value);
+    }
+
+    @Override
+    public Integer getIntPDCData(final Object itemStack, final String id) {
+        return this.getPDCData(itemStack, PersistentDataType.INTEGER, id);
+    }
+
+    @Override
+    public String getStringPDCData(final Object itemStack, final String id) {
+        return this.getPDCData(itemStack, PersistentDataType.STRING, id);
+    }
+
+    @Override
+    public <I> I setPlData(final I itemStack, final String key, final String value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
+                                final T value) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        final ItemMeta itemMeta = bktItemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(
+                new NamespacedKey(this.plugin, id),
+                type, value
+        );
+        bktItemStack.setItemMeta(itemMeta);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (I) bktItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else
+            return null;
+    }
+
+    @Override
+    public <I> I setPlData(final I itemStack, final String key, final Integer value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    @Override
+    public String getStringPlData(final Object itemStack, final String key) {
+        return this.getStringPDCData(itemStack, key);
+    }
+
+    private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+                new NamespacedKey(this.plugin, id), type
+        );
+    }
+
+    @Override
+    public Integer getIntPlData(final Object itemStack, final String key) {
+        return this.getIntPDCData(itemStack, key);
     }
 }

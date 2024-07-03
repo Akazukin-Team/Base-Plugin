@@ -68,4 +68,20 @@ public interface Compat {
     WrappedPlayerProfile getGameProfile(Player player);
 
     BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags);
+
+    <I> I setPDCData(I itemStack, String id, String value);
+
+    <I> I setPDCData(I itemStack, String id, Integer value);
+
+    Integer getIntPDCData(Object itemStack, String id);
+
+    String getStringPDCData(Object itemStack, String id);
+
+    <I> I setPlData(I itemStack, String key, String value);
+
+    <I> I setPlData(I itemStack, String key, Integer value);
+
+    String getStringPlData(Object itemStack, String key);
+
+    Integer getIntPlData(Object itemStack, String key);
 }

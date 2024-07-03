@@ -5,18 +5,19 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
 public class CompatManager {
-    public static Compat initCompat() {
-        return getCompat("net.akazukin.library.compat.minecraft.compats.Compat_" + getMappingVersion());
+    public static Compat initCompat(final JavaPlugin plugin) {
+        return getCompat("net.akazukin.library.compat.minecraft.compats.Compat_" + getMappingVersion(), plugin);
     }
 
-    public static Compat getCompat(final String clazzName) {
+    public static Compat getCompat(final String clazzName, final JavaPlugin plugin) {
         try {
             final Class<?> clazz = Class.forName(clazzName);
             if (Compat.class.isAssignableFrom(clazz)) {
-                return getCompat((Class<? extends Compat>) clazz);
+                return getCompat((Class<? extends Compat>) clazz, plugin);
             } else {
                 throw new IllegalArgumentException("The class was not extends ComaptClass");
             }
@@ -83,9 +84,9 @@ public class CompatManager {
         }
     }
 
-    public static Compat getCompat(final Class<? extends Compat> clazz) {
+    public static Compat getCompat(final Class<? extends Compat> clazz, final JavaPlugin plugin) {
         try {
-            return clazz.getDeclaredConstructor().newInstance();
+            return clazz.getDeclaredConstructor(JavaPlugin.class).newInstance(plugin);
         } catch (final IllegalArgumentException | InvocationTargetException |
                        NoSuchMethodException |
                        IllegalAccessException | InstantiationException e) {
