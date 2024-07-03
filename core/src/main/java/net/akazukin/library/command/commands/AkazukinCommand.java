@@ -7,7 +7,7 @@ import net.akazukin.library.command.SubCommand;
 import net.akazukin.library.command.commands.akazukin.HelpSubCommand;
 import net.akazukin.library.command.commands.akazukin.LanguageSubCommand;
 import net.akazukin.library.i18n.I18n;
-import net.akazukin.library.utils.StringUtils;
+import net.akazukin.library.utils.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +24,7 @@ public final class AkazukinCommand extends Command {
 
     @Override
     public void run(final CommandSender sender, final String... args) {
-        final SubCommand subCmd = this.getSubCommand(StringUtils.getIndex(args, 0));
+        final SubCommand subCmd = this.getSubCommand(ArrayUtils.getIndex(args, 0));
         if (subCmd == null) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.notFound"));
         } else if (!subCmd.validExecutor(sender)) {

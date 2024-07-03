@@ -6,7 +6,7 @@ import net.akazukin.library.compat.minecraft.data.PacketProcessor;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SInitializeBorderPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
-import net.akazukin.library.utils.StringUtils;
+import net.akazukin.library.utils.ArrayUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
@@ -29,10 +29,10 @@ public class PacketProcessor_v1_20_R3 implements PacketProcessor<Packet<?>> {
             return new PacketPlayInUpdateSign(
                     this.compat.getNMSBlockPos(((CUpdateSignPacket) packet).getPosition()),
                     ((CUpdateSignPacket) packet).isD(),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
             );
         } else if (packet instanceof SInitializeBorderPacket) {
             return new ClientboundInitializeBorderPacket(

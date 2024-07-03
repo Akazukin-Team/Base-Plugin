@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.akazukin.library.compat.minecraft.compats.Compat_v1_18_R2;
 import net.akazukin.library.compat.minecraft.data.PacketProcessor;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
-import net.akazukin.library.utils.StringUtils;
+import net.akazukin.library.utils.ArrayUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
 
@@ -17,11 +17,11 @@ public class PacketProcessor_v1_18_R2 implements PacketProcessor<Packet<?>> {
         //SPacket only supports
         if (packet instanceof CUpdateSignPacket) {
             return new PacketPlayInUpdateSign(
-                    compat.getNMSBlockPos(((CUpdateSignPacket) packet).getPosition()),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
+                    this.compat.getNMSBlockPos(((CUpdateSignPacket) packet).getPosition()),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
             );
         }
         return null;
@@ -32,7 +32,7 @@ public class PacketProcessor_v1_18_R2 implements PacketProcessor<Packet<?>> {
         //CPacket only supports
         if (packet instanceof PacketPlayInUpdateSign) {
             return new CUpdateSignPacket(
-                    compat.getWrappedBlockPos(packet.a()),
+                    this.compat.getWrappedBlockPos(packet.a()),
                     ((PacketPlayInUpdateSign) packet).c()
             );
         }

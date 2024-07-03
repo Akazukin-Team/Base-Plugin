@@ -72,7 +72,7 @@ public abstract class Command implements Listenable {
         }
         return Arrays.stream(this.subCommands)
                 .map(SubCommand::getName)
-                .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(StringUtils.getIndex(args2, 0))))
+                .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2, 0))))
                 .sorted().toArray(String[]::new);
     }
 }

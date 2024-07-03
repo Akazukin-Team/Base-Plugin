@@ -50,7 +50,7 @@ public class HelpSubCommand extends SubCommand {
         if (args2.length <= 1) {
             return LibraryPlugin.COMMAND_MANAGER.getCommands().stream()
                     .map(Command::getName)
-                    .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(StringUtils.getIndex(args2,
+                    .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
                             0)).toLowerCase()))
                     .toArray(String[]::new);
         } else {
