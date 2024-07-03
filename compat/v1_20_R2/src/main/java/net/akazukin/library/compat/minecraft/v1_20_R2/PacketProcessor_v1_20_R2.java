@@ -6,7 +6,7 @@ import net.akazukin.library.compat.minecraft.data.PacketProcessor;
 import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SInitializeBorderPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
-import net.akazukin.library.utils.StringUtils;
+import net.akazukin.library.utils.ArrayUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
@@ -22,17 +22,17 @@ public class PacketProcessor_v1_20_R2 implements PacketProcessor<Packet<?>> {
         //Both packers
         if (packet instanceof SOpenSignEditorPacket) {
             return new PacketPlayOutOpenSignEditor(
-                    compat.getNMSBlockPos(((SOpenSignEditorPacket) packet).getWrappedBlockPos()),
+                    this.compat.getNMSBlockPos(((SOpenSignEditorPacket) packet).getWrappedBlockPos()),
                     ((SOpenSignEditorPacket) packet).isFrontText()
             );
         } else if (packet instanceof CUpdateSignPacket) {
             return new PacketPlayInUpdateSign(
-                    compat.getNMSBlockPos(((CUpdateSignPacket) packet).getPosition()),
+                    this.compat.getNMSBlockPos(((CUpdateSignPacket) packet).getPosition()),
                     ((CUpdateSignPacket) packet).isD(),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
-                    StringUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 0),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 1),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 2),
+                    ArrayUtils.getIndex(((CUpdateSignPacket) packet).getLines(), 3)
             );
         } else if (packet instanceof SInitializeBorderPacket) {
             return new ClientboundInitializeBorderPacket(
@@ -48,12 +48,12 @@ public class PacketProcessor_v1_20_R2 implements PacketProcessor<Packet<?>> {
         //CPacket only supports
         if (packet instanceof PacketPlayOutOpenSignEditor) {
             return new SOpenSignEditorPacket(
-                    compat.getWrappedBlockPos(((PacketPlayOutOpenSignEditor) packet).a()),
+                    this.compat.getWrappedBlockPos(((PacketPlayOutOpenSignEditor) packet).a()),
                     ((PacketPlayOutOpenSignEditor) packet).d()
             );
         } else if (packet instanceof PacketPlayInUpdateSign) {
             return new CUpdateSignPacket(
-                    compat.getWrappedBlockPos(((PacketPlayInUpdateSign) packet).a()),
+                    this.compat.getWrappedBlockPos(((PacketPlayInUpdateSign) packet).a()),
                     ((PacketPlayInUpdateSign) packet).e(),
                     ((PacketPlayInUpdateSign) packet).d()
             );

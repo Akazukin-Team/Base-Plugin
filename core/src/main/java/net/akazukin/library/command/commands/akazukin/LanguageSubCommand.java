@@ -10,7 +10,7 @@ import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.entity.MUserEntity;
 import net.akazukin.library.doma.repo.MUserRepo;
 import net.akazukin.library.i18n.I18n;
-import net.akazukin.library.utils.StringUtils;
+import net.akazukin.library.utils.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +20,7 @@ public class LanguageSubCommand extends SubCommand {
     public void run(final CommandSender sender, final String... args) {
         if (args.length <= 1) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.language.enterLanguage"));
-        } else if (LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getStringList("locales").stream().map(String::toLowerCase).noneMatch(locale -> locale.equals(StringUtils.getIndex(Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toList()), 1)))) {
+        } else if (LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getStringList("locales").stream().map(String::toLowerCase).noneMatch(locale -> locale.equals(ArrayUtils.getIndex(Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toList()), 1)))) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.language.notFound"));
         } else {
             LibrarySQLConfig.singleton().getTransactionManager().required(() -> {
@@ -29,7 +29,7 @@ public class LanguageSubCommand extends SubCommand {
                     entity = new MUserEntity();
                     entity.setPlayerUuid(((Player) sender).getUniqueId());
                 }
-                entity.setLocale(StringUtils.getIndex(args, 1));
+                entity.setLocale(ArrayUtils.getIndex(args, 1));
                 MUserRepo.save(entity);
             });
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.language.changed"));
