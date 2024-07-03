@@ -13,7 +13,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import net.akazukin.library.command.Command;
 import net.akazukin.library.command.LibraryCommandManager;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.CompatManager;
@@ -30,7 +29,6 @@ import net.akazukin.library.utils.ConfigUtils;
 import net.akazukin.library.utils.MessageHelper;
 import net.akazukin.library.utils.PlayerUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -141,19 +139,14 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         getLogManager().info("Initializing command manager...");
-        COMMAND_MANAGER = new LibraryCommandManager();
+        COMMAND_MANAGER = new LibraryCommandManager(this);
         COMMAND_MANAGER.registerCommands();
-        for (final Command cmd : COMMAND_MANAGER.getCommands()) {
-            final PluginCommand command = this.getCommand(cmd.getName());
-            if (command != null) command.setExecutor(COMMAND_MANAGER);
-            final PluginCommand command2 = this.getCommand(getPlugin().getName().toLowerCase() + ":" + cmd.getName());
-            if (command2 != null) command2.setExecutor(COMMAND_MANAGER);
-        }
         getLogManager().info("Successfully Initialized command manager");
 
 
         getLogManager().info("Initializing event handler...");
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+                () -> Bukkit.getPluginManager().callEvent(new ServerTickEvent()), 0, 0);
         getLogManager().info("Successfully initialized event handler");
 
 
