@@ -50,14 +50,14 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
             this.done = true;
             GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), () -> this.prevGui);
             return true;
-        } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
-            if (!this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(),
+        } else if (LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
+            if (!this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.add(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
                         "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks.clone())
-                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removeNBT(item, "AKZ_GUI_ITEM_UUID"))
+                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
+                        .map(item -> LibraryPlugin.COMPAT.removePlData(item, "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
@@ -67,21 +67,22 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
                 ItemUtils.setLore(event.getCurrentItem(), lore);
 
                 return true;
-            } else if (LibraryPlugin.COMPAT.containsNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
-                    this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(),
+            } else if (LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
+                    this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.remove(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
                         "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks)
-                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getNBTString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removeNBT(item, "AKZ_GUI_ITEM_UUID"))
+                        .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
+                        .map(item -> LibraryPlugin.COMPAT.removePlData(item, "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 Arrays.stream(this.itemStacks)
-                        .filter(itemStack -> LibraryPlugin.COMPAT.containsNBT(itemStack, "AKZ_GUI_ITEM_UUID"))
+                        .filter(itemStack -> LibraryPlugin.COMPAT.containsPlData(itemStack, "AKZ_GUI_ITEM_UUID"))
                         .filter(itemStack ->
-                                LibraryPlugin.COMPAT.getNBTString(itemStack, "AKZ_GUI_ITEM_UUID").equals(
-                                        LibraryPlugin.COMPAT.getNBTString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")
+                                LibraryPlugin.COMPAT.getPlDataString(itemStack, "AKZ_GUI_ITEM_UUID").equals(
+                                        LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
+                                                "AKZ_GUI_ITEM_UUID")
                                 ))
                         .findFirst()
                         .ifPresent(itemStack -> ItemUtils.setLore(event.getCurrentItem(),

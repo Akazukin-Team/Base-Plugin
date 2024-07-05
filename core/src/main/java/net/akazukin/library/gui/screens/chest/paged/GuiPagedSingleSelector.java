@@ -15,7 +15,8 @@ import org.bukkit.inventory.ItemStack;
 public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSelector {
     protected ItemStack selected;
 
-    public GuiPagedSingleSelector(final String title, final int maxRows, final int minRows, final UUID player, final ItemStack[] itemStacks, final GuiBase prevGui) {
+    public GuiPagedSingleSelector(final String title, final int maxRows, final int minRows, final UUID player,
+                                  final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, maxRows, minRows, player,
                 Arrays.stream(itemStacks)
                         .map(ItemUtils::setGuiItem)
@@ -27,8 +28,8 @@ public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSel
     protected boolean onGuiClick(final InventoryClickEvent event) {
         if (super.onGuiClick(event)) return true;
 
-        if (Arrays.asList(itemStacks).contains(event.getCurrentItem())) {
-            selected = LibraryPlugin.COMPAT.removeNBT(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID");
+        if (Arrays.asList(this.itemStacks).contains(event.getCurrentItem())) {
+            this.selected = LibraryPlugin.COMPAT.removePlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID");
             return true;
         }
 
@@ -37,13 +38,13 @@ public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSel
 
     @Override
     public boolean isDone() {
-        return selected != null;
+        return this.selected != null;
     }
 
     @Override
     public boolean reset() {
-        final boolean result = selected != null;
-        selected = null;
+        final boolean result = this.selected != null;
+        this.selected = null;
         return result;
     }
 }
