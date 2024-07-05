@@ -372,31 +372,6 @@ public class Compat_v1_16_R3 implements Compat {
         return this.setPDCData(itemStack, key, value);
     }
 
-    private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
-                                final T value) {
-        final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.server.v1_16_R3.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
-            bktItemStack = (ItemStack) itemStack;
-        else
-            return null;
-
-        final ItemMeta itemMeta = bktItemStack.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(
-                new NamespacedKey(this.plugin, id),
-                type, value
-        );
-        bktItemStack.setItemMeta(itemMeta);
-
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
-            return (I) CraftItemStack.asNMSCopy(bktItemStack);
-        else
-            return null;
-    }
-
     @Override
     public <I> I setPlData(final I itemStack, final String key, final Integer value) {
         return this.setPDCData(itemStack, key, value);
@@ -454,9 +429,9 @@ public class Compat_v1_16_R3 implements Compat {
         bktItemStack.setItemMeta(itemMeta);
 
         if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
         else
             return null;
     }
@@ -473,5 +448,30 @@ public class Compat_v1_16_R3 implements Compat {
         return bktItemStack.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
+    }
+
+    private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
+                                final T value) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.server.v1_16_R3.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        final ItemMeta itemMeta = bktItemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(
+                new NamespacedKey(this.plugin, id),
+                type, value
+        );
+        bktItemStack.setItemMeta(itemMeta);
+
+        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
+            return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
+        else
+            return null;
     }
 }
