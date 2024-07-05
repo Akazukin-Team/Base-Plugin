@@ -312,17 +312,31 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public Integer getIntPDCData(final Object itemStack, final String key) {
+    public Boolean containsPDCData(final Object itemStack, final String key) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        return bktItemStack.getItemMeta().getPersistentDataContainer().getKeys().contains(new NamespacedKey(this.plugin,
+                key));
+    }
+
+    @Override
+    public Integer getPDCDataInt(final Object itemStack, final String key) {
         return this.getPDCData(itemStack, PersistentDataType.INTEGER, key);
     }
 
     @Override
-    public String getStringPDCData(final Object itemStack, final String key) {
+    public String getPDCDataString(final Object itemStack, final String key) {
         return this.getPDCData(itemStack, PersistentDataType.STRING, key);
     }
 
     @Override
-    public Boolean getBoolPDCData(final Object itemStack, final String key) {
+    public Boolean getPDCDataBool(final Object itemStack, final String key) {
         return ObjectUtils.getBoolean(this.getPDCData(itemStack, PersistentDataType.BYTE, key));
     }
 
@@ -337,8 +351,8 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public String getStringPlData(final Object itemStack, final String key) {
-        return this.getStringPDCData(itemStack, key);
+    public String getPlDataString(final Object itemStack, final String key) {
+        return this.getPDCDataString(itemStack, key);
     }
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
@@ -356,18 +370,52 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public Integer getIntPlData(final Object itemStack, final String key) {
-        return this.getIntPDCData(itemStack, key);
+    public Integer getPlDataInt(final Object itemStack, final String key) {
+        return this.getPDCDataInt(itemStack, key);
     }
 
     @Override
-    public Boolean getBoolPlData(final Object itemStack, final String key) {
-        return this.getBoolPDCData(itemStack, key);
+    public Boolean getPlDataBool(final Object itemStack, final String key) {
+        return this.getPDCDataBool(itemStack, key);
     }
 
     @Override
-    public ItemStack setPlData(final ItemStack itemStack, final String key, final boolean value) {
+    public <I> I setPlData(final I itemStack, final String key, final boolean value) {
         return this.setPDCData(itemStack, key, value);
+    }
+
+    @Override
+    public boolean containsPlData(final Object itemStack, final String key) {
+        return this.containsPDCData(itemStack, key);
+    }
+
+    @Override
+    public <I> I removePlData(final I itemStack, final String key) {
+        return this.removePDCData(itemStack, key);
+    }
+
+    @Override
+    public <I> I removePDCData(final I itemStack, final String key) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        final ItemMeta itemMeta = bktItemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().remove(
+                new NamespacedKey(this.plugin, key)
+        );
+        bktItemStack.setItemMeta(itemMeta);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (I) bktItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else
+            return null;
     }
 
     private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,

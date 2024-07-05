@@ -21,7 +21,7 @@ public class ItemUtils {
     }
 
     public static String getGuiItemType(@Nonnull final ItemStack itemStack) {
-        return LibraryPlugin.COMPAT.getStringPlData(itemStack, "AKZ_GUI_ITEM_TYPE");
+        return LibraryPlugin.COMPAT.getPlDataString(itemStack, "AKZ_GUI_ITEM_TYPE");
     }
 
     public static ItemStack setGuiItem(@Nonnull final ItemStack itemStack) {
@@ -29,7 +29,7 @@ public class ItemUtils {
     }
 
     public static boolean isGuiItem(@Nonnull final ItemStack itemStack) {
-        return Boolean.TRUE.equals(LibraryPlugin.COMPAT.getNBTBoolean(itemStack, "AKZ_GUI_ITEM"));
+        return Boolean.TRUE.equals(LibraryPlugin.COMPAT.getPlDataBool(itemStack, "AKZ_GUI_ITEM"));
     }
 
     public static ItemStack getSkullItem(@Nonnull final OfflinePlayer player) {
@@ -64,7 +64,7 @@ public class ItemUtils {
         }
 
         skullItem.setItemMeta(skullItemMeta);
-        return LibraryPlugin.COMPAT.setNBT(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
+        return LibraryPlugin.COMPAT.setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
     }
 
     public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {

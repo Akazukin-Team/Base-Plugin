@@ -15,7 +15,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public interface Compat {
     int getProtocolVersion();
@@ -76,21 +75,29 @@ public interface Compat {
 
     <I> I setPDCData(I itemStack, String key, boolean value);
 
-    Integer getIntPDCData(Object itemStack, String key);
+    Boolean containsPDCData(Object itemStack, String key);
 
-    String getStringPDCData(Object itemStack, String key);
+    Integer getPDCDataInt(Object itemStack, String key);
 
-    Boolean getBoolPDCData(Object itemStack, String key);
+    String getPDCDataString(Object itemStack, String key);
+
+    Boolean getPDCDataBool(Object itemStack, String key);
 
     <I> I setPlData(I itemStack, String key, String value);
 
     <I> I setPlData(I itemStack, String key, Integer value);
 
-    String getStringPlData(Object itemStack, String key);
+    String getPlDataString(Object itemStack, String key);
 
-    Integer getIntPlData(Object itemStack, String key);
+    Integer getPlDataInt(Object itemStack, String key);
 
-    Boolean getBoolPlData(Object itemStack, String key);
+    Boolean getPlDataBool(Object itemStack, String key);
 
-    ItemStack setPlData(ItemStack itemStack, String key, boolean value);
+    <I> I setPlData(I itemStack, String key, boolean value);
+
+    boolean containsPlData(Object itemStack, String key);
+
+    <I> I removePlData(I item, String key);
+
+    <I> I removePDCData(I item, String key);
 }
