@@ -375,20 +375,6 @@ public class Compat_v1_18_R2 implements Compat {
         return this.getPDCDataLong(itemStack, key);
     }
 
-    private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
-        final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
-            bktItemStack = (ItemStack) itemStack;
-        else
-            return null;
-
-        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
-                new NamespacedKey(this.plugin, id), type
-        );
-    }
-
     @Override
     public Boolean getPlDataBool(final Object itemStack, final String key) {
         return this.getPDCDataBool(itemStack, key);
@@ -426,11 +412,25 @@ public class Compat_v1_18_R2 implements Compat {
         bktItemStack.setItemMeta(itemMeta);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
         else
             return null;
+    }
+
+    private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+                new NamespacedKey(this.plugin, id), type
+        );
     }
 
     private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
@@ -451,9 +451,9 @@ public class Compat_v1_18_R2 implements Compat {
         bktItemStack.setItemMeta(itemMeta);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
         else
             return null;
     }

@@ -417,9 +417,9 @@ public class Compat_v1_20_R2 implements Compat {
         bktItemStack.setItemMeta(itemMeta);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
         else
             return null;
     }
@@ -456,9 +456,9 @@ public class Compat_v1_20_R2 implements Compat {
         bktItemStack.setItemMeta(itemMeta);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else if (itemStack instanceof ItemStack)
+            return (I) bktItemStack;
         else
             return null;
     }
