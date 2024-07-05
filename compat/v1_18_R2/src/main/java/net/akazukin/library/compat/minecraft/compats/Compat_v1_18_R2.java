@@ -8,8 +8,8 @@ import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_18_R2.PacketProcessor_v1_18_R2;
+import net.akazukin.library.utils.ObjectUtils;
 import net.akazukin.library.utils.ReflectionUtils;
-import net.akazukin.library.utils.StringUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +19,7 @@ import net.minecraft.server.network.ServerConnection;
 import net.minecraft.world.inventory.ContainerAnvil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -31,13 +32,18 @@ import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 
 public class Compat_v1_18_R2 implements Compat {
     private final PacketProcessor_v1_18_R2 pktProcessor;
+    private final JavaPlugin plugin;
 
-    public Compat_v1_18_R2() {
+    public Compat_v1_18_R2(final JavaPlugin plugin) {
         this.pktProcessor = new PacketProcessor_v1_18_R2(this);
+        this.plugin = plugin;
     }
 
     @Override
@@ -143,7 +149,7 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final String value) {
+    public <T> T setNBT(final T itemStack, final String key, final String value) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -153,7 +159,7 @@ public class Compat_v1_18_R2 implements Compat {
             return null;
 
         final NBTTagCompound nbt = nmsItemStack.u();
-        nbt.a(id, value);
+        nbt.a(key, value);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -164,7 +170,7 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final long value) {
+    public <T> T setNBT(final T itemStack, final String key, final long value) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -174,7 +180,7 @@ public class Compat_v1_18_R2 implements Compat {
             return null;
 
         final NBTTagCompound nbt = nmsItemStack.u();
-        nbt.a(id, value);
+        nbt.a(key, value);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -185,13 +191,13 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final boolean value) {
-        return this.setNBT(itemStack, id, String.valueOf(value));
+    public <T> T setNBT(final T itemStack, final String key, final boolean value) {
+        return this.setNBT(itemStack, key, String.valueOf(value));
     }
 
     @Override
     @SuppressWarnings("null")
-    public String getNBTString(final Object itemStack, final String id) {
+    public String getNBTString(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -200,12 +206,12 @@ public class Compat_v1_18_R2 implements Compat {
         else
             return null;
 
-        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.t().l(id) : null;
+        return this.containsNBT(nmsItemStack, key) ? nmsItemStack.t().l(key) : null;
     }
 
     @Override
     @SuppressWarnings("null")
-    public Long getNBTLong(final Object itemStack, final String id) {
+    public Long getNBTLong(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -214,17 +220,17 @@ public class Compat_v1_18_R2 implements Compat {
         else
             return null;
 
-        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.t().i(id) : null;
+        return this.containsNBT(nmsItemStack, key) ? nmsItemStack.t().i(key) : null;
     }
 
     @Override
-    public Boolean getNBTBoolean(final Object itemStack, final String id) {
-        return StringUtils.getBoolean(this.getNBTString(itemStack, id));
+    public Boolean getNBTBoolean(final Object itemStack, final String key) {
+        return ObjectUtils.getBoolean(this.getNBTString(itemStack, key));
     }
 
     @Override
     @SuppressWarnings("null")
-    public Boolean containsNBT(final Object itemStack, final String id) {
+    public Boolean containsNBT(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -233,7 +239,7 @@ public class Compat_v1_18_R2 implements Compat {
         else
             return null;
 
-        return this.hasNBT(nmsItemStack) && nmsItemStack.t().e(id);
+        return this.hasNBT(nmsItemStack) && nmsItemStack.t().e(key);
     }
 
     @Override
@@ -288,5 +294,104 @@ public class Compat_v1_18_R2 implements Compat {
     public BossBar createBossBar(final String title, final BarColor color, final BarStyle style,
                                  final BarFlag... flags) {
         return Bukkit.createBossBar(title, color, style, flags);
+    }
+
+    @Override
+    public <I> I setPDCData(final I itemStack, final String key, final String value) {
+        return this.setPDCData(itemStack, PersistentDataType.STRING, key, value);
+    }
+
+    @Override
+    public <I> I setPDCData(final I itemStack, final String key, final Integer value) {
+        return this.setPDCData(itemStack, PersistentDataType.INTEGER, key, value);
+    }
+
+    @Override
+    public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
+        return this.setPDCData(itemStack, PersistentDataType.BYTE, key, (byte) (value ? 1 : 0));
+    }
+
+    @Override
+    public Integer getIntPDCData(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.INTEGER, key);
+    }
+
+    @Override
+    public String getStringPDCData(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.STRING, key);
+    }
+
+    @Override
+    public Boolean getBoolPDCData(final Object itemStack, final String key) {
+        return ObjectUtils.getBoolean(this.getPDCData(itemStack, PersistentDataType.BYTE, key));
+    }
+
+    @Override
+    public <I> I setPlData(final I itemStack, final String key, final String value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    @Override
+    public <I> I setPlData(final I itemStack, final String key, final Integer value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    @Override
+    public String getStringPlData(final Object itemStack, final String key) {
+        return this.getStringPDCData(itemStack, key);
+    }
+
+    private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+                new NamespacedKey(this.plugin, id), type
+        );
+    }
+
+    @Override
+    public Integer getIntPlData(final Object itemStack, final String key) {
+        return this.getIntPDCData(itemStack, key);
+    }
+
+    @Override
+    public Boolean getBoolPlData(final Object itemStack, final String key) {
+        return this.getBoolPDCData(itemStack, key);
+    }
+
+    @Override
+    public ItemStack setPlData(final ItemStack itemStack, final String key, final boolean value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
+                                final T value) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        final ItemMeta itemMeta = bktItemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(
+                new NamespacedKey(this.plugin, id),
+                type, value
+        );
+        bktItemStack.setItemMeta(itemMeta);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (I) bktItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else
+            return null;
     }
 }

@@ -1,0 +1,18 @@
+package net.akazukin.library.utils;
+
+import javax.annotation.Nullable;
+
+public class ObjectUtils {
+    @Nullable
+    public static Boolean getBoolean(final Object bool) {
+        if (bool == null) return null;
+        if (bool instanceof String) {
+            if (((String) bool).equalsIgnoreCase("true")) return true;
+            else if (((String) bool).equalsIgnoreCase("false")) return false;
+        } else if (bool instanceof Byte) {
+            if (bool.equals((byte) 0)) return false;
+            else if (bool.equals((byte) 1)) return true;
+        }
+        return null;
+    }
+}

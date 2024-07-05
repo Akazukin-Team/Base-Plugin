@@ -77,7 +77,7 @@ public final class LibraryPlugin extends JavaPlugin {
 
 
         getLogManager().info("Initializing version manager...");
-        COMPAT = CompatManager.initCompat();
+        COMPAT = CompatManager.initCompat(this);
         getLogManager().info("Successfully Initialized version manager");
     }
 

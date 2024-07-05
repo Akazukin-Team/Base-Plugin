@@ -17,15 +17,15 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemUtils {
     public static ItemStack setGuiItemType(@Nonnull final ItemStack itemStack, @Nonnull final String type) {
-        return LibraryPlugin.COMPAT.setNBT(itemStack, "AKZ_GUI_ITEM_TYPE", type);
+        return LibraryPlugin.COMPAT.setPlData(itemStack, "AKZ_GUI_ITEM_TYPE", type);
     }
 
     public static String getGuiItemType(@Nonnull final ItemStack itemStack) {
-        return LibraryPlugin.COMPAT.getNBTString(itemStack, "AKZ_GUI_ITEM_TYPE");
+        return LibraryPlugin.COMPAT.getStringPlData(itemStack, "AKZ_GUI_ITEM_TYPE");
     }
 
     public static ItemStack setGuiItem(@Nonnull final ItemStack itemStack) {
-        return LibraryPlugin.COMPAT.setNBT(itemStack, "AKZ_GUI_ITEM", true);
+        return LibraryPlugin.COMPAT.setPlData(itemStack, "AKZ_GUI_ITEM", true);
     }
 
     public static boolean isGuiItem(@Nonnull final ItemStack itemStack) {

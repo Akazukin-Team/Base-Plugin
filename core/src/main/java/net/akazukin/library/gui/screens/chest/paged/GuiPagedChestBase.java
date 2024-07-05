@@ -23,11 +23,12 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final ItemStack nextPageItem;
     protected int page = 0;
 
-    public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final UUID player, final ItemStack[] itemStacks, final GuiBase prevGui) {
+    public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final UUID player,
+                             final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, Math.max(maxRows, minRows), player, false, prevGui);
         this.itemStacks = Arrays.stream(itemStacks).map(item -> {
             item = ItemUtils.setGuiItem(item);
-            return LibraryPlugin.COMPAT.setNBT(item, "AKZ_GUI_ITEM_UUID", String.valueOf(UUID.randomUUID()));
+            return LibraryPlugin.COMPAT.setPlData(item, "AKZ_GUI_ITEM_UUID", String.valueOf(UUID.randomUUID()));
         }).toArray(ItemStack[]::new);
         this.maxRows = Math.max(maxRows, minRows);
         this.minRows = Math.min(maxRows, minRows);
@@ -38,7 +39,7 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
                         MessageHelper.getLocale(player),
                         I18n.of("library.gui.paged.item.previous")
                 ));
-        prevPageItem = ItemUtils.setGuiItem(prevPageItem_);
+        this.prevPageItem = ItemUtils.setGuiItem(prevPageItem_);
 
         final ItemStack nextPageItem_ = new ItemStack(Material.getMaterial("ARROW"));
 
@@ -46,21 +47,21 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
                 MessageHelper.getLocale(player),
                 I18n.of("library.gui.paged.item.next")
         ));
-        nextPageItem = ItemUtils.setGuiItem(nextPageItem_);
+        this.nextPageItem = ItemUtils.setGuiItem(nextPageItem_);
     }
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (prevPageItem.equals(event.getCurrentItem())) {
-            if (page > 0) {
-                page--;
-                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
+        if (this.prevPageItem.equals(event.getCurrentItem())) {
+            if (this.page > 0) {
+                this.page--;
+                Bukkit.getPlayer(this.player).getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
             }
             return true;
-        } else if (nextPageItem.equals(event.getCurrentItem())) {
-            if (((page + 1) * 4 * 7) < itemStacks.length) {
-                page++;
-                Bukkit.getPlayer(player).getOpenInventory().getTopInventory().setContents(getInventory().getContents());
+        } else if (this.nextPageItem.equals(event.getCurrentItem())) {
+            if (((this.page + 1) * 4 * 7) < this.itemStacks.length) {
+                this.page++;
+                Bukkit.getPlayer(this.player).getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
             }
             return true;
         }
@@ -69,20 +70,21 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
 
     @Override
     protected Inventory getInventory() {
-        final int itemLeft = (itemStacks.length / (4 * 7));
-        rows = itemLeft >= (7 * (maxRows - 2)) ? maxRows : Math.max((int) Math.ceil((double) itemLeft / 7), minRows);
+        final int itemLeft = (this.itemStacks.length / (4 * 7));
+        this.rows = itemLeft >= (7 * (this.maxRows - 2)) ? this.maxRows :
+                Math.max((int) Math.ceil((double) itemLeft / 7), this.minRows);
 
         final Inventory inv = super.getInventory();
-        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(player));
-        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(player));
-        if (prevGui != null)
-            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(player));
+        InventoryUtils.fillBlankItems(inv, MessageHelper.getLocale(this.player));
+        InventoryUtils.fillCloseItem(inv, MessageHelper.getLocale(this.player));
+        if (this.prevGui != null)
+            InventoryUtils.fillBackItem(inv, MessageHelper.getLocale(this.player));
 
-        inv.setItem(17, prevPageItem);
-        inv.setItem(26, nextPageItem);
+        inv.setItem(17, this.prevPageItem);
+        inv.setItem(26, this.nextPageItem);
 
-        for (int i = 0; i < Math.min(28, itemStacks.length); i++) {
-            inv.setItem(i + 10 + ((i / 7) * 2), itemStacks[(page * 28) + i].clone());
+        for (int i = 0; i < Math.min(28, this.itemStacks.length); i++) {
+            inv.setItem(i + 10 + ((i / 7) * 2), this.itemStacks[(this.page * 28) + i].clone());
         }
         return inv;
     }
