@@ -324,6 +324,11 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
+    public <I> I setPDCData(final I itemStack, final String key, final Long value) {
+        return this.setPDCData(itemStack, PersistentDataType.LONG, key, value);
+    }
+
+    @Override
     public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
         return this.setPDCData(itemStack, PersistentDataType.BYTE, key, (byte) (value ? 1 : 0));
     }
@@ -355,6 +360,11 @@ public class Compat_v1_16_R3 implements Compat {
     @Override
     public Boolean getPDCDataBool(final Object itemStack, final String key) {
         return ObjectUtils.getBoolean(this.getPDCData(itemStack, PersistentDataType.BYTE, key));
+    }
+
+    @Override
+    public Long getPDCDataLong(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.LONG, key);
     }
 
     @Override
@@ -400,6 +410,11 @@ public class Compat_v1_16_R3 implements Compat {
     @Override
     public Integer getPlDataInt(final Object itemStack, final String key) {
         return this.getPDCDataInt(itemStack, key);
+    }
+
+    @Override
+    public Long getPlDataLong(final Object itemStack, final String key) {
+        return this.getPDCDataLong(itemStack, key);
     }
 
     @Override

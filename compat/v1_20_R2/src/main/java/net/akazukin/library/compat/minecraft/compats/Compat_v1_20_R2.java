@@ -313,6 +313,11 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
+    public <I> I setPDCData(final I itemStack, final String key, final Long value) {
+        return this.setPDCData(itemStack, PersistentDataType.LONG, key, value);
+    }
+
+    @Override
     public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
         return this.setPDCData(itemStack, PersistentDataType.BOOLEAN, key, value);
     }
@@ -346,33 +351,13 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
-    public <I> I setPlData(final I itemStack, final String key, final String value) {
-        return this.setPDCData(itemStack, key, value);
+    public Long getPDCDataLong(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.LONG, key);
     }
 
-    private <I, R, T> I setPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id,
-                                   final T value) {
-        final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
-            bktItemStack = (ItemStack) itemStack;
-        else
-            return null;
-
-        final ItemMeta itemMeta = bktItemStack.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(
-                new NamespacedKey(this.plugin, id),
-                type, value
-        );
-        bktItemStack.setItemMeta(itemMeta);
-
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
-            return (I) bktItemStack;
-        else if (itemStack instanceof ItemStack)
-            return (I) CraftItemStack.asNMSCopy(bktItemStack);
-        else
-            return null;
+    @Override
+    public <I> I setPlData(final I itemStack, final String key, final String value) {
+        return this.setPDCData(itemStack, key, value);
     }
 
     @Override
@@ -388,6 +373,11 @@ public class Compat_v1_20_R2 implements Compat {
     @Override
     public Integer getPlDataInt(final Object itemStack, final String key) {
         return this.getPDCDataInt(itemStack, key);
+    }
+
+    @Override
+    public Long getPlDataLong(final Object itemStack, final String key) {
+        return this.getPDCDataLong(itemStack, key);
     }
 
     @Override
@@ -446,5 +436,30 @@ public class Compat_v1_20_R2 implements Compat {
         return bktItemStack.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
+    }
+
+    private <I, R, T> I setPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id,
+                                   final T value) {
+        final ItemStack bktItemStack;
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
+        else if (itemStack instanceof ItemStack)
+            bktItemStack = (ItemStack) itemStack;
+        else
+            return null;
+
+        final ItemMeta itemMeta = bktItemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(
+                new NamespacedKey(this.plugin, id),
+                type, value
+        );
+        bktItemStack.setItemMeta(itemMeta);
+
+        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+            return (I) bktItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (I) CraftItemStack.asNMSCopy(bktItemStack);
+        else
+            return null;
     }
 }

@@ -307,6 +307,11 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
+    public <I> I setPDCData(final I itemStack, final String key, final Long value) {
+        return this.setPDCData(itemStack, PersistentDataType.LONG, key, value);
+    }
+
+    @Override
     public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
         return this.setPDCData(itemStack, PersistentDataType.BYTE, key, (byte) (value ? 1 : 0));
     }
@@ -341,6 +346,11 @@ public class Compat_v1_18_R2 implements Compat {
     }
 
     @Override
+    public Long getPDCDataLong(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.LONG, key);
+    }
+
+    @Override
     public <I> I setPlData(final I itemStack, final String key, final String value) {
         return this.setPDCData(itemStack, key, value);
     }
@@ -355,6 +365,16 @@ public class Compat_v1_18_R2 implements Compat {
         return this.getPDCDataString(itemStack, key);
     }
 
+    @Override
+    public Integer getPlDataInt(final Object itemStack, final String key) {
+        return this.getPDCDataInt(itemStack, key);
+    }
+
+    @Override
+    public Long getPlDataLong(final Object itemStack, final String key) {
+        return this.getPDCDataLong(itemStack, key);
+    }
+
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
         final ItemStack bktItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
@@ -367,11 +387,6 @@ public class Compat_v1_18_R2 implements Compat {
         return bktItemStack.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
-    }
-
-    @Override
-    public Integer getPlDataInt(final Object itemStack, final String key) {
-        return this.getPDCDataInt(itemStack, key);
     }
 
     @Override
