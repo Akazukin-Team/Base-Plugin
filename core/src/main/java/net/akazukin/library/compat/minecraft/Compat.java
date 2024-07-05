@@ -15,6 +15,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public interface Compat {
     int getProtocolVersion();
@@ -46,22 +47,22 @@ public interface Compat {
 
     Boolean hasNBT(Object itemStack);
 
-    <T> T setNBT(T itemStack, String id, String value);
+    <T> T setNBT(T itemStack, String key, String value);
 
-    <T> T setNBT(T itemStack, String id, long value);
+    <T> T setNBT(T itemStack, String key, long value);
 
-    <T> T setNBT(T itemStack, String id, boolean value);
-
-    @Nullable
-    String getNBTString(Object itemStack, String id);
+    <T> T setNBT(T itemStack, String key, boolean value);
 
     @Nullable
-    Long getNBTLong(Object itemStack, String id);
+    String getNBTString(Object itemStack, String key);
 
     @Nullable
-    Boolean getNBTBoolean(Object itemStack, String id);
+    Long getNBTLong(Object itemStack, String key);
 
-    Boolean containsNBT(Object itemStack, String id);
+    @Nullable
+    Boolean getNBTBoolean(Object itemStack, String key);
+
+    Boolean containsNBT(Object itemStack, String key);
 
     <T> T removeNBT(T itemStack, String key);
 
@@ -69,13 +70,17 @@ public interface Compat {
 
     BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags);
 
-    <I> I setPDCData(I itemStack, String id, String value);
+    <I> I setPDCData(I itemStack, String key, String value);
 
-    <I> I setPDCData(I itemStack, String id, Integer value);
+    <I> I setPDCData(I itemStack, String key, Integer value);
 
-    Integer getIntPDCData(Object itemStack, String id);
+    <I> I setPDCData(I itemStack, String key, boolean value);
 
-    String getStringPDCData(Object itemStack, String id);
+    Integer getIntPDCData(Object itemStack, String key);
+
+    String getStringPDCData(Object itemStack, String key);
+
+    Boolean getBoolPDCData(Object itemStack, String key);
 
     <I> I setPlData(I itemStack, String key, String value);
 
@@ -84,4 +89,8 @@ public interface Compat {
     String getStringPlData(Object itemStack, String key);
 
     Integer getIntPlData(Object itemStack, String key);
+
+    Boolean getBoolPlData(Object itemStack, String key);
+
+    ItemStack setPlData(ItemStack itemStack, String key, boolean value);
 }

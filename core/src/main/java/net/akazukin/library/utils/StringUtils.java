@@ -47,14 +47,6 @@ public class StringUtils {
     }
 
     @Nullable
-    public static Boolean getBoolean(final String bool) {
-        if (bool == null) return null;
-        if (bool.equalsIgnoreCase("true")) return true;
-        if (bool.equalsIgnoreCase("false")) return false;
-        return null;
-    }
-
-    @Nullable
     public static UUID toUuid(@Nullable final String str) {
         if (str == null) return null;
         return UUID.fromString(str);

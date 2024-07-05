@@ -13,8 +13,8 @@ import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
+import net.akazukin.library.utils.ObjectUtils;
 import net.akazukin.library.utils.ReflectionUtils;
-import net.akazukin.library.utils.StringUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -145,7 +145,7 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final String value) {
+    public <T> T setNBT(final T itemStack, final String key, final String value) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -155,7 +155,7 @@ public class Compat_v1_17_R1 implements Compat {
             return null;
 
         final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setString(id, value);
+        nbt.setString(key, value);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -166,7 +166,7 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final long value) {
+    public <T> T setNBT(final T itemStack, final String key, final long value) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -176,7 +176,7 @@ public class Compat_v1_17_R1 implements Compat {
             return null;
 
         final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setLong(id, value);
+        nbt.setLong(key, value);
 
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             return (T) nmsItemStack;
@@ -187,12 +187,12 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public <T> T setNBT(final T itemStack, final String id, final boolean value) {
-        return this.setNBT(itemStack, id, String.valueOf(value));
+    public <T> T setNBT(final T itemStack, final String key, final boolean value) {
+        return this.setNBT(itemStack, key, String.valueOf(value));
     }
 
     @Override
-    public String getNBTString(final Object itemStack, final String id) {
+    public String getNBTString(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -201,11 +201,11 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.containsNBT(itemStack, id) ? nmsItemStack.getTag().getString(id) : null;
+        return this.containsNBT(itemStack, key) ? nmsItemStack.getTag().getString(key) : null;
     }
 
     @Override
-    public Long getNBTLong(final Object itemStack, final String id) {
+    public Long getNBTLong(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -214,16 +214,16 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.containsNBT(nmsItemStack, id) ? nmsItemStack.getTag().getLong(id) : null;
+        return this.containsNBT(nmsItemStack, key) ? nmsItemStack.getTag().getLong(key) : null;
     }
 
     @Override
-    public Boolean getNBTBoolean(final Object itemStack, final String id) {
-        return StringUtils.getBoolean(this.getNBTString(itemStack, id));
+    public Boolean getNBTBoolean(final Object itemStack, final String key) {
+        return ObjectUtils.getBoolean(this.getNBTString(itemStack, key));
     }
 
     @Override
-    public Boolean containsNBT(final Object itemStack, final String id) {
+    public Boolean containsNBT(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
@@ -232,7 +232,7 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return this.hasNBT(nmsItemStack) && nmsItemStack.getTag().hasKey(id);
+        return this.hasNBT(nmsItemStack) && nmsItemStack.getTag().hasKey(key);
     }
 
     @Override
@@ -305,23 +305,33 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public <I> I setPDCData(final I itemStack, final String id, final String value) {
-        return this.setPDCData(itemStack, PersistentDataType.STRING, id, value);
+    public <I> I setPDCData(final I itemStack, final String key, final String value) {
+        return this.setPDCData(itemStack, PersistentDataType.STRING, key, value);
     }
 
     @Override
-    public <I> I setPDCData(final I itemStack, final String id, final Integer value) {
-        return this.setPDCData(itemStack, PersistentDataType.INTEGER, id, value);
+    public <I> I setPDCData(final I itemStack, final String key, final Integer value) {
+        return this.setPDCData(itemStack, PersistentDataType.INTEGER, key, value);
     }
 
     @Override
-    public Integer getIntPDCData(final Object itemStack, final String id) {
-        return this.getPDCData(itemStack, PersistentDataType.INTEGER, id);
+    public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
+        return this.setPDCData(itemStack, PersistentDataType.BYTE, key, (byte) (value ? 1 : 0));
     }
 
     @Override
-    public String getStringPDCData(final Object itemStack, final String id) {
-        return this.getPDCData(itemStack, PersistentDataType.STRING, id);
+    public Integer getIntPDCData(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.INTEGER, key);
+    }
+
+    @Override
+    public String getStringPDCData(final Object itemStack, final String key) {
+        return this.getPDCData(itemStack, PersistentDataType.STRING, key);
+    }
+
+    @Override
+    public Boolean getBoolPDCData(final Object itemStack, final String key) {
+        return ObjectUtils.getBoolean(this.getPDCData(itemStack, PersistentDataType.BYTE, key));
     }
 
     @Override
@@ -364,6 +374,21 @@ public class Compat_v1_17_R1 implements Compat {
         return this.getStringPDCData(itemStack, key);
     }
 
+    @Override
+    public Integer getIntPlData(final Object itemStack, final String key) {
+        return this.getIntPDCData(itemStack, key);
+    }
+
+    @Override
+    public Boolean getBoolPlData(final Object itemStack, final String key) {
+        return this.getBoolPDCData(itemStack, key);
+    }
+
+    @Override
+    public ItemStack setPlData(final ItemStack itemStack, final String key, final boolean value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
         final ItemStack bktItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
@@ -376,10 +401,5 @@ public class Compat_v1_17_R1 implements Compat {
         return bktItemStack.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
-    }
-
-    @Override
-    public Integer getIntPlData(final Object itemStack, final String key) {
-        return this.getIntPDCData(itemStack, key);
     }
 }
