@@ -73,6 +73,8 @@ public interface Compat {
 
     <I> I setPDCData(I itemStack, String key, Integer value);
 
+    <I> I setPDCData(I itemStack, String key, Long value);
+
     <I> I setPDCData(I itemStack, String key, boolean value);
 
     Boolean containsPDCData(Object itemStack, String key);
@@ -83,6 +85,8 @@ public interface Compat {
 
     Boolean getPDCDataBool(Object itemStack, String key);
 
+    Long getPDCDataLong(Object itemStack, String key);
+
     <I> I setPlData(I itemStack, String key, String value);
 
     <I> I setPlData(I itemStack, String key, Integer value);
@@ -90,6 +94,8 @@ public interface Compat {
     String getPlDataString(Object itemStack, String key);
 
     Integer getPlDataInt(Object itemStack, String key);
+
+    Long getPlDataLong(Object itemStack, String key);
 
     Boolean getPlDataBool(Object itemStack, String key);
 
