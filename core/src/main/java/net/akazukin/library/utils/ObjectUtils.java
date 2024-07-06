@@ -15,4 +15,9 @@ public class ObjectUtils {
         }
         return null;
     }
+
+    @Nullable
+    public static Byte toByte(final Boolean bool) {
+        return bool != null ? (byte) (bool ? 1 : 0) : null;
+    }
 }
