@@ -7,6 +7,7 @@ import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
@@ -150,49 +151,37 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     public <T> T setNBT(final T itemStack, final String key, final String value) {
-        final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            nmsItemStack = (net.minecraft.server.v1_16_R3.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
-            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
-            return null;
-
-        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setString(key, value);
-
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            return (T) nmsItemStack;
-        else if (itemStack instanceof ItemStack)
-            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
-        else
-            return null;
+        return this.setNBT(itemStack, key, (Object) value);
     }
 
     @Override
     public <T> T setNBT(final T itemStack, final String key, final long value) {
-        final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            nmsItemStack = (net.minecraft.server.v1_16_R3.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
-            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
-            return null;
-
-        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        nbt.setLong(key, value);
-
-        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
-            return (T) nmsItemStack;
-        else if (itemStack instanceof ItemStack)
-            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
-        else
-            return null;
+        return this.setNBT(itemStack, key, (Object) value);
     }
 
     @Override
     public <T> T setNBT(final T itemStack, final String key, final boolean value) {
-        return this.setNBT(itemStack, key, String.valueOf(value));
+        return this.setNBT(itemStack, key, (Object) value);
+    }
+
+    @Override
+    public <T> T setNBT(final T itemStack, final String key, final byte value) {
+        return this.setNBT(itemStack, key, (Object) value);
+    }
+
+    @Override
+    public <T> T setNBT(final T itemStack, final String key, final short value) {
+        return this.setNBT(itemStack, key, (Object) value);
+    }
+
+    @Override
+    public <T> T setNBT(final T itemStack, final String key, final UUID value) {
+        return this.setNBT(itemStack, key, (Object) value);
+    }
+
+    @Override
+    public <T> T setNBT(final T itemStack, final String key, final double value) {
+        return this.setNBT(itemStack, key, (Object) value);
     }
 
     @Override
@@ -329,8 +318,8 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
-    public <I> I setPDCData(final I itemStack, final String key, final boolean value) {
-        return this.setPDCData(itemStack, PersistentDataType.BYTE, key, (byte) (value ? 1 : 0));
+    public <I> I setPDCData(final I itemStack, final String key, final Boolean value) {
+        return this.setPDCData(itemStack, PersistentDataType.BYTE, key, value != null ? (byte) (value ? 1 : 0) : null);
     }
 
     @Override
@@ -378,6 +367,11 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
+    public <I> I setPlData(final I itemStack, final String key, final Long value) {
+        return this.setPDCData(itemStack, key, value);
+    }
+
+    @Override
     public String getPlDataString(final Object itemStack, final String key) {
         return this.getPDCDataString(itemStack, key);
     }
@@ -398,7 +392,7 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
-    public <I> I setPlData(final I itemStack, final String key, final boolean value) {
+    public <I> I setPlData(final I itemStack, final String key, final Boolean value) {
         return this.setPDCData(itemStack, key, value);
     }
 
@@ -471,6 +465,42 @@ public class Compat_v1_16_R3 implements Compat {
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
         else if (itemStack instanceof ItemStack)
             return (I) bktItemStack;
+        else
+            return null;
+    }
+
+    public <T> T setNBT(final T itemStack, final String key, final Object value) {
+        final net.minecraft.server.v1_16_R3.ItemStack nmsItemStack;
+        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
+            nmsItemStack = (net.minecraft.server.v1_16_R3.ItemStack) itemStack;
+        else if (itemStack instanceof ItemStack)
+            nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
+        else
+            return null;
+
+        final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
+
+        if (value instanceof Boolean)
+            nbt.setBoolean(key, (Boolean) value);
+        else if (value instanceof String)
+            nbt.setString(key, (String) value);
+        else if (value instanceof Integer)
+            nbt.setInt(key, (Integer) value);
+        else if (value instanceof Long)
+            nbt.setLong(key, (Long) value);
+        else if (value instanceof Byte)
+            nbt.setByte(key, (Byte) value);
+        else if (value instanceof Short)
+            nbt.setShort(key, (Short) value);
+        else if (value instanceof Double)
+            nbt.setDouble(key, (Double) value);
+        else if (value instanceof UUID)
+            nbt.a(key, (UUID) value);
+
+        if (itemStack instanceof net.minecraft.server.v1_16_R3.ItemStack)
+            return (T) nmsItemStack;
+        else if (itemStack instanceof ItemStack)
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
         else
             return null;
     }

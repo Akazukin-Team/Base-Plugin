@@ -2,6 +2,7 @@ package net.akazukin.library.compat.minecraft;
 
 import io.netty.channel.Channel;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -52,6 +53,14 @@ public interface Compat {
 
     <T> T setNBT(T itemStack, String key, boolean value);
 
+    <T> T setNBT(T itemStack, String key, byte value);
+
+    <T> T setNBT(T itemStack, String key, short value);
+
+    <T> T setNBT(T itemStack, String key, UUID value);
+
+    <T> T setNBT(T itemStack, String key, double value);
+
     @Nullable
     String getNBTString(Object itemStack, String key);
 
@@ -75,7 +84,7 @@ public interface Compat {
 
     <I> I setPDCData(I itemStack, String key, Long value);
 
-    <I> I setPDCData(I itemStack, String key, boolean value);
+    <I> I setPDCData(I itemStack, String key, Boolean value);
 
     Boolean containsPDCData(Object itemStack, String key);
 
@@ -91,6 +100,8 @@ public interface Compat {
 
     <I> I setPlData(I itemStack, String key, Integer value);
 
+    <I> I setPlData(I itemStack, String key, Long value);
+
     String getPlDataString(Object itemStack, String key);
 
     Integer getPlDataInt(Object itemStack, String key);
@@ -99,7 +110,7 @@ public interface Compat {
 
     Boolean getPlDataBool(Object itemStack, String key);
 
-    <I> I setPlData(I itemStack, String key, boolean value);
+    <I> I setPlData(I itemStack, String key, Boolean value);
 
     boolean containsPlData(Object itemStack, String key);
 
