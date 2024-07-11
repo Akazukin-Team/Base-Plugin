@@ -15,23 +15,37 @@ import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_16_R3.PacketProcessor_v1_16_R3;
+import net.akazukin.library.exception.UnsupportedOperationYetException;
 import net.akazukin.library.utils.ObjectUtils;
 import net.akazukin.library.utils.ReflectionUtils;
+import net.akazukin.library.world.WrappedBlockData;
+import net.akazukin.library.worldedit.Vec2;
+import net.akazukin.library.worldedit.Vec2i;
+import net.akazukin.library.worldedit.Vec3;
 import net.minecraft.server.v1_16_R3.BlockPosition;
+import net.minecraft.server.v1_16_R3.Chunk;
+import net.minecraft.server.v1_16_R3.ChunkCoordIntPair;
+import net.minecraft.server.v1_16_R3.ChunkSection;
 import net.minecraft.server.v1_16_R3.ContainerAnvil;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NetworkManager;
 import net.minecraft.server.v1_16_R3.ServerConnection;
 import net.minecraft.server.v1_16_R3.SharedConstants;
+import net.minecraft.server.v1_16_R3.TicketType;
+import net.minecraft.server.v1_16_R3.Unit;
+import net.minecraft.server.v1_16_R3.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
@@ -428,6 +442,74 @@ public class Compat_v1_16_R3 implements Compat {
             return (I) bktItemStack;
         else
             return null;
+    }
+
+    @Override
+    public WorldServer getNMSChunk(final World world) {
+        return ((CraftWorld) world).getHandle();
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object world, final Vec2<Integer> chunkLoc) {
+        return this.getNMSWorld(world).getChunkAt(chunkLoc.getX(), chunkLoc.getY());
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object world, final Vec3<Integer> loc) {
+        return this.getNMSChunk(world, new Vec2i(loc.getX() >> 4, loc.getZ() >> 4));
+    }
+
+    @Override
+    public void setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+                             final boolean applyPhysics) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object chunk) {
+        if (chunk instanceof CraftChunk)
+            return ((CraftChunk) chunk).getHandle();
+        else if (chunk instanceof Chunk)
+            return (Chunk) chunk;
+        else return null;
+    }
+
+    @Override
+    public WorldServer getNMSWorld(final Object world) {
+        if (world instanceof World)
+            return ((CraftWorld) world).getHandle();
+        else if (world instanceof WorldServer)
+            return (WorldServer) world;
+        else return null;
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object chunk, final int y) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object world, final Vec3<Integer> chunkLoc) {
+        return this.getNMSChunkSection(this.getNMSChunk(this.getNMSWorld(world), chunkLoc), chunkLoc.getY());
+    }
+
+    @Override
+    public int getHeight(final World world) {
+        return world.getMaxHeight() - this.getMinHeight(world);
+    }
+
+    @Override
+    public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
+        this.getNMSWorld(world).getChunkProvider().addTicket(
+                TicketType.PLUGIN,
+                new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
+                1,
+                Unit.INSTANCE);
     }
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {

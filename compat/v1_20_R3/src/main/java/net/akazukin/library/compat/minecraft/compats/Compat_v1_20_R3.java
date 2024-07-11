@@ -2,7 +2,9 @@ package net.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
@@ -12,26 +14,42 @@ import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_20_R3.PacketProcessor_v1_20_R3;
 import net.akazukin.library.utils.ObjectUtils;
 import net.akazukin.library.utils.ReflectionUtils;
+import net.akazukin.library.world.WrappedBlockData;
+import net.akazukin.library.worldedit.Vec2;
+import net.akazukin.library.worldedit.Vec2i;
+import net.akazukin.library.worldedit.Vec3;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConnection;
+import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.ContainerAnvil;
+import net.minecraft.world.level.ChunkCoordIntPair;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.chunk.Chunk;
+import net.minecraft.world.level.chunk.ChunkSection;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +61,7 @@ import org.bukkit.profile.PlayerProfile;
 public class Compat_v1_20_R3 implements Compat {
     private final JavaPlugin plugin;
     public PacketProcessor_v1_20_R3 pktProcessor;
+    Map<Material, WrappedBlockData> blockData = new HashMap<Material, WrappedBlockData>();
 
     public Compat_v1_20_R3(final JavaPlugin plugin) {
         this.pktProcessor = new PacketProcessor_v1_20_R3(this);
@@ -416,6 +435,81 @@ public class Compat_v1_20_R3 implements Compat {
             return (I) bktItemStack;
         else
             return null;
+    }
+
+    @Override
+    public WorldServer getNMSChunk(final World world) {
+        return ((CraftWorld) world).getHandle();
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object world, final Vec2<Integer> chunkLoc) {
+        return this.getNMSWorld(world).d(chunkLoc.getX(), chunkLoc.getY());
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object world, final Vec3<Integer> loc) {
+        return this.getNMSChunk(world, new Vec2i(loc.getX() >> 4, loc.getZ() >> 4));
+    }
+
+    @Override
+    public void setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+                             final boolean applyPhysics) {
+        final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
+
+        cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15, (IBlockData) blockData.getBlockData(),
+                applyPhysics);
+    }
+
+    @Override
+    public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
+        if (!this.blockData.containsKey(material))
+            this.blockData.put(material,
+                    new WrappedBlockData(CraftMagicNumbers.getBlock(material, data)));
+        return this.blockData.get(material);
+    }
+
+    @Override
+    public Chunk getNMSChunk(final Object chunk) {
+        if (chunk instanceof CraftChunk)
+            return (Chunk) ((CraftChunk) chunk).getHandle(ChunkStatus.n);
+        else if (chunk instanceof Chunk)
+            return (Chunk) chunk;
+        else return null;
+    }
+
+    @Override
+    public WorldServer getNMSWorld(final Object world) {
+        if (world instanceof World)
+            return ((CraftWorld) world).getHandle();
+        else if (world instanceof WorldServer)
+            return (WorldServer) world;
+        else return null;
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object chunk, final int y) {
+        final Chunk c = this.getNMSChunk(chunk);
+        return c.b(y >> 4);
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object world, final Vec3<Integer> chunkLoc) {
+        return this.getNMSChunkSection(this.getNMSChunk(this.getNMSWorld(world), chunkLoc), chunkLoc.getY());
+    }
+
+    @Override
+    public int getHeight(final World world) {
+        return world.getMaxHeight() - this.getMinHeight(world);
+    }
+
+    @Override
+    public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
+        this.getNMSWorld(world).l().a(
+                TicketType.PLUGIN,
+                new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
+                1,
+                Unit.a);
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {

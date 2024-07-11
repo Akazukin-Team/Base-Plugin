@@ -8,7 +8,11 @@ import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
+import net.akazukin.library.world.WrappedBlockData;
+import net.akazukin.library.worldedit.Vec2;
+import net.akazukin.library.worldedit.Vec3;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -117,4 +121,26 @@ public interface Compat {
     <I> I removePlData(I item, String key);
 
     <I> I removePDCData(I item, String key);
+
+    Object getNMSChunk(World world);
+
+    Object getNMSChunk(Object world, Vec2<Integer> chunkLoc);
+
+    Object getNMSChunk(Object world, Vec3<Integer> vec3i);
+
+    void setBlockDate(Object chunk, Vec3<Integer> vec3i, WrappedBlockData blockData, boolean applyPhysics);
+
+    WrappedBlockData getNMSNewBlockDate(Material material, byte data);
+
+    Object getNMSChunk(Object world);
+
+    Object getNMSWorld(Object world);
+
+    Object getNMSChunkSection(Object chunk, int y);
+
+    Object getNMSChunkSection(Object world, Vec3<Integer> chunkLoc);
+
+    int getHeight(World world);
+
+    void updateChunk(Object world, Vec2<Integer> chunkLoc);
 }
