@@ -2,6 +2,7 @@ package net.akazukin.library.worldedit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -69,21 +70,24 @@ public class EditSession {
 
                     e.parallelStream().map((e2) -> {
                                 final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection(chunk, e2.getKey().getY());
+
+                                if (Objects.equals(LibraryPlugin.COMPAT.getBlockDate2(cs, e2.getKey()), e2.getValue()))
+                                    return null;
+
                                 return new PlaceResult(e2.getKey(),
                                         LibraryPlugin.COMPAT.setBlockDate2(cs, e2.getKey(), e2.getValue(), false),
                                         cs);
                             })
+                            .filter(Objects::nonNull)
                             .collect(Collectors.groupingBy(PlaceResult::getChunkSection))
-                            .forEach((e2, e3) -> this.world.getPlayers().forEach(p -> {
-                                LibraryPlugin.COMPAT.sendPacket(p, new SMultiBlockChangePacket(
-                                                new Vec3i(v.getX(), e3.get(0).getVec3().getY() >> 4, v.getY()),
-                                                e3.stream()
-                                                        .map(e4 -> new SMultiBlockChangePacket.BlockInfo(e4.getVec3(),
-                                                                e4.getBlockData()))
-                                                        .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
-                                        )
-                                );
-                            }));
+                            .forEach((e2, e3) -> this.world.getPlayers().forEach(p -> LibraryPlugin.COMPAT.sendPacket(p, new SMultiBlockChangePacket(
+                                            new Vec3i(v.getX(), e3.get(0).getVec3().getY() >> 4, v.getY()),
+                                            e3.stream()
+                                                    .map(e4 -> new SMultiBlockChangePacket.BlockInfo(e4.getVec3(),
+                                                            e4.getBlockData()))
+                                                    .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
+                                    )
+                            )));
                 });
     }
 

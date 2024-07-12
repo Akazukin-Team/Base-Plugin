@@ -512,6 +512,11 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
+    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
     public Object getNMSChunkSection(final Object chunkSection) {
         throw new UnsupportedOperationYetException();
     }

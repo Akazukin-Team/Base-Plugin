@@ -148,5 +148,7 @@ public interface Compat {
     Object setBlockDate2(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
                          boolean applyPhysics);
 
+    WrappedBlockData getBlockDate2(Object chunkSection, Vec3<Integer> vec3i);
+
     Object getNMSChunkSection(Object chunkSection);
 }

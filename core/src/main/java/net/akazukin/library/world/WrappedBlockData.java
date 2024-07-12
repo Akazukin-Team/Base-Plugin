@@ -1,5 +1,6 @@
 package net.akazukin.library.world;
 
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -11,12 +12,8 @@ public class WrappedBlockData {
     int blockId;
     byte data;
 
-    public WrappedBlockData(final Object blockState) {
+    public WrappedBlockData(@Nonnull final Object blockState) {
         this.blockData = blockState;
-        /*((IBlockState)(blockState));
-        ((BlockState)blockState);
-        ((CraftBlock)block).getNMS();
-        new CraftBlock()*/
         this.blockId = -1;
         this.data = -1;
     }

@@ -502,11 +502,15 @@ public class Compat_v1_20_R2 implements Compat {
                 Unit.a);
     }
 
-
     @Override
     public Object setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
                                 final WrappedBlockData blockData,
                                 final boolean applyPhysics) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
         throw new UnsupportedOperationYetException();
     }
 

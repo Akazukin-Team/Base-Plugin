@@ -525,6 +525,13 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
+    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
+        final ChunkSection cs = this.getNMSChunkSection(chunkSection);
+
+        return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
+    }
+
+    @Override
     public ChunkSection getNMSChunkSection(final Object chunkSection) {
         if (chunkSection instanceof ChunkSection)
             return (ChunkSection) chunkSection;
