@@ -10,7 +10,6 @@ import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
 import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.akazukin.library.utils.ArrayUtils;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.core.SectionPosition;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
@@ -47,7 +46,6 @@ public class PacketProcessor_v1_20_R3 implements PacketProcessor<Packet<?>> {
                             .getHandle()
             );
         } else if (packet instanceof SMultiBlockChangePacket) {
-            SectionPosition.a(new BlockPosition())
             return new PacketPlayOutMultiBlockChange(
                     SectionPosition.a(
                             ((SMultiBlockChangePacket) packet).getSectionPos().getX(),
