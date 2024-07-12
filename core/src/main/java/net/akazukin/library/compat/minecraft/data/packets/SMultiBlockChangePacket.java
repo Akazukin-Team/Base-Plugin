@@ -1,0 +1,25 @@
+package net.akazukin.library.compat.minecraft.data.packets;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import net.akazukin.library.worldedit.Vec3;
+import net.akazukin.library.worldedit.Vec3i;
+
+@AllArgsConstructor
+@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class SMultiBlockChangePacket implements Packet {
+    Vec3i sectionPos;
+    BlockInfo[] blockInfo;
+    //Object chunkSection;
+
+    @AllArgsConstructor
+    @Getter
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    public static class BlockInfo {
+        Vec3<Integer> pos;
+        Object blockData;
+    }
+}

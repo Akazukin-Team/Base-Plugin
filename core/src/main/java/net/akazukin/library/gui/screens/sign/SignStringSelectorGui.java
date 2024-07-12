@@ -5,8 +5,8 @@ import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
-import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
-import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.akazukin.library.event.events.PacketReceiveEvent;
 import net.akazukin.library.gui.screens.chest.GuiBase;
 import org.bukkit.Bukkit;
@@ -28,8 +28,9 @@ public class SignStringSelectorGui extends GuiBase {
         LibraryPlugin.COMPAT.sendSignUpdate(player_, player_.getLocation(), Arrays.copyOf(result, 4));
         LibraryPlugin.COMPAT.sendPacket(
                 player_,
-                new SOpenSignEditorPacket(
-                        new WrappedBlockPos(player_.getLocation().getBlockX(), player_.getLocation().getBlockY(), player_.getLocation().getBlockZ()),
+                new COpenSignEditorPacket(
+                        new WrappedBlockPos(player_.getLocation().getBlockX(), player_.getLocation().getBlockY(),
+                                player_.getLocation().getBlockZ()),
                         true
                 )
         );
@@ -40,7 +41,7 @@ public class SignStringSelectorGui extends GuiBase {
     }
 
     public void onGuiClose(final PacketReceiveEvent event) {
-        final CUpdateSignPacket pkt = (CUpdateSignPacket) LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+        final SUpdateSignPacket pkt = (SUpdateSignPacket) LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
         result = pkt.getLines();
     }
 

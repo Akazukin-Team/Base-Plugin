@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -115,7 +116,8 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public void sendPacket(final Player player, final Packet packet) {
+    public void sendPacket(@Nonnull final Player player, @Nonnull final Packet packet) {
+        player.sendMessage(player.getName() + ".sendPacket();");
         ((CraftPlayer) player).getHandle().c.b(this.getNMSPacket(packet));
     }
 
@@ -453,12 +455,10 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public void setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
-                             final boolean applyPhysics) {
+    public Object setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+                               final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
-
-        cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15, (IBlockData) blockData.getBlockData(),
-                applyPhysics);
+        return this.setBlockDate2(cs, vec3i, blockData, applyPhysics);
     }
 
     @Override
@@ -505,11 +505,30 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
+        this.getNMSChunk(world, chunkLoc).e();
         this.getNMSWorld(world).l().a(
                 TicketType.PLUGIN,
                 new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
                 1,
                 Unit.a);
+    }
+
+    @Override
+    public Object setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+                                final WrappedBlockData blockData,
+                                final boolean applyPhysics) {
+        final ChunkSection cs = this.getNMSChunkSection(chunkSection);
+
+        return cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
+                ((IBlockData) blockData.getBlockData()),
+                applyPhysics);
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object chunkSection) {
+        if (chunkSection instanceof ChunkSection)
+            return (ChunkSection) chunkSection;
+        else return null;
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {

@@ -3,8 +3,13 @@ package net.akazukin.library.worldedit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
 import net.akazukin.library.world.WrappedBlockData;
 import org.bukkit.World;
 
@@ -61,9 +66,34 @@ public class EditSession {
                 .collect(Collectors.groupingBy(e -> new Vec2i(e.getKey().getX() >> 4, e.getKey().getZ() >> 4)))
                 .forEach((v, e) -> {
                     final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, v);
-                    e.parallelStream().forEach((e2) ->
-                            LibraryPlugin.COMPAT.setBlockDate(chunk, e2.getKey(), e2.getValue(), false));
-                    LibraryPlugin.COMPAT.updateChunk(w, v);
+
+                    e.parallelStream().map((e2) -> {
+                                final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection(chunk, e2.getKey().getY());
+                                return new PlaceResult(e2.getKey(),
+                                        LibraryPlugin.COMPAT.setBlockDate2(cs, e2.getKey(), e2.getValue(), false),
+                                        cs);
+                            })
+                            .collect(Collectors.groupingBy(PlaceResult::getChunkSection))
+                            .forEach((e2, e3) -> this.world.getPlayers().forEach(p -> {
+                                LibraryPlugin.COMPAT.sendPacket(p, new SMultiBlockChangePacket(
+                                                new Vec3i(v.getX(), e3.get(0).getVec3().getY() >> 4, v.getY()),
+                                                e3.stream()
+                                                        .map(e4 -> new SMultiBlockChangePacket.BlockInfo(e4.getVec3(),
+                                                                e4.getBlockData()))
+                                                        .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
+                                        )
+                                );
+                            }));
                 });
     }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    private static class PlaceResult {
+        Vec3<Integer> vec3;
+        Object blockData;
+        Object chunkSection;
+    }
+
 }

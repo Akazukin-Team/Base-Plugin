@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -110,7 +111,7 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
-    public void sendPacket(final Player player, final Packet packet) {
+    public void sendPacket(@Nonnull final Player player, @Nonnull final Packet packet) {
         ((CraftPlayer) player).getHandle().c.a(this.getNMSPacket(packet));
     }
 
@@ -450,8 +451,8 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
-    public void setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
-                             final boolean applyPhysics) {
+    public Object setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+                               final boolean applyPhysics) {
         throw new UnsupportedOperationException();
     }
 
@@ -500,6 +501,18 @@ public class Compat_v1_20_R1 implements Compat {
                 new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
                 1,
                 Unit.a);
+    }
+
+    @Override
+    public Object setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+                                final WrappedBlockData blockData,
+                                final boolean applyPhysics) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public Object getNMSChunkSection(final Object chunkSection) {
+        throw new UnsupportedOperationYetException();
     }
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {

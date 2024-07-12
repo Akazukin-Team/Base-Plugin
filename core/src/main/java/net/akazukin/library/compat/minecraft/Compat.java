@@ -3,6 +3,7 @@ package net.akazukin.library.compat.minecraft;
 import io.netty.channel.Channel;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
@@ -36,7 +37,7 @@ public interface Compat {
 
     Packet getWrappedPacket(Object packet);
 
-    void sendPacket(Player player, Packet packet);
+    void sendPacket(@Nonnull Player player, @Nonnull Packet packet);
 
     WrappedBlockPos getWrappedBlockPos(Object pos);
 
@@ -128,7 +129,7 @@ public interface Compat {
 
     Object getNMSChunk(Object world, Vec3<Integer> vec3i);
 
-    void setBlockDate(Object chunk, Vec3<Integer> vec3i, WrappedBlockData blockData, boolean applyPhysics);
+    Object setBlockDate(Object chunk, Vec3<Integer> vec3i, WrappedBlockData blockData, boolean applyPhysics);
 
     WrappedBlockData getNMSNewBlockDate(Material material, byte data);
 
@@ -143,4 +144,9 @@ public interface Compat {
     int getHeight(World world);
 
     void updateChunk(Object world, Vec2<Integer> chunkLoc);
+
+    Object setBlockDate2(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
+                         boolean applyPhysics);
+
+    Object getNMSChunkSection(Object chunkSection);
 }
