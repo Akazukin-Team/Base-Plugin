@@ -494,6 +494,12 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
+    public void updateLightsAtChunk(final Object chunk) {
+        final Chunk c = this.getNMSChunk(chunk);
+        c.r.k().a().a(c, true);
+    }
+
+    @Override
     public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
         this.getNMSWorld(world).k().a(
                 TicketType.PLUGIN,
@@ -503,9 +509,9 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
-    public Object setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
-                                final WrappedBlockData blockData,
-                                final boolean applyPhysics) {
+    public WrappedBlockData setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+                                          final WrappedBlockData blockData,
+                                          final boolean applyPhysics) {
         throw new UnsupportedOperationYetException();
     }
 
@@ -516,6 +522,16 @@ public class Compat_v1_20_R2 implements Compat {
 
     @Override
     public Object getNMSChunkSection(final Object chunkSection) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public Object getNMSChunkSection2(final Object chunk, final int fixedY) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public void updateLightsAtBlock(final Object world, final Vec3<Integer> pos) {
         throw new UnsupportedOperationYetException();
     }
 

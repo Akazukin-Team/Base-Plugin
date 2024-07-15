@@ -2,9 +2,7 @@ package net.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.Compat;
@@ -62,7 +60,6 @@ import org.bukkit.profile.PlayerProfile;
 public class Compat_v1_20_R3 implements Compat {
     private final JavaPlugin plugin;
     public PacketProcessor_v1_20_R3 pktProcessor;
-    Map<Material, WrappedBlockData> blockData = new HashMap<Material, WrappedBlockData>();
 
     public Compat_v1_20_R3(final JavaPlugin plugin) {
         this.pktProcessor = new PacketProcessor_v1_20_R3(this);
@@ -117,7 +114,6 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public void sendPacket(@Nonnull final Player player, @Nonnull final Packet packet) {
-        player.sendMessage(player.getName() + ".sendPacket();");
         ((CraftPlayer) player).getHandle().c.b(this.getNMSPacket(packet));
     }
 
@@ -463,10 +459,7 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
-        if (!this.blockData.containsKey(material))
-            this.blockData.put(material,
-                    new WrappedBlockData(CraftMagicNumbers.getBlock(material, data)));
-        return this.blockData.get(material);
+        return new WrappedBlockData(CraftMagicNumbers.getBlock(material, data));
     }
 
     @Override
@@ -489,8 +482,7 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public ChunkSection getNMSChunkSection(final Object chunk, final int y) {
-        final Chunk c = this.getNMSChunk(chunk);
-        return c.b(y >> 4);
+        return this.getNMSChunkSection2(chunk, y >> 4);
     }
 
     @Override
@@ -504,8 +496,15 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
+    public void updateLightsAtChunk(final Object chunk) {
+        final Chunk c = this.getNMSChunk(chunk);
+        c.r.l().a().a(c, false);
+        //c.r.l().a().a(c, true);
+    }
+
+    @Override
     public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
-        this.getNMSChunk(world, chunkLoc).e();
+        this.getNMSChunk(world, chunkLoc);
         this.getNMSWorld(world).l().a(
                 TicketType.PLUGIN,
                 new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
@@ -514,14 +513,14 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public Object setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
-                                final WrappedBlockData blockData,
-                                final boolean applyPhysics) {
+    public WrappedBlockData setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+                                          final WrappedBlockData blockData,
+                                          final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
 
-        return cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
+        return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
                 ((IBlockData) blockData.getBlockData()),
-                applyPhysics);
+                applyPhysics));
     }
 
     @Override
@@ -538,6 +537,19 @@ public class Compat_v1_20_R3 implements Compat {
         else return null;
     }
 
+    @Override
+    public ChunkSection getNMSChunkSection2(final Object chunk, final int fixedY) {
+        final Chunk c = this.getNMSChunk(chunk);
+        return c.b(fixedY);
+    }
+
+    @Override
+    public void updateLightsAtBlock(final Object world, final Vec3<Integer> pos) {
+        final WorldServer c = this.getNMSWorld(world);
+        c.z_().a(new BlockPosition(pos.getX(), pos.getY(), pos.getZ()));
+        //c.r.l().a().a(c, true);
+    }
+
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {
         final ItemStack bktItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
@@ -552,8 +564,8 @@ public class Compat_v1_20_R3 implements Compat {
         );
     }
 
-    private <I, R, T> I setPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id,
-                                   final T value) {
+    private <I, R, T> I setPDCData(final I itemStack, @Nonnull final PersistentDataType<R, T> type,
+                                   @Nonnull final String id, @Nonnull final T value) {
         final ItemStack bktItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);

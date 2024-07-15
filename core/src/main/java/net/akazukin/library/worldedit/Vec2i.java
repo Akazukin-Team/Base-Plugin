@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
@@ -12,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class Vec2i implements Vec2<Integer> {
     Integer x;
     Integer y;
@@ -33,13 +35,14 @@ public class Vec2i implements Vec2<Integer> {
     }
 
     @Override
+    public Vec2i add(final Integer x, final Integer y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+
+    @Override
     public Vec2i clone() {
-        Vec2i ins = null;
-        try {
-            ins = (Vec2i) super.clone();
-        } catch (final Throwable e) {
-            e.printStackTrace();
-        }
-        return ins;
+        return new Vec2i(this);
     }
 }

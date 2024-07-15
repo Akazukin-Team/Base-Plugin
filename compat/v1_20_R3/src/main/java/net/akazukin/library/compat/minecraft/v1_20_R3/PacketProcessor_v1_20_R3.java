@@ -52,9 +52,9 @@ public class PacketProcessor_v1_20_R3 implements PacketProcessor<Packet<?>> {
                             ((SMultiBlockChangePacket) packet).getSectionPos().getY(),
                             ((SMultiBlockChangePacket) packet).getSectionPos().getZ()),
                     new ShortArraySet(Arrays.stream(((SMultiBlockChangePacket) packet).getBlockInfo()).map(b ->
-                            (short) ((b.getPos().getX() & 0xF) << 8 | (b.getPos().getY() & 0xF) << 4 | b.getPos().getZ() & 0xF)).toList()),
+                            (short) ((b.getPos().getX() & 0xF) << 8 | (b.getPos().getZ() & 0xF) << 4 | b.getPos().getY() & 0xF)).toList()),
                     Arrays.stream(((SMultiBlockChangePacket) packet).getBlockInfo())
-                            .map(SMultiBlockChangePacket.BlockInfo::getBlockData)
+                            .map(b -> (IBlockData) b.getBlockData().getBlockData())
                             .toArray(IBlockData[]::new)
             );
         }

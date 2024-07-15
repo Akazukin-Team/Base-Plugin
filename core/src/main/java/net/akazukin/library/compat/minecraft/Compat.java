@@ -143,12 +143,18 @@ public interface Compat {
 
     int getHeight(World world);
 
+    void updateLightsAtChunk(final Object chunk);
+
     void updateChunk(Object world, Vec2<Integer> chunkLoc);
 
-    Object setBlockDate2(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
-                         boolean applyPhysics);
+    WrappedBlockData setBlockDate2(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
+                                   boolean applyPhysics);
 
     WrappedBlockData getBlockDate2(Object chunkSection, Vec3<Integer> vec3i);
 
     Object getNMSChunkSection(Object chunkSection);
+
+    Object getNMSChunkSection2(Object chunk, int fixedY);
+
+    void updateLightsAtBlock(Object world, Vec3<Integer> pos);
 }

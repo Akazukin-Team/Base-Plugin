@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.Location;
 
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 @Getter
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class Vec3i implements Vec3<Integer> {
     Integer x;
     Integer y;
@@ -45,13 +47,15 @@ public class Vec3i implements Vec3<Integer> {
     }
 
     @Override
+    public Vec3i add(final Integer x, final Integer y, final Integer z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
+    @Override
     public Vec3i clone() {
-        Vec3i ins = null;
-        try {
-            ins = (Vec3i) super.clone();
-        } catch (final Throwable e) {
-            e.printStackTrace();
-        }
-        return ins;
+        return new Vec3i(this);
     }
 }

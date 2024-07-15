@@ -1,5 +1,6 @@
 package net.akazukin.library.world;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +23,22 @@ public class WrappedBlockData {
         this.blockData = null;
         this.blockId = blockId;
         this.data = data;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.blockData, this.blockId, this.data);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final WrappedBlockData that = (WrappedBlockData) o;
+        if (this.isLegacy() != that.isLegacy()) return false;
+        return !this.isLegacy() ?
+                Objects.equals(this.blockData, that.blockData) :
+                this.blockId == that.blockId && this.data == that.data;
     }
 
     public boolean isLegacy() {

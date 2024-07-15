@@ -9,5 +9,7 @@ public interface Vec2<N extends Number> {
 
     Vec2<N> setY(N y);
 
+    Vec2i add(N x, N y);
+
     Vec2<N> clone();
 }
