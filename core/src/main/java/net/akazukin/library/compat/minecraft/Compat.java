@@ -123,8 +123,6 @@ public interface Compat {
 
     <I> I removePDCData(I item, String key);
 
-    Object getNMSChunk(World world);
-
     Object getNMSChunk(Object world, Vec2<Integer> chunkLoc);
 
     Object getNMSChunk(Object world, Vec3<Integer> vec3i);
@@ -133,7 +131,7 @@ public interface Compat {
 
     WrappedBlockData getNMSNewBlockDate(Material material, byte data);
 
-    Object getNMSChunk(Object world);
+    Object getNMSChunk(Object chunk);
 
     Object getNMSWorld(Object world);
 
@@ -157,4 +155,8 @@ public interface Compat {
     Object getNMSChunkSection2(Object chunk, int fixedY);
 
     void updateLightsAtBlock(Object world, Vec3<Integer> pos);
+
+    void unloadChunk(Object chunk, boolean save);
+
+    Object loadChunk(Object world, Vec2<Integer> chunkLoc, boolean generate);
 }

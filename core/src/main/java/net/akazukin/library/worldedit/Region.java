@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Region<Vec3> {
-    Vec3 first;
-    Vec3 second;
+public class Region<T extends Vec3<?>> {
+    T first;
+    T second;
 }

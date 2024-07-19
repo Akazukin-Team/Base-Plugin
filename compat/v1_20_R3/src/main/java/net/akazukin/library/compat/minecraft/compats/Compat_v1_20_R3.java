@@ -21,6 +21,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.server.level.ChunkProviderServer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
@@ -33,6 +34,8 @@ import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.Chunk;
 import net.minecraft.world.level.chunk.ChunkSection;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.IChunkAccess;
+import net.minecraft.world.level.chunk.ProtoChunkExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -290,6 +293,7 @@ public class Compat_v1_20_R3 implements Compat {
             profile_.setSkinModel(profile.getTextures().getSkinModel().name());
             if (profile.getTextures().getCape() != null)
                 profile_.setSkin(profile.getTextures().getCape().getPath());
+            
             profile_.setTimestamp(profile.getTextures().getTimestamp());
             return profile_;
         }
@@ -436,13 +440,12 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public WorldServer getNMSChunk(final World world) {
-        return ((CraftWorld) world).getHandle();
-    }
-
-    @Override
     public Chunk getNMSChunk(final Object world, final Vec2<Integer> chunkLoc) {
-        return this.getNMSWorld(world).d(chunkLoc.getX(), chunkLoc.getY());
+        final WorldServer w = this.getNMSWorld(world);
+        if (w.l().isChunkLoaded(chunkLoc.getX(), chunkLoc.getY())) {
+            return this.loadChunk(w, chunkLoc, true);
+        }
+        return w.d(chunkLoc.getX(), chunkLoc.getY());
     }
 
     @Override
@@ -504,7 +507,6 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
-        this.getNMSChunk(world, chunkLoc);
         this.getNMSWorld(world).l().a(
                 TicketType.PLUGIN,
                 new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
@@ -548,6 +550,28 @@ public class Compat_v1_20_R3 implements Compat {
         final WorldServer c = this.getNMSWorld(world);
         c.z_().a(new BlockPosition(pos.getX(), pos.getY(), pos.getZ()));
         //c.r.l().a().a(c, true);
+    }
+
+    @Override
+    public void unloadChunk(final Object chunk, final boolean save) {
+        final Chunk c = this.getNMSChunk(chunk);
+        if (!save || c.r.l().a.a(c)) c.r.l().a.n.remove(c.f().a());
+    }
+
+    @Override
+    public Chunk loadChunk(final Object world, final Vec2<Integer> chunkLoc, final boolean generate) {
+        final ChunkProviderServer provider = this.getNMSWorld(world).l();
+
+        IChunkAccess chunk = provider.a(chunkLoc.getX(), chunkLoc.getY(),
+                generate ? ChunkStatus.n : ChunkStatus.c, true);
+        if (chunk instanceof ProtoChunkExtension) {
+            chunk = provider.a(chunkLoc.getX(), chunkLoc.getY(), ChunkStatus.n, true);
+        }
+
+        if (chunk instanceof net.minecraft.world.level.chunk.Chunk) {
+            provider.a(TicketType.PLUGIN, chunk.f(), 1, Unit.a);
+        }
+        return (Chunk) chunk;
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {

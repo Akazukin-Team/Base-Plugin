@@ -443,11 +443,6 @@ public class Compat_v1_20_R4 implements Compat {
     }
 
     @Override
-    public WorldServer getNMSChunk(final World world) {
-        return ((CraftWorld) world).getHandle();
-    }
-
-    @Override
     public Chunk getNMSChunk(final Object world, final Vec2<Integer> chunkLoc) {
         return this.getNMSWorld(world).d(chunkLoc.getX(), chunkLoc.getY());
     }
@@ -541,6 +536,16 @@ public class Compat_v1_20_R4 implements Compat {
     @Override
     public void updateLightsAtBlock(final Object world, final Vec3<Integer> pos) {
         throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public void unloadChunk(final Object chunk, final boolean save) {
+        throw new UnsupportedOperationYetException();
+    }
+
+    @Override
+    public Chunk loadChunk(final Object world, final Vec2<Integer> chunkLoc, final boolean generate) {
+        throw new UnsupportedOperationException();
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {
