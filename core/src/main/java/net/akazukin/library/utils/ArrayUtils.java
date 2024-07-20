@@ -17,18 +17,6 @@ public class ArrayUtils {
         return list;
     }
 
-    @Nullable
-    public static <T> T getIndex(final T[] arr, final int index) {
-        if (arr == null || arr.length <= index) return null;
-        return arr[index];
-    }
-
-    @Nullable
-    public static <T> T getIndex(final List<T> list, final int index) {
-        if (list.size() <= index) return null;
-        return list.get(index);
-    }
-
     @Nonnull
     public static String join(final String character, final List<Object> list) {
         if (list == null) return "";
@@ -42,5 +30,27 @@ public class ArrayUtils {
                 .filter(Objects::nonNull)
                 .map(String::valueOf)
                 .collect(Collectors.joining(character));
+    }
+
+    @Nullable
+    public static <T> T getRandom(final T[] list) {
+        return getIndex(list, (int) (Math.random() * list.length));
+    }
+
+    @Nullable
+    public static <T> T getIndex(final T[] arr, final int index) {
+        if (arr == null || arr.length <= index) return null;
+        return arr[index];
+    }
+
+    @Nullable
+    public static <T> T getRandom(final List<T> list) {
+        return getIndex(list, (int) (Math.random() * list.size()));
+    }
+
+    @Nullable
+    public static <T> T getIndex(final List<T> list, final int index) {
+        if (list.size() <= index) return null;
+        return list.get(index);
     }
 }
