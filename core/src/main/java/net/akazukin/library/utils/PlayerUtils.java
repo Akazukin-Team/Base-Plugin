@@ -64,7 +64,6 @@ public class PlayerUtils {
     }
 
     public static WrappedPlayerProfile fetchProfile(final UUID player) {
-        System.out.println("fetch " + player.toString());
         final byte[] res =
                 HttpUtils.requestGet("https://sessionserver.mojang.com/session/minecraft/profile/" + player);
         if (res == null) return null;
@@ -135,7 +134,6 @@ public class PlayerUtils {
                 MUserProfileRepo.selectById(player)
         );
         if (entity == null) return null;
-        System.out.println("load " + player.toString());
         final WrappedPlayerProfile profile = new WrappedPlayerProfile();
 
         profile.setUniqueId(entity.getPlayerUuid());

@@ -58,8 +58,6 @@ public class ItemUtils {
             }
         }
 
-        System.out.println(PlayerUtils.load(player.getUniqueId()));
-
         skullItem.setItemMeta(skullItemMeta);
         return LibraryPlugin.COMPAT.setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
     }
