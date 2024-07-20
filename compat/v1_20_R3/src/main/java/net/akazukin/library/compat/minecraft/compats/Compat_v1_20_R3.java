@@ -293,7 +293,7 @@ public class Compat_v1_20_R3 implements Compat {
             profile_.setSkinModel(profile.getTextures().getSkinModel().name());
             if (profile.getTextures().getCape() != null)
                 profile_.setSkin(profile.getTextures().getCape().getPath());
-            
+
             profile_.setTimestamp(profile.getTextures().getTimestamp());
             return profile_;
         }
@@ -583,7 +583,9 @@ public class Compat_v1_20_R3 implements Compat {
         else
             return null;
 
-        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+        ItemMeta meta = bktItemStack.getItemMeta();
+        if (meta == null) return null;
+        return meta.getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
     }

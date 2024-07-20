@@ -3,6 +3,7 @@ package net.akazukin.library.event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public abstract class EventManager {
 
     public void registerListener(final Class<? extends Listenable> command) {
         try {
-            registerListener(command.newInstance());
+            this.registerListener(command.newInstance());
         } catch (final InstantiationException | IllegalAccessException e) {
             LibraryPlugin.getLogManager().log(Level.SEVERE, e.getMessage(), e);
         }
@@ -44,16 +45,16 @@ public abstract class EventManager {
     public void registerListener(final Listenable listener) {
         for (final Method method : listener.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(EventTarget.class) && method.getParameterTypes().length == 1) {
-                if (!method.isAccessible())
-                    method.setAccessible(true);
+                if (!method.isAccessible()) method.setAccessible(true);
 
                 final Class<? extends Event> eventClass = (Class<? extends Event>) method.getParameterTypes()[0];
                 final EventTarget eventTarget = method.getAnnotation(EventTarget.class);
-                final ArrayList<EventHook> invokableEventTargets = (ArrayList<EventHook>) registry.getOrDefault(eventClass, new ArrayList<>());
+                final List<EventHook> invokableEventTargets = this.registry.getOrDefault(eventClass, new ArrayList<>());
 
-                invokableEventTargets.add(new EventHook(listener, method, eventTarget.priority(), eventTarget.bktPriority(), eventTarget.ignoreCondition()));
-                invokableEventTargets.sort((obj1, obj2) -> obj2.getPriority() - obj1.getPriority());
-                registry.put(eventClass, invokableEventTargets);
+                invokableEventTargets.add(new EventHook(listener, method, eventTarget.priority(),
+                        eventTarget.bktPriority(), eventTarget.ignoreCondition()));
+                invokableEventTargets.sort(Comparator.comparing(EventHook::getPriority));
+                this.registry.put(eventClass, invokableEventTargets);
             }
         }
     }
@@ -68,10 +69,10 @@ public abstract class EventManager {
      * @param listenable for unregister
      */
     public void unregisterListener(final Listenable listenable) {
-        for (final Map.Entry<Class<? extends Event>, List<EventHook>> targets : registry.entrySet()) {
+        for (final Map.Entry<Class<? extends Event>, List<EventHook>> targets : this.registry.entrySet()) {
             targets.getValue().removeIf(eventClass -> eventClass.getEventClass() == listenable);
 
-            registry.put(targets.getKey(), targets.getValue());
+            this.registry.put(targets.getKey(), targets.getValue());
         }
     }
 
@@ -81,18 +82,34 @@ public abstract class EventManager {
      * @param event to call
      */
     public void callEvent(final Event event, final EventPriority priority) {
-        registry.forEach((key, value) -> {
+        this.registry.entrySet().stream().filter(e -> e.getKey().isAssignableFrom(event.getClass()))
+                .forEach(e -> {
+                    e.getValue().stream()
+                            .filter(e2 -> priority == e2.getBktPriority() && (e2.getEventClass().handleEvents() || e2.isIgnoreCondition()))
+                            .forEach(eventHook -> {
+                                try {
+                                    eventHook.getMethod().invoke(eventHook.getEventClass(), event);
+                                } catch (final Throwable throwable) {
+                                    throwable.printStackTrace();
+                                }
+                            });
+                });
+
+        /*this.registry.forEach((key, value) -> {
             //if (!key.isAssignableFrom(event.getClass())) return;
             if (!key.equals(event.getClass())) return;
 
             //value.sort((a, b) -> a.getPriority() > b.getPriority());
-            value.stream().filter(eventHook -> (eventHook.getEventClass().handleEvents() || eventHook.isIgnoreCondition() || priority == eventHook.getBktPriority())).forEach(eventHook -> {
-                try {
-                    eventHook.getMethod().invoke(eventHook.getEventClass(), event);
-                } catch (final Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            });
-        });
+            value.stream()
+                    .filter(eventHook -> (eventHook.getEventClass().handleEvents() || eventHook.isIgnoreCondition()
+                    || priority == eventHook.getBktPriority()))
+                    .forEach(eventHook -> {
+                        try {
+                            eventHook.getMethod().invoke(eventHook.getEventClass(), event);
+                        } catch (final Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
+        });*/
     }
 }

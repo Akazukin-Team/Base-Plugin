@@ -120,6 +120,8 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketReceive(final PacketReceiveEvent event) {
+        if (event.getClient().getPlayer() == null) return;
+
         final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
@@ -138,6 +140,8 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketSend(final PacketSendEvent event) {
+        if (event.getClient().getPlayer() == null) return;
+
         final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
