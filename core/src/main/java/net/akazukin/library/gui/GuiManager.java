@@ -5,9 +5,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
+import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
-import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.event.Listenable;
 import net.akazukin.library.event.events.PacketReceiveEvent;
@@ -120,10 +120,12 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketReceive(final PacketReceiveEvent event) {
+        if (event.getClient().getPlayer() == null) return;
+
         final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
-            if (pkt instanceof CUpdateSignPacket) {
+            if (pkt instanceof SUpdateSignPacket) {
                 ((SignStringSelectorGui) gui).onGuiClose(event);
                 if (gui.getPrevGui() == null) {
                     this.screens.remove(event.getClient().getPlayer().getUniqueId());
@@ -138,10 +140,12 @@ public class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketSend(final PacketSendEvent event) {
+        if (event.getClient().getPlayer() == null) return;
+
         final GuiBase gui = this.screens.get(event.getClient().getPlayer().getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
             final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
-            if (pkt instanceof SOpenSignEditorPacket) {
+            if (pkt instanceof COpenSignEditorPacket) {
                 ((SignStringSelectorGui) gui).onGuiOpen();
             }
         }

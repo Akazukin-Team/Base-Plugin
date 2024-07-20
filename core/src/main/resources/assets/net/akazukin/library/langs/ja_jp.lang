@@ -29,3 +29,5 @@ library.gui.yesNo.item.no               = §cいいえ
 library.gui.item.close                  = §4§l画面を閉じる
 library.gui.item.back                   = §c§l前の画面へ
 library.gui.item.blank                  = §7空のスロット
+library.message.teleport.combating      = §c戦闘中のため実行できませんでした。 <args[0]>秒後に実行してください...
+library.message.teleport.dontMove       = §c動いているため実行できませんでした。 <args[0]>秒後に再度、実行してください。

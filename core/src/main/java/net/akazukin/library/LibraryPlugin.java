@@ -165,6 +165,6 @@ public final class LibraryPlugin extends JavaPlugin {
         getLogManager().info("Successfully initialized packet handler");
 
 
-        Bukkit.broadcastMessage("Successfully enabled");
+        getLogManager().info("Successfully enabled");
     }
 }

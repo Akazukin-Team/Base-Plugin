@@ -39,13 +39,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
 
-    compileOnly("org.seasar.doma:doma-core:2.60.1")
+    compileOnly libs.doma.core
 
-    //testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-    //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //testImplementation libs.junit.jupiter
+    //testRuntimeOnly libs.junit.platform
 }
 
 compileJava.options.encoding = 'UTF-8'

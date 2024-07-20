@@ -40,12 +40,7 @@ public class ItemUtils {
             skullItemMeta.setOwningPlayer(player);
         } else {
             try {
-                WrappedPlayerProfile profile = PlayerUtils.load(player.getUniqueId());
-                if (profile == null) {
-                    profile = PlayerUtils.fetchProfile(player.getUniqueId());
-                    if (profile != null)
-                        PlayerUtils.save(profile);
-                }
+                final WrappedPlayerProfile profile = PlayerUtils.get(player.getUniqueId());
                 if (profile != null) {
                     final GameProfile profile_ = PlayerUtils.getProfile(profile);
 

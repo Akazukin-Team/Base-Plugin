@@ -3,8 +3,8 @@ package net.akazukin.library.compat.minecraft.v1_17_R1;
 import lombok.AllArgsConstructor;
 import net.akazukin.library.compat.minecraft.compats.Compat_v1_17_R1;
 import net.akazukin.library.compat.minecraft.data.PacketProcessor;
-import net.akazukin.library.compat.minecraft.data.packets.CUpdateSignPacket;
-import net.akazukin.library.compat.minecraft.data.packets.SOpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
@@ -16,9 +16,9 @@ public class PacketProcessor_v1_17_R1 implements PacketProcessor<Packet<?>> {
     @Override
     public Packet<?> processWrapper(final net.akazukin.library.compat.minecraft.data.packets.Packet packet) {
         //SPacket only supports
-        if (packet instanceof SOpenSignEditorPacket) {
+        if (packet instanceof COpenSignEditorPacket) {
             return new PacketPlayOutOpenSignEditor(
-                    compat.getNMSBlockPos(((SOpenSignEditorPacket) packet).getWrappedBlockPos())
+                    compat.getNMSBlockPos(((COpenSignEditorPacket) packet).getWrappedBlockPos())
             );
         }
         return null;
@@ -28,7 +28,7 @@ public class PacketProcessor_v1_17_R1 implements PacketProcessor<Packet<?>> {
     public net.akazukin.library.compat.minecraft.data.packets.Packet processPacket(final Packet<?> packet) {
         //CPacket only supports
         if (packet instanceof PacketPlayInUpdateSign) {
-            return new CUpdateSignPacket(
+            return new SUpdateSignPacket(
                     compat.getWrappedBlockPos(packet.a()),
                     ((PacketPlayInUpdateSign) packet).c()
             );

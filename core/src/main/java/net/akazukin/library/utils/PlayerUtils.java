@@ -46,12 +46,26 @@ public class PlayerUtils {
             texture.add("CAPE", cape);
         }
         json.add("textures", texture);
-        profile2.getProperties().put("textures", new Property("textures", new String(EncodeUtils.encodeBase64(json.toString().getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8), null));
+        profile2.getProperties().put("textures", new Property("textures",
+                new String(EncodeUtils.encodeBase64(json.toString().getBytes(StandardCharsets.UTF_8)),
+                        StandardCharsets.UTF_8), null));
         return profile2;
     }
 
+    public static WrappedPlayerProfile get(final UUID player) {
+        WrappedPlayerProfile profile = PlayerUtils.load(player);
+        if (profile == null) {
+            profile = PlayerUtils.fetchProfile(player);
+            if (profile != null)
+                PlayerUtils.save(profile);
+        }
+
+        return profile;
+    }
+
     public static WrappedPlayerProfile fetchProfile(final UUID player) {
-        final byte[] res = HttpUtils.requestGet("https://sessionserver.mojang.com/session/minecraft/profile/" + player);
+        final byte[] res =
+                HttpUtils.requestGet("https://sessionserver.mojang.com/session/minecraft/profile/" + player);
         if (res == null) return null;
 
         final JsonParser parser = new JsonParser();
@@ -79,20 +93,20 @@ public class PlayerUtils {
                 .getAsString()
         );
         if (data.getAsJsonObject("textures").getAsJsonObject("SKIN").has("metadata"))
-            profile.setSkin(data
+            profile.setSkinModel(data
                     .getAsJsonObject("textures")
                     .getAsJsonObject("SKIN")
-                    .get("metadata")
+                    .getAsJsonObject("metadata")
+                    .get("model")
                     .getAsString()
                     .toUpperCase()
             );
         if (data.getAsJsonObject("textures").has("CAPE"))
-            profile.setSkin(data
+            profile.setCape(data
                     .getAsJsonObject("textures")
                     .getAsJsonObject("CAPE")
                     .get("url")
                     .getAsString()
-                    .toUpperCase()
             );
         profile.setTimestamp(data.get("timestamp").getAsLong());
 

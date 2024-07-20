@@ -57,6 +57,7 @@ public class MessageHelper {
     }
 
     public void sendMessage(final HumanEntity player, final String message) {
+        if (player == null) return;
         player.sendMessage("§7[§6§lAKZ§7]§e " + message);
     }
 
@@ -76,15 +77,15 @@ public class MessageHelper {
         this.sendMessage(player, this.get(getLocale(player.getUniqueId()), message, args));
     }
 
-    public void consoleMessage(final I18n message, final Object... args) {
-        this.consoleMessage(this.get(getLocale(), message, args));
-    }
-
     public static String getLocale(final UUID player) {
         final MUserEntity entity =
                 LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
         if (entity != null && entity.getLocale() != null) return entity.getLocale();
         return getLocale();
+    }
+
+    public void consoleMessage(final I18n message, final Object... args) {
+        this.consoleMessage(this.get(getLocale(), message, args));
     }
 
     public void sendMessage(final UUID player, final I18n message, final Object... args) {

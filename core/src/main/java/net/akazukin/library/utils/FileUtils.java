@@ -8,7 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FileUtils {
     public static String getApplicationPath() {
         try {
@@ -53,17 +56,25 @@ public class FileUtils {
         }
     }
 
-    public static void delete(final File file) {
+    public static boolean delete(@Nonnull final File file) {
+        if (!file.exists()) return true;
+
         try {
             if (file.isFile()) {
-                file.delete();
+                return file.delete();
             } else {
-                Files.walk(file.getAbsoluteFile().toPath())
+                return Files.walk(file.getAbsoluteFile().toPath())
                         .map(Stream::of)
                         .reduce(Stream.empty(), (x, y) -> Stream.concat(y, x))
-                        .forEach(x -> x.toFile().delete());
+                        .map(Path::toFile)
+                        .peek(f -> {
+                            if (!f.canWrite()) f.setWritable(true);
+                        })
+                        .allMatch(File::delete);
             }
-        } catch (final IOException ignored) {
+        } catch (final Throwable ignored) {
+            log.error("Failed to remove file", ignored);
+            return false;
         }
     }
 }

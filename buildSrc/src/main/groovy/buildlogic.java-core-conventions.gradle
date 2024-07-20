@@ -9,8 +9,8 @@ application {
 }
 
 dependencies {
-    compileOnly 'com.github.MWHunter:GrimAPI:9f5aaef74b'
-    include("com.google.code.gson:gson:2.11.0")
+    compileOnly libs.grimac
+    include libs.gson
 }
 
 jar {
