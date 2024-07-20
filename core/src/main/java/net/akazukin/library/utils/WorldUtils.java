@@ -15,9 +15,6 @@ public class WorldUtils {
     }
 
     public static World getOrLoadWorld(@Nonnull final WorldData worldData, @Nonnull final Supplier<World> creator) {
-        if (!worldData.isValid())
-            throw new IllegalArgumentException("World data is invalid");
-
         final World w = getWorld(worldData);
         if (w != null) return w;
 
