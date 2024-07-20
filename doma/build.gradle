@@ -1,14 +1,3 @@
-/*buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    }
-    dependencies {
-        classpath 'org.xerial:sqlite-jdbc:3.45.2.0'
-    }
-}*/
-
 plugins {
     id 'buildlogic.java-doma-conventions'
     //id 'org.domaframework.doma.codegen'
