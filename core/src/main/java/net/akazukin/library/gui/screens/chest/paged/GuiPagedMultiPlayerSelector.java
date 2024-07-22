@@ -2,7 +2,6 @@ package net.akazukin.library.gui.screens.chest.paged;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.screens.chest.GuiBase;
@@ -11,6 +10,7 @@ import net.akazukin.library.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {
     protected OfflinePlayer[] selectedPlayers = new OfflinePlayer[0];
 
-    public GuiPagedMultiPlayerSelector(final String title, final int maxRows, final int minRows, final UUID player,
+    public GuiPagedMultiPlayerSelector(final String title, final int maxRows, final int minRows, final Player player,
                                        final OfflinePlayer[] players, final GuiBase prevGui) {
         super(title, maxRows, minRows, player, Arrays.stream(players).map(p -> {
             final ItemStack item = ItemUtils.getSkullItem(p);
@@ -40,7 +40,6 @@ public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {
                             LibraryPlugin.COMPAT.containsPlData(itemStack, "HEAD_UUID"))
                     .map(item -> StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "HEAD_UUID")))
                     .filter(Objects::nonNull)
-                    .peek(System.out::println)
                     .map(Bukkit::getOfflinePlayer)
                     .toArray(OfflinePlayer[]::new);
 

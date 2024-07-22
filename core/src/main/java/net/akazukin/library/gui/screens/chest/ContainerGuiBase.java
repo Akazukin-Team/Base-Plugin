@@ -1,10 +1,10 @@
 package net.akazukin.library.gui.screens.chest;
 
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.event.EventTarget;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,7 +17,8 @@ public abstract class ContainerGuiBase extends GuiBase {
     @Setter
     protected boolean canPickup;
 
-    public ContainerGuiBase(@Nonnull final String title, @Nonnull final UUID player, final boolean canPickup, final GuiBase prevGui) {
+    public ContainerGuiBase(@Nonnull final String title, @Nonnull final Player player, final boolean canPickup,
+                            final GuiBase prevGui) {
         super(player, prevGui);
         this.title = title;
         this.canPickup = canPickup;
@@ -27,9 +28,9 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget(bktPriority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-        if (!canPickup) event.setCancelled(true);
-        onGuiClick(event);
+        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!this.canPickup) event.setCancelled(true);
+        this.onGuiClick(event);
     }
 
     protected boolean onGuiClick(final InventoryClickEvent event) {
@@ -38,8 +39,8 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-        onGuiOpen(event);
+        if (!event.getView().getTitle().equals(this.title)) return;
+        this.onGuiOpen(event);
     }
 
     protected void onGuiOpen(final InventoryOpenEvent event) {
@@ -47,8 +48,8 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget
     public void onInventoryClose(final InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-        onGuiClose(event);
+        if (!event.getView().getTitle().equals(this.title)) return;
+        this.onGuiClose(event);
     }
 
     protected void onGuiClose(final InventoryCloseEvent event) {

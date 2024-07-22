@@ -1,10 +1,8 @@
 package net.akazukin.library.gui.screens.chest;
 
-import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.event.EventTarget;
 import net.akazukin.library.utils.InventoryUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,38 +13,38 @@ import org.bukkit.inventory.InventoryView;
 public abstract class ChestGuiBase extends ContainerGuiBase {
     protected int rows;
 
-    public ChestGuiBase(final String title, final int rows, final UUID player, final boolean canPickup, final GuiBase prevGui) {
+    public ChestGuiBase(final String title, final int rows, final Player player, final boolean canPickup,
+                        final GuiBase prevGui) {
         super(title, player, canPickup, prevGui);
         this.rows = rows;
     }
 
     @Override
     public boolean forceOpen() {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return false;
-        final Inventory inv = getInventory();
+        if (this.player == null) return false;
+        final Inventory inv = this.getInventory();
         if (inv == null) return false;
-        final InventoryView inv2 = player_.openInventory(getInventory());
+        final InventoryView inv2 = this.player.openInventory(this.getInventory());
         return inv2 != null;
     }
 
     @Override
     protected Inventory getInventory() {
-        return InventoryUtils.createInventory(title, rows);
+        return InventoryUtils.createInventory(this.title, this.rows);
     }
 
     @Override
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-        if (!canPickup) event.setCancelled(true);
+        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!this.canPickup) event.setCancelled(true);
 
-        onGuiClick(event);
+        this.onGuiClick(event);
     }
 
     @Override
     @EventTarget
     public final void onInventoryClose(final InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(title)) return;
-        onGuiClose(event);
+        if (!event.getView().getTitle().equals(this.title)) return;
+        this.onGuiClose(event);
     }
 }

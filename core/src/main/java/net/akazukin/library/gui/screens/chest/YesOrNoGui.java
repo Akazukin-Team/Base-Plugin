@@ -1,6 +1,5 @@
 package net.akazukin.library.gui.screens.chest;
 
-import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.GuiManager;
@@ -10,6 +9,7 @@ import net.akazukin.library.utils.InventoryUtils;
 import net.akazukin.library.utils.ItemUtils;
 import net.akazukin.library.utils.MessageHelper;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +22,7 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     @Getter
     private boolean done = false;
 
-    public YesOrNoGui(final String title, final UUID player, final GuiBase prevGui) {
+    public YesOrNoGui(final String title, final Player player, final GuiBase prevGui) {
         super(title, 4, player, false, prevGui);
 
         final ItemStack yesItem = new ItemStack(Material.getMaterial("LIME_WOOL"));

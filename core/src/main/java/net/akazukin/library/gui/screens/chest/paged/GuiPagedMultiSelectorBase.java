@@ -14,6 +14,7 @@ import net.akazukin.library.utils.ItemUtils;
 import net.akazukin.library.utils.MessageHelper;
 import net.akazukin.library.utils.StringUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +30,7 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
     @Getter
     private boolean done = false;
 
-    public GuiPagedMultiSelectorBase(final String title, final int maxRows, final int minRows, final UUID player,
+    public GuiPagedMultiSelectorBase(final String title, final int maxRows, final int minRows, final Player player,
                                      @Nonnull final ItemStack[] itemStacks, @Nonnull final GuiBase prevGui) {
         super(title, maxRows, minRows, player,
                 Arrays.stream(itemStacks).map(ItemUtils::setGuiItem).toArray(ItemStack[]::new), prevGui);
@@ -48,7 +49,7 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
         if (this.doneItem.equals(event.getCurrentItem())) {
             this.done = true;
-            GuiManager.singleton().setScreen(event.getWhoClicked().getUniqueId(), () -> this.prevGui);
+            GuiManager.singleton().setScreen(event.getWhoClicked(), () -> this.prevGui);
             return true;
         } else if (LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
             if (!this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
@@ -57,7 +58,7 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
                 this.selected = Arrays.stream(this.itemStacks.clone())
                         .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removePlData(item, "AKZ_GUI_ITEM_UUID"))
+                        .map(item -> LibraryPlugin.COMPAT.removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
@@ -74,7 +75,7 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
                 this.selected = Arrays.stream(this.itemStacks)
                         .filter(item -> this.selectedUuid.contains(StringUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removePlData(item, "AKZ_GUI_ITEM_UUID"))
+                        .map(item -> LibraryPlugin.COMPAT.removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 Arrays.stream(this.itemStacks)

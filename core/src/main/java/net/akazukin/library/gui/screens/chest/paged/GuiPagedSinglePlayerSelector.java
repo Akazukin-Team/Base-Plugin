@@ -7,13 +7,14 @@ import net.akazukin.library.gui.screens.chest.GuiBase;
 import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class GuiPagedSinglePlayerSelector extends GuiPagedSingleSelector {
     protected OfflinePlayer selectedPlayer;
 
-    public GuiPagedSinglePlayerSelector(final String title, final int maxRows, final int minRows, final UUID player,
+    public GuiPagedSinglePlayerSelector(final String title, final int maxRows, final int minRows, final Player player,
                                         final OfflinePlayer[] players, final GuiBase prevGui) {
         super(title, maxRows, minRows, player, Arrays.stream(players).map(p -> {
             final ItemStack item = ItemUtils.getSkullItem(p);

@@ -9,8 +9,8 @@ import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.utils.InventoryUtils;
 import net.akazukin.library.utils.ItemUtils;
 import net.akazukin.library.utils.MessageHelper;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +23,7 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final ItemStack nextPageItem;
     protected int page = 0;
 
-    public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final UUID player,
+    public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final Player player,
                              final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, Math.max(maxRows, minRows), player, false, prevGui);
         this.itemStacks = Arrays.stream(itemStacks).map(item -> {
@@ -55,13 +55,13 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
         if (this.prevPageItem.equals(event.getCurrentItem())) {
             if (this.page > 0) {
                 this.page--;
-                Bukkit.getPlayer(this.player).getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
+                this.player.getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
             }
             return true;
         } else if (this.nextPageItem.equals(event.getCurrentItem())) {
             if (((this.page + 1) * 4 * 7) < this.itemStacks.length) {
                 this.page++;
-                Bukkit.getPlayer(this.player).getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
+                this.player.getOpenInventory().getTopInventory().setContents(this.getInventory().getContents());
             }
             return true;
         }

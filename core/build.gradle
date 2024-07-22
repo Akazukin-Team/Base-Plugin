@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly project(":doma")
+    include project(":doma")
 }
+
+jar.dependsOn(":doma:jar")

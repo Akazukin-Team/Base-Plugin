@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core"))
+    include(project(":core"))
 }
+
+jar.dependsOn(":core:jar")

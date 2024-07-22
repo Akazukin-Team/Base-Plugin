@@ -1,14 +1,14 @@
 package net.akazukin.library.gui.screens.chest;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.akazukin.library.event.Listenable;
+import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 @Getter
 public class GuiBase implements Listenable {
-    protected UUID player;
+    protected Player player;
     protected GuiBase prevGui;
 
     public boolean forceOpen() {

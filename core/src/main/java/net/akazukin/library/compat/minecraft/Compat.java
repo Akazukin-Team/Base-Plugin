@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
-import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.world.WrappedBlockData;
@@ -39,9 +38,9 @@ public interface Compat {
 
     void sendPacket(@Nonnull Player player, @Nonnull Packet packet);
 
-    WrappedBlockPos getWrappedBlockPos(Object pos);
+    Vec3<Integer> getWrappedBlockPos(Object pos);
 
-    Object getNMSBlockPos(WrappedBlockPos pos);
+    Object getNMSBlockPos(Vec3<Integer> pos);
 
     Channel getPlayerChannel(Player player);
 

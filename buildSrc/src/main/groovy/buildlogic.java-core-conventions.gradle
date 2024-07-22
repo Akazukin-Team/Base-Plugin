@@ -4,20 +4,16 @@ plugins {
     id 'application'
 }
 
-application {
-    mainClassName = "net.akazukin.library.LibraryPlugin"
-}
-
 dependencies {
     compileOnly libs.grimac
     include libs.gson
 }
 
-jar {
-    archiveClassifier.set("src")
-    archiveBaseName = project.plugin_name
-    enabled = true
+application {
+    mainClassName = "net.akazukin.library.Main"
 }
+
+jar.enabled = true
 
 processResources {
     filesMatching("plugin.yml") {

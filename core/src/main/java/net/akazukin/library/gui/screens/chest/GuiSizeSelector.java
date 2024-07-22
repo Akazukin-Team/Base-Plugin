@@ -2,7 +2,6 @@ package net.akazukin.library.gui.screens.chest;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.LibraryPlugin;
@@ -13,6 +12,7 @@ import net.akazukin.library.utils.InventoryUtils;
 import net.akazukin.library.utils.ItemUtils;
 import net.akazukin.library.utils.MessageHelper;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +32,7 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     @Getter
     private boolean done;
 
-    public GuiSizeSelector(final String title, final UUID player, final int min, final int max, final int defaulT,
+    public GuiSizeSelector(final String title, final Player player, final int min, final int max, final int defaulT,
                            final GuiBase prevGui) {
         super(title, 6, player, false, prevGui);
         this.min = Math.min(min, max);

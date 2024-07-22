@@ -10,6 +10,12 @@ configurations {
     pluginImpl
     implementation.extendsFrom(include)
     compileOnly.extendsFrom(pluginImpl)
+    runtimeOnly.canBeResolved = true
+
+    pluginTestOnly
+    pluginTestOnly.extendsFrom(runtimeOnly)
+    pluginTestOnly.extendsFrom(include)
+    pluginTestOnly.extendsFrom(implementation)
 }
 
 
@@ -18,7 +24,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 runServer {
     jar {
         from {
-            configurations.include.collect { it.isDirectory() ? it : zipTree(it) }
+            configurations.pluginTestOnly.collect { it.isDirectory() ? it : zipTree(it) }
         }
     }
 

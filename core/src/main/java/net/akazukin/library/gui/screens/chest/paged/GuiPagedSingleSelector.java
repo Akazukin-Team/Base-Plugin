@@ -1,12 +1,12 @@
 package net.akazukin.library.gui.screens.chest.paged;
 
 import java.util.Arrays;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.screens.chest.GuiBase;
 import net.akazukin.library.utils.ItemUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSelector {
     protected ItemStack selected;
 
-    public GuiPagedSingleSelector(final String title, final int maxRows, final int minRows, final UUID player,
+    public GuiPagedSingleSelector(final String title, final int maxRows, final int minRows, final Player player,
                                   final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, maxRows, minRows, player,
                 Arrays.stream(itemStacks)
@@ -29,7 +29,7 @@ public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSel
         if (super.onGuiClick(event)) return true;
 
         if (Arrays.asList(this.itemStacks).contains(event.getCurrentItem())) {
-            this.selected = LibraryPlugin.COMPAT.removePlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID");
+            this.selected = LibraryPlugin.COMPAT.removePlData(event.getCurrentItem().clone(), "AKZ_GUI_ITEM_UUID");
             return true;
         }
 

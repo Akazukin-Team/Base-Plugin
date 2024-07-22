@@ -24,6 +24,10 @@ public class MessageHelper {
         Collections.reverse(this.i18nUtils);
     }
 
+    public static String getLocale(final Player player) {
+        return getLocale(player.getUniqueId());
+    }
+
     public void broadcast(final I18n message) {
         this.broadcast(this.get(getLocale(), message));
     }

@@ -33,20 +33,40 @@ public final class PlayerManager implements Listenable {
     @Getter
     private long passedTime = 0L;
 
+    public long getLastDamageTick(final Player player) {
+        return getLastDamageTick(player.getUniqueId());
+    }
+
     public long getLastDamageTick(final UUID player) {
         return lastDmgTick.containsKey(player) ? passedTime - lastDmgTick.get(player) : -1;
+    }
+
+    public long getLastRotatedTick(final Player player) {
+        return getLastRotatedTick(player.getUniqueId());
     }
 
     public long getLastRotatedTick(final UUID player) {
         return lastRotTick.containsKey(player) ? passedTime - lastRotTick.get(player) : -1;
     }
 
+    public long getLastPosTick(final Player player) {
+        return getLastPosTick(player.getUniqueId());
+    }
+
     public long getLastPosTick(final UUID player) {
         return lastLocTick.containsKey(player) ? passedTime - lastLocTick.get(player) : -1;
     }
 
+    public long getLastMovedTick(final Player player) {
+        return getLastMovedTick(player.getUniqueId());
+    }
+
     public long getLastMovedTick(final UUID player) {
         return lastMoveTick.containsKey(player) ? passedTime - lastMoveTick.get(player) : -1;
+    }
+
+    public long getLastInteractTick(final Player player) {
+        return getLastInteractTick(player.getUniqueId());
     }
 
     public long getLastInteractTick(final UUID player) {
@@ -78,11 +98,13 @@ public final class PlayerManager implements Listenable {
     public void onPlayerMove(final PlayerMoveEvent event) {
         if (event.isCancelled()) return;
 
-        final Location prevRot = this.prevRot.getOrDefault(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+        final Location prevRot = this.prevRot.getOrDefault(event.getPlayer().getUniqueId(),
+                event.getPlayer().getLocation());
         if (!this.prevRot.containsKey(event.getPlayer().getUniqueId()) ||
                 event.getPlayer().getLocation().getYaw() != prevRot.getYaw() ||
                 event.getPlayer().getLocation().getPitch() != prevRot.getPitch()) {
-            final PlayerRotationEvent rotEvent = new PlayerRotationEvent(event.getPlayer(), prevRot.getYaw(), prevRot.getPitch());
+            final PlayerRotationEvent rotEvent = new PlayerRotationEvent(event.getPlayer(), prevRot.getYaw(),
+                    prevRot.getPitch());
             Bukkit.getPluginManager().callEvent(rotEvent);
             if (rotEvent.isCancelled()) {
                 event.getPlayer().getLocation().setYaw(prevRot.getYaw());
@@ -93,12 +115,14 @@ public final class PlayerManager implements Listenable {
             }
         }
 
-        final Location prevLoc = this.prevLoc.getOrDefault(event.getPlayer().getUniqueId(), event.getPlayer().getLocation());
+        final Location prevLoc = this.prevLoc.getOrDefault(event.getPlayer().getUniqueId(),
+                event.getPlayer().getLocation());
         if (!this.prevLoc.containsKey(event.getPlayer().getUniqueId()) ||
                 event.getPlayer().getLocation().getX() != prevLoc.getX() ||
                 event.getPlayer().getLocation().getY() != prevLoc.getY() ||
                 event.getPlayer().getLocation().getZ() != prevLoc.getZ()) {
-            final PlayerLocationChangeEvent rotEvent = new PlayerLocationChangeEvent(event.getPlayer(), prevLoc.getX(), prevLoc.getY(), prevLoc.getZ());
+            final PlayerLocationChangeEvent rotEvent = new PlayerLocationChangeEvent(event.getPlayer(),
+                    prevLoc.getX(), prevLoc.getY(), prevLoc.getZ());
             Bukkit.getPluginManager().callEvent(rotEvent);
             if (rotEvent.isCancelled()) {
                 event.getPlayer().getLocation().setYaw(prevLoc.getYaw());

@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.Compat;
 import net.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
-import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.compat.minecraft.v1_16_R3.PacketProcessor_v1_16_R3;
@@ -23,6 +22,7 @@ import net.akazukin.library.world.WrappedBlockData;
 import net.akazukin.library.worldedit.Vec2;
 import net.akazukin.library.worldedit.Vec2i;
 import net.akazukin.library.worldedit.Vec3;
+import net.akazukin.library.worldedit.Vec3i;
 import net.minecraft.server.v1_16_R3.BlockPosition;
 import net.minecraft.server.v1_16_R3.Chunk;
 import net.minecraft.server.v1_16_R3.ChunkCoordIntPair;
@@ -115,16 +115,16 @@ public class Compat_v1_16_R3 implements Compat {
     }
 
     @Override
-    public WrappedBlockPos getWrappedBlockPos(final Object pos) {
+    public Vec3i getWrappedBlockPos(final Object pos) {
         if (!(pos instanceof BlockPosition))
             throw new IllegalArgumentException("Invalid argument position must be a block position");
 
         final BlockPosition pos2 = (BlockPosition) pos;
-        return new WrappedBlockPos(pos2.getX(), pos2.getY(), pos2.getZ());
+        return new Vec3i(pos2.getX(), pos2.getY(), pos2.getZ());
     }
 
     @Override
-    public BlockPosition getNMSBlockPos(final WrappedBlockPos pos) {
+    public BlockPosition getNMSBlockPos(final Vec3<Integer> pos) {
         return new BlockPosition(pos.getX(), pos.getY(), pos.getZ());
     }
 

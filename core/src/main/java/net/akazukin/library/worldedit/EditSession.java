@@ -91,9 +91,7 @@ public class EditSession {
 
         this.vecs.keySet().forEach(v -> chunks.add(new Vec2i(v.getX() >> 4, v.getZ() >> 4)));
 
-        chunks.forEach((c) -> {
-            world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
-        });
+        chunks.forEach((c) -> this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin()));
 
 
         chunks.forEach(c -> pool.submit(() -> {
@@ -164,7 +162,7 @@ public class EditSession {
                                 });
                     }), 100);
 
-            world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
+            this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
             //LibraryPlugin.COMPAT.unloadChunk(chunk, true);
         }));
 
