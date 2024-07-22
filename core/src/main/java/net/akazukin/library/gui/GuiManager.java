@@ -19,7 +19,7 @@ import net.akazukin.library.gui.screens.sign.SignStringSelectorGui;
 import net.akazukin.library.utils.InventoryUtils;
 import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -63,21 +63,20 @@ public class GuiManager implements Listenable {
             event.getWhoClicked().closeInventory();
         } else if (InventoryUtils.isBackItem(event.getCurrentItem()) && gui.getPrevGui() != null) {
             event.getWhoClicked().closeInventory();
-            this.setScreen(event.getWhoClicked().getUniqueId(), gui::getPrevGui);
+            this.setScreen(event.getWhoClicked(), gui::getPrevGui);
         } else {
             ((ContainerGuiBase) gui).onInventoryClick(event);
         }
     }
 
-    public void setScreen(final UUID player, final Supplier<GuiBase> gui) {
+    public void setScreen(final HumanEntity player, final Supplier<GuiBase> gui) {
         Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () -> {
-            final Player player_ = Bukkit.getPlayer(player);
-            if (player_ == null) return;
-            player_.closeInventory();
+            if (player == null) return;
+            player.closeInventory();
 
             final GuiBase guI = gui.get();
             this.screens.remove(player);
-            this.screens.put(player, guI);
+            this.screens.put(player.getUniqueId(), guI);
             guI.forceOpen();
         });
     }

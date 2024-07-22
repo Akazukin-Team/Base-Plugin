@@ -1,21 +1,23 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 configurations {
     include
+    pluginImpl
     implementation.extendsFrom(include)
+    compileOnly.extendsFrom(pluginImpl)
 }
 
 
 repositories {
     maven {
-        name "spigot-repo"
-        url "https://repo.rosewooddev.io/repository/public/"
+        name = "spigot-repo"
+        url = "https://repo.rosewooddev.io/repository/public/"
     }
     maven {
-        name 'geysermc'
-        url "https://repo.opencollab.dev/main/"
+        name = 'geysermc'
+        url = "https://repo.opencollab.dev/main/"
     }
     maven {
         name = "ProtocolSupport"
@@ -29,9 +31,7 @@ repositories {
         url = "https://maven.enginehub.org/repo"
     }
     maven {
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
+        name "Jitpack"
         url = "https://jitpack.io/"
     }
     mavenCentral()
@@ -62,23 +62,27 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+java {
+    withSourcesJar()
+}
 
+jar.dependsOn(sourcesJar)
 jar.enabled = true
 
 jar.dependsOn(processResources)
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.withType(Tar).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.withType(Zip).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.withType(Jar).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

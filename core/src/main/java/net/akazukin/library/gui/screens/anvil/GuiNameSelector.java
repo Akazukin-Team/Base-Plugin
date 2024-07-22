@@ -1,6 +1,5 @@
 package net.akazukin.library.gui.screens.anvil;
 
-import java.util.UUID;
 import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +7,7 @@ import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.gui.screens.chest.GuiBase;
 import net.akazukin.library.utils.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,7 @@ public class GuiNameSelector extends AnvilGui {
     @Getter
     private String defaultName;
 
-    public GuiNameSelector(final String title, final UUID player, final String defaultName, final GuiBase prevGui,
+    public GuiNameSelector(final String title, final Player player, final String defaultName, final GuiBase prevGui,
                            final Predicate<String> isValid) {
         super(title, player, prevGui, false, 0);
         this.isValid = isValid;

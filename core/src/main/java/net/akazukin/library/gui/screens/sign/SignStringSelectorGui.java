@@ -1,14 +1,13 @@
 package net.akazukin.library.gui.screens.sign;
 
 import java.util.Arrays;
-import java.util.UUID;
 import lombok.Getter;
 import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.compat.minecraft.data.WrappedBlockPos;
 import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.akazukin.library.event.events.PacketReceiveEvent;
 import net.akazukin.library.gui.screens.chest.GuiBase;
+import net.akazukin.library.worldedit.Vec3i;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -16,21 +15,20 @@ import org.bukkit.entity.Player;
 public class SignStringSelectorGui extends GuiBase {
     protected String[] result = new String[]{"", null, null, null};
 
-    public SignStringSelectorGui(final UUID player, final GuiBase prevGui) {
+    public SignStringSelectorGui(final Player player, final GuiBase prevGui) {
         super(player, prevGui);
     }
 
     @Override
     public boolean forceOpen() {
-        final Player player_ = Bukkit.getPlayer(player);
-        if (player_ == null) return false;
+        if (this.player == null) return false;
         Bukkit.getWorlds().get(0).getMaxHeight();
-        LibraryPlugin.COMPAT.sendSignUpdate(player_, player_.getLocation(), Arrays.copyOf(result, 4));
+        LibraryPlugin.COMPAT.sendSignUpdate(this.player, this.player.getLocation(), Arrays.copyOf(this.result, 4));
         LibraryPlugin.COMPAT.sendPacket(
-                player_,
+                this.player,
                 new COpenSignEditorPacket(
-                        new WrappedBlockPos(player_.getLocation().getBlockX(), player_.getLocation().getBlockY(),
-                                player_.getLocation().getBlockZ()),
+                        new Vec3i(this.player.getLocation().getBlockX(), this.player.getLocation().getBlockY(),
+                                this.player.getLocation().getBlockZ()),
                         true
                 )
         );
@@ -42,12 +40,12 @@ public class SignStringSelectorGui extends GuiBase {
 
     public void onGuiClose(final PacketReceiveEvent event) {
         final SUpdateSignPacket pkt = (SUpdateSignPacket) LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
-        result = pkt.getLines();
+        this.result = pkt.getLines();
     }
 
     public boolean reset() {
-        final boolean isNotNull = result != null;
-        result = new String[]{"", null, null, null};
+        final boolean isNotNull = this.result != null;
+        this.result = new String[]{"", null, null, null};
         return isNotNull;
     }
 }

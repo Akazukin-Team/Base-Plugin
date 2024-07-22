@@ -21,7 +21,7 @@ tasks.register("sourcesJar", Jar) {
     from {
         configurations.include.filter {
             parent.subprojects.buildDir.path.any { it2 -> it.path.startsWith(it2) }
-        }.collect { it.isDirectory() ? it : zipTree(it) }
+        }.collect { it2 -> file(it2.path.replace(".jar", "-sources.jar")) }.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -35,7 +35,7 @@ tasks.register("shadowJar", Jar) {
     }
 }
 
-jar.enabled = false
+jar.enabled = true
 
 java {
     withSourcesJar()
