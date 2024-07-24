@@ -130,7 +130,7 @@ public class EditSession {
                     (c.getX() * 16) < e.getKey().getX() && e.getKey().getX() < (c.getX() * 16) + 15 &&
                             (c.getY() * 16) < e.getKey().getZ() && e.getKey().getZ() < (c.getY() * 16) + 15
             ).forEach(e -> pos.put(e.getKey(), e.getValue()));
-            System.out.println("InitRegion: " + (System.nanoTime() - s2));
+            final long s10 = System.nanoTime();
 
             final AtomicLong l = new AtomicLong();
             final AtomicLong l2 = new AtomicLong();
@@ -196,6 +196,7 @@ public class EditSession {
             final long s9 = System.nanoTime();
 
             System.out.println("getChunk: " + (s7 - s6)
+                    + ", InitRegion: " + (s10 - s2)
                     + ", CheckBlock: " + l.get()
                     + ", SetBlock: " + l2.get()
                     + ", UpdateLight: " + l3.get()
