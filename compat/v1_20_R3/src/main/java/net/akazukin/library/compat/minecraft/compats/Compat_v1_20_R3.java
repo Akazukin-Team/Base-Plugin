@@ -520,6 +520,15 @@ public class Compat_v1_20_R3 implements Compat {
                                           final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
 
+
+        /*if (flag) {
+            iblockdata1 = (IBlockData) cs.h().a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
+                    ((IBlockData) blockData.getBlockData()));
+        } else {
+            iblockdata1 = (IBlockData) cs.h().b(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
+                    ((IBlockData) blockData.getBlockData()));
+        }*/
+
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
                 ((IBlockData) blockData.getBlockData()),
                 applyPhysics));
@@ -528,7 +537,7 @@ public class Compat_v1_20_R3 implements Compat {
     @Override
     public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
-
+        //cs.h.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15, null);
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
     }
 

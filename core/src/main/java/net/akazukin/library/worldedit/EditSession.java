@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.AccessLevel;
@@ -91,14 +92,19 @@ public class EditSession {
 
         this.vecs.keySet().forEach(v -> chunks.add(new Vec2i(v.getX() >> 4, v.getZ() >> 4)));
 
+        final long s = System.nanoTime();
         chunks.forEach((c) -> this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin()));
+        System.out.println("LoadChunks: " + (System.nanoTime() - s));
 
 
         chunks.forEach(c -> pool.submit(() -> {
+            final long s6 = System.nanoTime();
             final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, c);
+            final long s7 = System.nanoTime();
 
             final Map<Vec3i, WrappedBlockData> pos = new HashMap<>();
 
+            final long s2 = System.nanoTime();
             this.regions.forEach((r, b) -> {
                 final int minX = Math.min(r.getFirst().getX().intValue(), r.getSecond().getX().intValue());
                 final int maxX = Math.max(r.getFirst().getX().intValue(), r.getSecond().getX().intValue());
@@ -119,51 +125,85 @@ public class EditSession {
                                     )));
                 }
             });
+
             this.vecs.entrySet().stream().filter(e ->
                     (c.getX() * 16) < e.getKey().getX() && e.getKey().getX() < (c.getX() * 16) + 15 &&
                             (c.getY() * 16) < e.getKey().getZ() && e.getKey().getZ() < (c.getY() * 16) + 15
             ).forEach(e -> pos.put(e.getKey(), e.getValue()));
+            System.out.println("InitRegion: " + (System.nanoTime() - s2));
+
+            final AtomicLong l = new AtomicLong();
+            final AtomicLong l2 = new AtomicLong();
+            final AtomicLong l3 = new AtomicLong();
+            final AtomicLong l4 = new AtomicLong();
+            final AtomicLong l5 = new AtomicLong();
+            final AtomicLong l6 = new AtomicLong();
+            final AtomicLong l7 = new AtomicLong();
 
             ThreadUtils.parallel(() -> pos.entrySet().stream()
                     .collect(Collectors.groupingBy(e2 -> new Vec3i(
                             e2.getKey().getX() >> 4, e2.getKey().getY() >> 4,
                             e2.getKey().getZ() >> 4
                     )))
-                    .forEach((v2, e2) -> {
+                    .entrySet().parallelStream()
+                    .forEach(e -> {
                         final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection2(chunk,
-                                v2.getY() - (min >> 4));
+                                e.getKey().getY() - (min >> 4));
 
-                        e2.parallelStream()
+                        e.getValue().parallelStream()
                                 .map((e3) -> {
                                     final Vec3i v3 = e3.getKey().clone().add(0, -min, 0);
-                                    if (Objects.equals(
+                                    final long s3 = System.nanoTime();
+                                    final boolean res = Objects.equals(
                                             LibraryPlugin.COMPAT.getBlockDate2(cs, v3),
-                                            e3.getValue()))
-                                        return null;
+                                            e3.getValue());
+                                    final long s4 = System.nanoTime();
+                                    l.set(l.get() + (s4 - s3));
+                                    if (res) return null;
                                     LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(),
                                             false);
+                                    final long s5 = System.nanoTime();
+                                    l2.set(l2.get() + (s5 - s4));
                                     LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
+                                    l3.set(l3.get() + (System.nanoTime() - s5));
                                     return new PlaceResult(e3.getKey(), e3.getValue(), cs);
                                 })
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.groupingBy(PlaceResult::getChunkSection))
-                                .forEach((chunkSection, results) -> {
+                                .entrySet().parallelStream()
+                                .forEach(e2 -> {
+                                    final long s3 = System.nanoTime();
                                     final SMultiBlockChangePacket pkt =
                                             new SMultiBlockChangePacket(
-                                                    v2,
-                                                    results.parallelStream()
+                                                    e.getKey(),
+                                                    e2.getValue().parallelStream()
                                                             .map(result -> new SMultiBlockChangePacket.BlockInfo(
                                                                     result.getVec3(),
                                                                     result.getBlockData()))
                                                             .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
                                             );
+                                    final long s4 = System.nanoTime();
+                                    l4.set(l4.get() + (s4 - s3));
                                     this.world.getPlayers().forEach(p ->
                                             LibraryPlugin.COMPAT.sendPacket(p, pkt));
+                                    l5.set(l5.get() + (System.nanoTime() - s4));
                                 });
                     }), 100);
 
+            final long s8 = System.nanoTime();
             this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
             //LibraryPlugin.COMPAT.unloadChunk(chunk, true);
+            final long s9 = System.nanoTime();
+
+            System.out.println("getChunk: " + (s7 - s6)
+                    + ", CheckBlock: " + l.get()
+                    + ", SetBlock: " + l2.get()
+                    + ", UpdateLight: " + l3.get()
+                    + ", InitPkts: " + l4.get()
+                    + ", SendPkts: " + l5.get()
+                    + ", UnloadChunk: " + (s9 - s8)
+                    + ", Total: " + (System.nanoTime() - s6)
+            );
         }));
 
 
