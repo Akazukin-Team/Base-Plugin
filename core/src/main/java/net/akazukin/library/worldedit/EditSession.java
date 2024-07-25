@@ -119,7 +119,7 @@ public class EditSession {
         final AtomicLong poses = new AtomicLong();
 
 
-        chunks.forEach(c -> pool.submit(() -> {
+        chunks.forEach(c -> pool.submit(() -> ThreadUtils.parallel(() -> {
             final long s6 = System.nanoTime();
             final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, c);
             final long s7 = System.nanoTime();
@@ -168,7 +168,7 @@ public class EditSession {
             final long s11 = System.nanoTime();
             if (debug) initRegion2Time.addAndGet(s11 - s10);
 
-            ThreadUtils.parallel(() -> pos.entrySet().stream()
+            pos.entrySet().stream()
                     .collect(Collectors.groupingBy(e2 -> new Vec3i(
                             e2.getKey().getX() >> 4, e2.getKey().getY() >> 4,
                             e2.getKey().getZ() >> 4
@@ -188,8 +188,7 @@ public class EditSession {
                                     final long s4 = System.nanoTime();
                                     if (debug) checkBlocksTime.addAndGet(s4 - s3);
                                     if (res) return null;
-                                    LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(),
-                                            false);
+                                    LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(), false);
                                     final long s5 = System.nanoTime();
                                     if (debug) setBlockTimes.addAndGet(s5 - s4);
                                     LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
@@ -220,7 +219,7 @@ public class EditSession {
                                 });
 
                         totalBlocks.addAndGet(e.getValue().size());
-                    }), 100);
+                    });
 
             final long s8 = System.nanoTime();
             this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
@@ -228,7 +227,7 @@ public class EditSession {
             final long s9 = System.nanoTime();
             if (debug) updateChunkTime.addAndGet(s9 - s8);
             if (debug) totalTime.addAndGet(s9 - s6);
-        }));
+        }, 100)));
 
         pool.shutdown();
         try {
