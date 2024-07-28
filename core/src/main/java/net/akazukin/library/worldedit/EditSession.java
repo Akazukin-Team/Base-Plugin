@@ -1,14 +1,18 @@
 package net.akazukin.library.worldedit;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.AccessLevel;
@@ -18,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
+import net.akazukin.library.utils.MathUtils;
 import net.akazukin.library.utils.ThreadUtils;
 import net.akazukin.library.world.WrappedBlockData;
 import org.bukkit.World;
@@ -75,145 +80,154 @@ public class EditSession {
 
         final ExecutorService pool = Executors.newFixedThreadPool(this.threads);
 
-        final Set<Vec2i> chunks = new HashSet<>();
+        final List<Vec2i> chunks = Collections.synchronizedList(new ArrayList<>());
 
-        this.regions.keySet().forEach(r -> {
+        this.regions.keySet().parallelStream().forEach(r -> {
             final int minX = Math.min(r.getFirst().getX().intValue(), r.getSecond().getX().intValue()) >> 4;
             final int maxX = Math.max(r.getFirst().getX().intValue(), r.getSecond().getX().intValue()) >> 4;
 
             final int minZ = Math.min(r.getFirst().getZ().intValue(), r.getSecond().getZ().intValue()) >> 4;
             final int maxZ = Math.max(r.getFirst().getZ().intValue(), r.getSecond().getZ().intValue()) >> 4;
 
-
-            IntStream.range(minX, maxX + 1).forEach(x -> IntStream.range(minZ, maxZ + 1).forEach(z ->
+            IntStream.range(minX, maxX + 1).parallel().forEach(x -> IntStream.range(minZ, maxZ + 1).forEach(z ->
                     chunks.add(new Vec2i(x, z))));
         });
 
-        this.vecs.keySet().forEach(v -> chunks.add(new Vec2i(v.getX() >> 4, v.getZ() >> 4)));
+        this.vecs.keySet().parallelStream().forEach(v -> chunks.add(new Vec2i(v.getX() >> 4, v.getZ() >> 4)));
 
+        final long s = System.nanoTime();
         chunks.forEach((c) -> this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin()));
+        final long s12 = System.nanoTime();
+
+        final boolean debug = false;
+
+        final AtomicLong checkBlocksTime = new AtomicLong();
+        final AtomicLong setBlockTimes = new AtomicLong();
+        final AtomicLong updateLightTimes = new AtomicLong();
+        final AtomicLong initPktsTime = new AtomicLong();
+        final AtomicLong sendPktsTimes = new AtomicLong();
+        final AtomicLong initRegionTime = new AtomicLong();
+        final AtomicLong initRegion2Time = new AtomicLong();
+        final AtomicLong updateChunkTime = new AtomicLong();
+        final AtomicLong getChunkTime = new AtomicLong();
+        final AtomicLong totalTime = new AtomicLong();
+
+        final AtomicLong totalChunks = new AtomicLong();
+        final AtomicLong totalChunks2 = new AtomicLong();
+
+        final AtomicLong totalBlocks = new AtomicLong();
+        final AtomicLong poses = new AtomicLong();
 
 
-        chunks.forEach(c -> pool.submit(() -> {
+        chunks.forEach(c -> pool.submit(() -> ThreadUtils.parallel(() -> {
+            final long s6 = System.nanoTime();
             final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, c);
+            final long s7 = System.nanoTime();
+            if (debug) getChunkTime.addAndGet(s7 - s6);
 
-            final Map<Vec3i, WrappedBlockData> pos = new HashMap<>();
+            final long s2 = System.nanoTime();
+            final Map<Vec3<Integer>, WrappedBlockData> pos = new HashMap<>(
+                    this.regions.entrySet().parallelStream().map(r -> {
+                                final Vec3<?> vec = r.getKey().getFirst();
+                                final Vec3<?> vec2 = r.getKey().getSecond();
+                                final int minX = Math.min(vec.getX().intValue(), vec2.getX().intValue());
+                                final int maxX = Math.max(vec.getX().intValue(), vec2.getX().intValue());
 
-            this.regions.forEach((r, b) -> {
-                final int minX = Math.min(r.getFirst().getX().intValue(), r.getSecond().getX().intValue());
-                final int maxX = Math.max(r.getFirst().getX().intValue(), r.getSecond().getX().intValue());
+                                final int minY = Math.min(vec.getY().intValue(), vec2.getY().intValue());
+                                final int maxY = Math.max(vec.getY().intValue(), vec2.getY().intValue());
 
-                final int minY = Math.min(r.getFirst().getY().intValue(), r.getSecond().getY().intValue());
-                final int maxY = Math.max(r.getFirst().getY().intValue(), r.getSecond().getY().intValue());
+                                final int minZ = Math.min(vec.getZ().intValue(), vec2.getZ().intValue());
+                                final int maxZ = Math.max(vec.getZ().intValue(), vec2.getZ().intValue());
 
-                final int minZ = Math.min(r.getFirst().getZ().intValue(), r.getSecond().getZ().intValue());
-                final int maxZ = Math.max(r.getFirst().getZ().intValue(), r.getSecond().getZ().intValue());
+                                if (MathUtils.contains(c.getX(), minX >> 4, maxX >> 4) &&
+                                        MathUtils.contains(c.getY(), minZ >> 4, maxZ >> 4)) {
+                                    final List<Map.Entry<Vec3<Integer>, WrappedBlockData>> sets2 =
+                                            new ArrayList<>();
 
-                if (minX >> 4 <= c.getX() && c.getX() <= maxX >> 4 &&
-                        minZ >> 4 <= c.getY() && c.getY() <= maxZ >> 4) {
-                    IntStream.range(Math.max(minX, c.getX() * 16), Math.min(maxX, (c.getX() * 16) + 15) + 1).forEach(x ->
-                            IntStream.range(minY, maxY + 1).forEach(y ->
-                                    IntStream.range(Math.max(minZ, c.getY() * 16),
-                                            Math.min(maxZ, (c.getY() * 16) + 15) + 1).forEach(z ->
-                                            pos.put(new Vec3i(x, y, z), b)
-                                    )));
-                }
-            });
-            this.vecs.entrySet().stream().filter(e ->
-                    (c.getX() * 16) < e.getKey().getX() && e.getKey().getX() < (c.getX() * 16) + 15 &&
-                            (c.getY() * 16) < e.getKey().getZ() && e.getKey().getZ() < (c.getY() * 16) + 15
-            ).forEach(e -> pos.put(e.getKey(), e.getValue()));
+                                    IntStream.range(Math.max(minX, c.getX() << 4),
+                                            Math.min(maxX, (c.getX() << 4) + 15) + 1).forEach(x ->
+                                            IntStream.range(Math.max(minZ, c.getY() << 4),
+                                                    Math.min(maxZ, (c.getY() << 4) + 15) + 1).forEach(z ->
+                                                    IntStream.range(minY, maxY + 1).forEach(y ->
+                                                            sets2.add(new AbstractMap.SimpleEntry<>(new Vec3i(x, y, z),
+                                                                    r.getValue()))
+                                                    )));
+                                    return sets2;
+                                }
+                                return null;
+                            })
+                            .filter(Objects::nonNull)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            final long s10 = System.nanoTime();
+            if (debug) initRegionTime.addAndGet(s10 - s2);
 
-            ThreadUtils.parallel(() -> pos.entrySet().stream()
+            pos.putAll(this.vecs.entrySet().parallelStream().filter(e ->
+                            c.getX() == e.getKey().getX() >> 4 && c.getY() == e.getKey().getZ() >> 4)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            final long s11 = System.nanoTime();
+            if (debug) initRegion2Time.addAndGet(s11 - s10);
+
+            pos.entrySet().stream()
                     .collect(Collectors.groupingBy(e2 -> new Vec3i(
                             e2.getKey().getX() >> 4, e2.getKey().getY() >> 4,
                             e2.getKey().getZ() >> 4
                     )))
-                    .forEach((v2, e2) -> {
+                    .entrySet().parallelStream()
+                    .forEach(e -> {
                         final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection2(chunk,
-                                v2.getY() - (min >> 4));
+                                e.getKey().getY() - (min >> 4));
 
-                        e2.parallelStream()
+                        e.getValue().parallelStream()
                                 .map((e3) -> {
-                                    final Vec3i v3 = e3.getKey().clone().add(0, -min, 0);
-                                    if (Objects.equals(
+                                    final Vec3<Integer> v3 = e3.getKey().clone().add(0, -min, 0);
+                                    final long s3 = System.nanoTime();
+                                    final boolean res = Objects.equals(
                                             LibraryPlugin.COMPAT.getBlockDate2(cs, v3),
-                                            e3.getValue()))
-                                        return null;
-                                    LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(),
-                                            false);
+                                            e3.getValue());
+                                    final long s4 = System.nanoTime();
+                                    if (debug) checkBlocksTime.addAndGet(s4 - s3);
+                                    if (res) return null;
+                                    LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(), false);
+                                    final long s5 = System.nanoTime();
+                                    if (debug) setBlockTimes.addAndGet(s5 - s4);
                                     LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
+                                    final long s15 = System.nanoTime();
+                                    if (debug) updateLightTimes.addAndGet(s15 - s5);
                                     return new PlaceResult(e3.getKey(), e3.getValue(), cs);
                                 })
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.groupingBy(PlaceResult::getChunkSection))
-                                .forEach((chunkSection, results) -> {
+                                .entrySet().parallelStream()
+                                .forEach(e2 -> {
+                                    final long s3 = System.nanoTime();
                                     final SMultiBlockChangePacket pkt =
                                             new SMultiBlockChangePacket(
-                                                    v2,
-                                                    results.parallelStream()
+                                                    e.getKey(),
+                                                    e2.getValue().parallelStream()
                                                             .map(result -> new SMultiBlockChangePacket.BlockInfo(
                                                                     result.getVec3(),
                                                                     result.getBlockData()))
                                                             .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
                                             );
+                                    final long s4 = System.nanoTime();
+                                    if (debug) initPktsTime.addAndGet(s4 - s3);
                                     this.world.getPlayers().forEach(p ->
                                             LibraryPlugin.COMPAT.sendPacket(p, pkt));
+                                    final long s5 = System.nanoTime();
+                                    if (debug) sendPktsTimes.addAndGet(s5 - s4);
                                 });
-                    }), 100);
 
+                        totalBlocks.addAndGet(e.getValue().size());
+                    });
+
+            final long s8 = System.nanoTime();
             this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
             //LibraryPlugin.COMPAT.unloadChunk(chunk, true);
-        }));
-
-
-        /*this.vecs.entrySet().stream()
-                .collect(Collectors.groupingBy(e ->
-                        new Vec2i(e.getKey().getX() >> 4, e.getKey().getZ() >> 4)))
-                .forEach((v, e) -> pool.submit(() -> ThreadUtils.parallel(() -> {
-                    final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, v);
-
-                    e.parallelStream()
-                            .collect(Collectors.groupingBy(e2 -> new Vec3i(
-                                    e2.getKey().getX() >> 4, e2.getKey().getY() >> 4,
-                                    e2.getKey().getZ() >> 4
-                            )))
-                            .forEach((v2, e2) -> {
-                                final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection2(chunk,
-                                        v2.getY() - (min >> 4));
-
-                                e2.parallelStream()
-                                        .map((e3) -> {
-                                            final Vec3i v3 = e3.getKey().clone().add(0, -min, 0);
-                                            if (Objects.equals(
-                                                    LibraryPlugin.COMPAT.getBlockDate2(cs, v3),
-                                                    e3.getValue()))
-                                                return null;
-                                            LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(),
-                                                    false);
-                                            LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
-                                            return new PlaceResult(e3.getKey(), e3.getValue(), cs);
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .collect(Collectors.groupingBy(PlaceResult::getChunkSection))
-                                        .forEach((chunkSection, results) -> {
-                                            final SMultiBlockChangePacket pkt =
-                                                    new SMultiBlockChangePacket(
-                                                            v2,
-                                                            results.parallelStream()
-                                                                    .map(result -> new SMultiBlockChangePacket
-                                                                    .BlockInfo(
-                                                                            result.getVec3(),
-                                                                            result.getBlockData()))
-                                                                    .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
-                                                    );
-                                            this.world.getPlayers().forEach(p ->
-                                                    LibraryPlugin.COMPAT.sendPacket(p, pkt));
-                                        });
-                            });
-                    LibraryPlugin.COMPAT.unloadChunk(chunk, true);
-                    //this.world.unloadChunk(v.getX(), v.getY(), true);
-                }, 12)));*/
+            final long s9 = System.nanoTime();
+            if (debug) updateChunkTime.addAndGet(s9 - s8);
+            if (debug) totalTime.addAndGet(s9 - s6);
+        }, 100)));
 
         pool.shutdown();
         try {
@@ -222,6 +236,24 @@ public class EditSession {
             e.printStackTrace();
         }
         pool.shutdownNow();
+
+        if (debug) System.out.println("LoadChunk: " + (s12 - s)
+                + ", GetChunk: " + getChunkTime.get()
+                + ", InitRegion: " + initRegionTime.get()
+                + ", InitRegion2: " + initRegion2Time.get()
+                + ", CheckBlock: " + checkBlocksTime.get()
+                + ", SetBlock: " + setBlockTimes.get()
+                + ", UpdateLight: " + updateLightTimes.get()
+                + ", InitPkts: " + initPktsTime.get()
+                + ", SendPkts: " + sendPktsTimes.get()
+                + ", UnloadChunk: " + updateChunkTime.get()
+                + ", Total: " + totalTime.get()
+        );
+
+        if (debug) System.out.println("TotalBlocks: " + totalBlocks.get() +
+                ", Pos: " + poses.get() +
+                ", Chunks: " + totalChunks.get() +
+                ", Chunks2: " + totalChunks2.get());
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
