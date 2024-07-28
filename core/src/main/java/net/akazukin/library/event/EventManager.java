@@ -49,13 +49,15 @@ public abstract class EventManager {
 
                     final Class<? extends Event> eventClass = (Class<? extends Event>) m.getParameterTypes()[0];
                     final EventTarget eventTarget = m.getAnnotation(EventTarget.class);
-                    final List<EventHook> invokableEventTargets =
-                            this.registry.getOrDefault(eventClass, new ArrayList<>());
+                    synchronized (this.registry) {
+                        final List<EventHook> invokableEventTargets =
+                                this.registry.getOrDefault(eventClass, new ArrayList<>());
 
-                    invokableEventTargets.add(new EventHook(listener, m, eventTarget.priority(),
-                            eventTarget.bktPriority(), eventTarget.ignoreCondition()));
-                    invokableEventTargets.sort(Comparator.comparing(EventHook::getPriority));
-                    this.registry.put(eventClass, invokableEventTargets);
+                        invokableEventTargets.add(new EventHook(listener, m, eventTarget.priority(),
+                                eventTarget.bktPriority(), eventTarget.ignoreCondition()));
+                        invokableEventTargets.sort(Comparator.comparing(EventHook::getPriority));
+                        this.registry.put(eventClass, invokableEventTargets);
+                    }
                 });
     }
 
@@ -69,11 +71,13 @@ public abstract class EventManager {
      * @param listenable for unregister
      */
     public void unregisterListener(final Listenable listenable) {
-        this.registry.forEach((key, value) -> {
-            value.removeIf(eventClass -> eventClass.getEventClass() == listenable);
+        synchronized (this.registry) {
+            this.registry.forEach((key, value) -> {
+                value.removeIf(eventClass -> eventClass.getEventClass() == listenable);
 
-            this.registry.put(key, value);
-        });
+                this.registry.put(key, value);
+            });
+        }
     }
 
     /**
@@ -82,16 +86,18 @@ public abstract class EventManager {
      * @param event to call
      */
     public void callEvent(final Event event, final EventPriority priority) {
-        this.registry.entrySet().stream()
-                .filter(e -> e.getKey().isAssignableFrom(event.getClass()))
-                .forEach(e -> e.getValue().stream()
-                        .filter(e2 -> priority == e2.getBktPriority() && (e2.getEventClass().handleEvents() || e2.isIgnoreCondition()))
-                        .forEach(hook -> {
-                            try {
-                                hook.getMethod().invoke(hook.getEventClass(), event);
-                            } catch (final Throwable throwable) {
-                                throwable.printStackTrace();
-                            }
-                        }));
+        synchronized (this.registry) {
+            this.registry.entrySet().stream()
+                    .filter(e -> e.getKey().isAssignableFrom(event.getClass()))
+                    .forEach(e -> e.getValue().stream()
+                            .filter(e2 -> priority == e2.getBktPriority() && (e2.getEventClass().handleEvents() || e2.isIgnoreCondition()))
+                            .forEach(hook -> {
+                                try {
+                                    hook.getMethod().invoke(hook.getEventClass(), event);
+                                } catch (final Throwable throwable) {
+                                    throwable.printStackTrace();
+                                }
+                            }));
+        }
     }
 }
