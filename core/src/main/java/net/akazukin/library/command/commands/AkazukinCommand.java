@@ -9,30 +9,22 @@ import net.akazukin.library.command.commands.akazukin.LanguageSubCommand;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.utils.ArrayUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 @CommandInfo(name = "akazukin", description = "akazukin basically command")
 public final class AkazukinCommand extends Command {
 
-    @Override
-    public SubCommand[] getSubCommands() {
-        return new SubCommand[]{
-                new HelpSubCommand(),
-                new LanguageSubCommand()
-        };
+    public AkazukinCommand() {
+        this.addSubCommands(
+                HelpSubCommand.class,
+                LanguageSubCommand.class
+        );
     }
 
     @Override
-    public void run(final CommandSender sender, final String... args) {
+    public void run(final CommandSender sender, final String[] args, final String[] args2) {
         final SubCommand subCmd = this.getSubCommand(ArrayUtils.getIndex(args, 0));
-        if (subCmd == null) {
+        if (!this.runSubCommand(sender, args, args2)) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.notFound"));
-        } else if (!subCmd.validExecutor(sender)) {
-            LibraryPlugin.MESSAGE_HELPER.consoleMessage(I18n.of("library.command.execute.mustBeBy" + (sender instanceof Player ? "Console" : "Player")));
-        } else if (!subCmd.hasPermission(sender)) {
-            LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.message.requirePerm"));
-        } else {
-            subCmd.run(sender, args);
         }
     }
 }

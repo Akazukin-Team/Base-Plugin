@@ -47,7 +47,7 @@ public final class LibraryPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         getPlugin().getLogger().addHandler(new Handler() {
-            private final File file = new File(getPlugin().getDataFolder(), "error.log");
+            private final File file = new File(LibraryPlugin.getPlugin().getDataFolder(), "error.log");
 
             @Override
             public void publish(final LogRecord record) {
@@ -82,7 +82,7 @@ public final class LibraryPlugin extends JavaPlugin {
     }
 
     public static LibraryPlugin getPlugin() {
-        return getPlugin(LibraryPlugin.class);
+        return JavaPlugin.getPlugin(LibraryPlugin.class);
     }
 
     public static Logger getLogManager() {

@@ -328,16 +328,18 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
-    public Boolean containsPDCData(final Object itemStack, final String key) {
+    public boolean containsPDCData(final Object itemStack, final String key) {
         final ItemStack bktItemStack;
         if (itemStack instanceof net.minecraft.world.item.ItemStack)
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
         else if (itemStack instanceof ItemStack)
             bktItemStack = (ItemStack) itemStack;
         else
-            return null;
+            throw new IllegalStateException("itemStack is not allowed class");
 
-        return bktItemStack.getItemMeta().getPersistentDataContainer().getKeys().contains(new NamespacedKey(this.plugin, key));
+        final ItemMeta meta = bktItemStack.getItemMeta();
+        if (meta == null) return false;
+        return meta.getPersistentDataContainer().getKeys().contains(new NamespacedKey(this.plugin, key));
     }
 
     @Override

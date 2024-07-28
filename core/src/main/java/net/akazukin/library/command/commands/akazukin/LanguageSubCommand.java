@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 @CommandInfo(name = "language", description = "Change user's language", executor = CommandExecutor.PLAYER)
 public class LanguageSubCommand extends SubCommand {
     @Override
-    public void run(final CommandSender sender, final String... args) {
+    public void run(final CommandSender sender, final String[] args, final String[] args2) {
         if (args.length <= 1) {
             LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.command.language.enterLanguage"));
         } else if (LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getStringList("locales").stream().map(String::toLowerCase).noneMatch(locale -> locale.equals(ArrayUtils.getIndex(Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toList()), 1)))) {
