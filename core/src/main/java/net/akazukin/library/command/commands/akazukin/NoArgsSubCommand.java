@@ -6,10 +6,10 @@ import net.akazukin.library.command.CommandInfo;
 import net.akazukin.library.command.SubCommand;
 import org.bukkit.command.CommandSender;
 
-@CommandInfo(name = "", description = "Show information", executor = CommandExecutor.PLAYER)
+@CommandInfo(name = "", description = "Show information", executor = CommandExecutor.BOTH)
 public class NoArgsSubCommand extends SubCommand {
     @Override
-    public void run(final CommandSender sender, final String... args) {
+    public void run(final CommandSender sender, final String[] args, final String[] args2) {
         sender.sendMessage("§6§l" + LibraryPlugin.getPlugin().getName());
         sender.sendMessage("");
         sender.sendMessage("§aDevelop: " + "Akazukin organizations");

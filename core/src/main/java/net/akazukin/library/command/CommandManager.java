@@ -60,7 +60,7 @@ public abstract class CommandManager implements CommandExecutor, TabCompleter {
             final Command cmd = this.getCommand(label);
             if (cmd == null || !cmd.handleEvents()) return;
 
-            cmd.run(sender, args);
+            cmd.run(sender, args, args);
         }).start();
         return true;
     }

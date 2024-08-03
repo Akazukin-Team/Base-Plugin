@@ -55,4 +55,8 @@ public class StringUtils {
     public static String toStringOrEmpty(@Nullable final String obj) {
         return (obj == null) ? "" : obj;
     }
+
+    public static String formatMS(final long sec) {
+        return (sec / 60) + ":" + ((sec % 60) < 10 ? "0" : "") + (sec % 60);
+    }
 }

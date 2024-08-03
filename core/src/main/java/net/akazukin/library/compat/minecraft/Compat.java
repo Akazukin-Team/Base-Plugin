@@ -90,7 +90,7 @@ public interface Compat {
 
     <I> I setPDCData(I itemStack, String key, Boolean value);
 
-    Boolean containsPDCData(Object itemStack, String key);
+    boolean containsPDCData(Object itemStack, String key);
 
     Integer getPDCDataInt(Object itemStack, String key);
 

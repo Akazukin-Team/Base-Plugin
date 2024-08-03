@@ -13,7 +13,33 @@ import org.bukkit.command.CommandSender;
 @CommandInfo(name = "help", description = "Show list of commands and descriptions")
 public class HelpSubCommand extends SubCommand {
     @Override
-    public void run(final CommandSender sender, final String... args) {
+    public String[] getCompletion(final CommandSender sender, final org.bukkit.command.Command cmd,
+                                  final String[] args, final String[] args2) {
+
+        if (args2.length <= 1) {
+            return LibraryPlugin.COMMAND_MANAGER.getCommands().stream()
+                    .map(Command::getName)
+                    .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
+                            0)).toLowerCase()))
+                    .toArray(String[]::new);
+        } else {
+            Command cmD = LibraryPlugin.COMMAND_MANAGER.getCommand(args2[0]);
+            if (cmD == null) return null;
+
+            int lastIndex = 0;
+            for (int i = 1; i < Math.min(args2.length - 1, 10); i++) {
+                cmD = cmD.getSubCommand(args2[i]);
+                lastIndex = i;
+                if (cmd == null) return null;
+            }
+
+            return cmD.getCompletion(sender, cmd, args,
+                    ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2 - lastIndex).toArray(new String[0]));
+        }
+    }
+
+    @Override
+    public void run(final CommandSender sender, final String[] args, final String[] args2) {
         if (args.length == 1) {
             LibraryPlugin.COMMAND_MANAGER.getCommands().forEach(cmd ->
                     LibraryPlugin.MESSAGE_HELPER.sendMessage(sender,
@@ -40,32 +66,6 @@ public class HelpSubCommand extends SubCommand {
             Arrays.stream(subCmds).forEach(cmd_ ->
                     LibraryPlugin.MESSAGE_HELPER.sendMessage(sender,
                             I18n.of((id + ((StringUtils.getLength(cmd_.getName()) > 0) ? "." + cmd_.getName() : "")))));
-        }
-    }
-
-    @Override
-    public String[] getCompletion(final CommandSender sender, final org.bukkit.command.Command cmd,
-                                  final String[] args, final String[] args2) {
-
-        if (args2.length <= 1) {
-            return LibraryPlugin.COMMAND_MANAGER.getCommands().stream()
-                    .map(Command::getName)
-                    .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
-                            0)).toLowerCase()))
-                    .toArray(String[]::new);
-        } else {
-            Command cmD = LibraryPlugin.COMMAND_MANAGER.getCommand(args2[0]);
-            if (cmD == null) return null;
-
-            int lastIndex = 0;
-            for (int i = 1; i < Math.min(args2.length - 1, 10); i++) {
-                cmD = cmD.getSubCommand(args2[i]);
-                lastIndex = i;
-                if (cmd == null) return null;
-            }
-
-            return cmD.getCompletion(sender, cmd, args,
-                    ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2 - lastIndex).toArray(new String[0]));
         }
     }
 }
