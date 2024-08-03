@@ -31,7 +31,7 @@ repositories {
         url = "https://maven.enginehub.org/repo"
     }
     maven {
-        name "Jitpack"
+        name = "Jitpack"
         url = "https://jitpack.io/"
     }
     mavenCentral()
@@ -48,10 +48,9 @@ dependencies {
     //testRuntimeOnly libs.junit.platform
 }
 
-compileJava.options.encoding = 'UTF-8'
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    //options.compilerArgs << ''
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(properties.getOrDefault("java_version", 8) as int)
@@ -66,10 +65,12 @@ java {
     withSourcesJar()
 }
 
-jar.dependsOn(sourcesJar)
-jar.enabled = true
+jar {
+    dependsOn(sourcesJar)
+    dependsOn(processResources)
 
-jar.dependsOn(processResources)
+    enabled = true
+}
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
