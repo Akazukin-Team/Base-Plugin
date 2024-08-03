@@ -11,8 +11,4 @@ public class WrappedPlayerProfile {
     private String skinModel;
     private String cape;
     private long timestamp;
-
-    public void setSkin(final String skin) {
-        this.skin = (skin.startsWith("http://textures.minecraft.net/") ? "" : "http://textures.minecraft.net/") + skin;
-    }
 }
