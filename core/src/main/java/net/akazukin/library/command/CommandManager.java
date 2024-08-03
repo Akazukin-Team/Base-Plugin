@@ -73,7 +73,7 @@ public abstract class CommandManager implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(final CommandSender sender, final org.bukkit.command.Command cmd,
                                       final String cmdName, final String[] args) {
         final Command cmD = this.getCommand(cmdName);
-        if (cmD != null) {
+        if (cmD != null && cmD.hasPermission(sender)) {
             final String[] comp = cmD.getCompletion(sender, cmd, args, args);
             if (comp != null) return Arrays.asList(comp);
         }
