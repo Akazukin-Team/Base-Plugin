@@ -43,4 +43,4 @@ jobs:
         run: ./gradlew build test --no-configuration-cache
 
       - name: Upload artifacts to GPR
-        run: ./gradlew publishMavenPublicationToGprRepository
+        run: ./gradlew publishMavenPublicationToGprRepository --no-configuration-cache
