@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,5 +59,17 @@ public class StringUtils {
 
     public static String formatMS(final long sec) {
         return (sec / 60) + ":" + ((sec % 60) < 10 ? "0" : "") + (sec % 60);
+    }
+
+    public static boolean isNumeric(final String str) {
+        if (str == null) return false;
+        final char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            final char c = chars[i];
+            if (!Character.isDigit(c) &&
+                    !(i == 0 && chars.length >= 2 && Objects.equals('-', c))) return false;
+        }
+        return true;
+        //return str.chars().allMatch(Character::isDigit);
     }
 }

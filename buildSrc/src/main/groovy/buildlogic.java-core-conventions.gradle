@@ -5,7 +5,6 @@ plugins {
 }
 
 dependencies {
-    compileOnly libs.grimac
     include libs.gson
 }
 
