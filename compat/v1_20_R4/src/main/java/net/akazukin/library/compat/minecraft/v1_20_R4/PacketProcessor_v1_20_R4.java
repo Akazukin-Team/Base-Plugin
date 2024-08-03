@@ -1,16 +1,22 @@
 package net.akazukin.library.compat.minecraft.v1_20_R4;
 
+import it.unimi.dsi.fastutil.shorts.ShortArraySet;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import net.akazukin.library.compat.minecraft.compats.Compat_v1_20_R4;
 import net.akazukin.library.compat.minecraft.data.PacketProcessor;
 import net.akazukin.library.compat.minecraft.data.packets.CInitializeBorderPacket;
 import net.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import net.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
 import net.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.akazukin.library.utils.ArrayUtils;
+import net.minecraft.core.SectionPosition;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutMultiBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorldBorder;
 
 @AllArgsConstructor
@@ -38,6 +44,18 @@ public class PacketProcessor_v1_20_R4 implements PacketProcessor<Packet<?>> {
             return new ClientboundInitializeBorderPacket(
                     ((CraftWorldBorder) ((CInitializeBorderPacket) packet).getWorldBorder())
                             .getHandle()
+            );
+        } else if (packet instanceof SMultiBlockChangePacket) {
+            return new PacketPlayOutMultiBlockChange(
+                    SectionPosition.a(
+                            ((SMultiBlockChangePacket) packet).getSectionPos().getX(),
+                            ((SMultiBlockChangePacket) packet).getSectionPos().getY(),
+                            ((SMultiBlockChangePacket) packet).getSectionPos().getZ()),
+                    new ShortArraySet(Arrays.stream(((SMultiBlockChangePacket) packet).getBlockInfo()).map(b ->
+                            (short) ((b.getPos().getX() & 0xF) << 8 | (b.getPos().getZ() & 0xF) << 4 | b.getPos().getY() & 0xF)).toList()),
+                    Arrays.stream(((SMultiBlockChangePacket) packet).getBlockInfo())
+                            .map(b -> (IBlockData) b.getBlockData().getBlockData())
+                            .toArray(IBlockData[]::new)
             );
         }
         return null;
