@@ -448,13 +448,13 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public Object setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+    public Object setBlockData(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
                                final boolean applyPhysics) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
+    public WrappedBlockData getNMSNewBlockData(final Material material, final byte data) {
         throw new UnsupportedOperationException();
     }
 
@@ -507,14 +507,14 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public WrappedBlockData setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+    public WrappedBlockData setBlockData2(final Object chunkSection, final Vec3<Integer> vec3i,
                                           final WrappedBlockData blockData,
                                           final boolean applyPhysics) {
         throw new UnsupportedOperationYetException();
     }
 
     @Override
-    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
+    public WrappedBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> vec3i) {
         throw new UnsupportedOperationYetException();
     }
 
@@ -552,7 +552,10 @@ public class Compat_v1_17_R1 implements Compat {
         else
             return null;
 
-        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+        final ItemMeta meta = bktItemStack.getItemMeta();
+        if (meta == null) return null;
+
+        return meta.getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
     }
