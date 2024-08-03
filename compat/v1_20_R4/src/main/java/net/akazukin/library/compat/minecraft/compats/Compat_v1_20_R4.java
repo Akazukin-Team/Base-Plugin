@@ -24,6 +24,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.server.level.ChunkProviderServer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
@@ -33,8 +34,11 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.ContainerAnvil;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ChunkCoordIntPair;
+import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.Chunk;
 import net.minecraft.world.level.chunk.ChunkSection;
+import net.minecraft.world.level.chunk.IChunkAccess;
+import net.minecraft.world.level.chunk.ProtoChunkExtension;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,6 +55,7 @@ import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -208,7 +213,7 @@ public class Compat_v1_20_R4 implements Compat {
 
     @Override
     public <T> T setNBT(final T itemStack, final String key, final double value) {
-        return null;
+        throw new UnsupportedOperationYetException();
     }
 
     @Override
@@ -293,20 +298,17 @@ public class Compat_v1_20_R4 implements Compat {
 
     @Override
     public WrappedPlayerProfile getGameProfile(final Player player) {
-        if (player instanceof CraftPlayer) {
-            final PlayerProfile profile = player.getPlayerProfile();
-            final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
-            profile_.setUniqueId(profile.getUniqueId());
-            profile_.setName(profile.getName());
-            if (profile.getTextures().getSkin() != null)
-                profile_.setSkin(profile.getTextures().getSkin().getPath());
-            profile_.setSkinModel(profile.getTextures().getSkinModel().name());
-            if (profile.getTextures().getCape() != null)
-                profile_.setSkin(profile.getTextures().getCape().getPath());
-            profile_.setTimestamp(profile.getTextures().getTimestamp());
-            return profile_;
-        }
-        return null;
+        final PlayerProfile profile = player.getPlayerProfile();
+        final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
+        profile_.setUniqueId(profile.getUniqueId());
+        profile_.setName(profile.getName());
+        if (profile.getTextures().getSkin() != null)
+            profile_.setSkin(profile.getTextures().getSkin().getPath());
+        profile_.setSkinModel(profile.getTextures().getSkinModel().name());
+        if (profile.getTextures().getCape() != null)
+            profile_.setSkin(profile.getTextures().getCape().getPath());
+        profile_.setTimestamp(profile.getTextures().getTimestamp());
+        return profile_;
     }
 
     @Override
@@ -455,14 +457,15 @@ public class Compat_v1_20_R4 implements Compat {
     }
 
     @Override
-    public Object setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+    public Object setBlockData(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
                                final boolean applyPhysics) {
-        throw new UnsupportedOperationException();
+        final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
+        return this.setBlockData2(cs, vec3i, blockData, applyPhysics);
     }
 
     @Override
-    public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
-        throw new UnsupportedOperationException();
+    public WrappedBlockData getNMSNewBlockData(final Material material, final byte data) {
+        return new WrappedBlockData(CraftMagicNumbers.getBlock(material, data));
     }
 
     @Override
@@ -485,7 +488,7 @@ public class Compat_v1_20_R4 implements Compat {
 
     @Override
     public ChunkSection getNMSChunkSection(final Object chunk, final int y) {
-        throw new UnsupportedOperationYetException();
+        return this.getNMSChunkSection2(chunk, y >> 4);
     }
 
     @Override
@@ -514,40 +517,61 @@ public class Compat_v1_20_R4 implements Compat {
     }
 
     @Override
-    public WrappedBlockData setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+    public WrappedBlockData setBlockData2(final Object chunkSection, final Vec3<Integer> vec3i,
                                           final WrappedBlockData blockData,
                                           final boolean applyPhysics) {
-        throw new UnsupportedOperationYetException();
+        final ChunkSection cs = this.getNMSChunkSection(chunkSection);
+
+        return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
+                ((IBlockData) blockData.getBlockData()),
+                applyPhysics));
     }
 
     @Override
-    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
-        throw new UnsupportedOperationYetException();
+    public WrappedBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> vec3i) {
+        final ChunkSection cs = this.getNMSChunkSection(chunkSection);
+        return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
     }
 
     @Override
-    public Object getNMSChunkSection(final Object chunkSection) {
-        throw new UnsupportedOperationYetException();
+    public ChunkSection getNMSChunkSection(final Object chunkSection) {
+        if (chunkSection instanceof ChunkSection)
+            return (ChunkSection) chunkSection;
+        else return null;
     }
 
     @Override
-    public Object getNMSChunkSection2(final Object chunk, final int fixedY) {
-        throw new UnsupportedOperationYetException();
+    public ChunkSection getNMSChunkSection2(final Object chunk, final int fixedY) {
+        final Chunk c = this.getNMSChunk(chunk);
+        return c.b(fixedY);
     }
 
     @Override
     public void updateLightsAtBlock(final Object world, final Vec3<Integer> pos) {
-        throw new UnsupportedOperationYetException();
+        final WorldServer c = this.getNMSWorld(world);
+        c.y_().a(new BlockPosition(pos.getX(), pos.getY(), pos.getZ()));
     }
 
     @Override
     public void unloadChunk(final Object chunk, final boolean save) {
-        throw new UnsupportedOperationYetException();
+        final Chunk c = this.getNMSChunk(chunk);
+        if (!save || c.r.l().a.a(c)) c.r.l().a.n.remove(c.f().a());
     }
 
     @Override
     public Chunk loadChunk(final Object world, final Vec2<Integer> chunkLoc, final boolean generate) {
-        throw new UnsupportedOperationException();
+        final ChunkProviderServer provider = this.getNMSWorld(world).l();
+
+        IChunkAccess chunk = provider.a(chunkLoc.getX(), chunkLoc.getY(),
+                generate ? ChunkStatus.n : ChunkStatus.c, true);
+        if (chunk instanceof ProtoChunkExtension) {
+            chunk = provider.a(chunkLoc.getX(), chunkLoc.getY(), ChunkStatus.n, true);
+        }
+
+        if (chunk instanceof net.minecraft.world.level.chunk.Chunk) {
+            provider.a(TicketType.PLUGIN, chunk.f(), 1, Unit.a);
+        }
+        return (Chunk) chunk;
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {
@@ -559,7 +583,10 @@ public class Compat_v1_20_R4 implements Compat {
         else
             return null;
 
-        return bktItemStack.getItemMeta().getPersistentDataContainer().get(
+        final ItemMeta meta = bktItemStack.getItemMeta();
+        if (meta == null) return null;
+
+        return meta.getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
     }

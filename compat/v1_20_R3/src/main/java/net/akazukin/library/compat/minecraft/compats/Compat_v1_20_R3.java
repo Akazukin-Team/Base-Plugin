@@ -456,14 +456,14 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public Object setBlockDate(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+    public Object setBlockData(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
                                final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
-        return this.setBlockDate2(cs, vec3i, blockData, applyPhysics);
+        return this.setBlockData2(cs, vec3i, blockData, applyPhysics);
     }
 
     @Override
-    public WrappedBlockData getNMSNewBlockDate(final Material material, final byte data) {
+    public WrappedBlockData getNMSNewBlockData(final Material material, final byte data) {
         return new WrappedBlockData(CraftMagicNumbers.getBlock(material, data));
     }
 
@@ -517,19 +517,10 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public WrappedBlockData setBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i,
+    public WrappedBlockData setBlockData2(final Object chunkSection, final Vec3<Integer> vec3i,
                                           final WrappedBlockData blockData,
                                           final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
-
-
-        /*if (flag) {
-            iblockdata1 = (IBlockData) cs.h().a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
-                    ((IBlockData) blockData.getBlockData()));
-        } else {
-            iblockdata1 = (IBlockData) cs.h().b(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
-                    ((IBlockData) blockData.getBlockData()));
-        }*/
 
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
                 ((IBlockData) blockData.getBlockData()),
@@ -537,9 +528,8 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public WrappedBlockData getBlockDate2(final Object chunkSection, final Vec3<Integer> vec3i) {
+    public WrappedBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> vec3i) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
-        //cs.h.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15, null);
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
     }
 
@@ -596,6 +586,7 @@ public class Compat_v1_20_R3 implements Compat {
 
         final ItemMeta meta = bktItemStack.getItemMeta();
         if (meta == null) return null;
+
         return meta.getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
         );
