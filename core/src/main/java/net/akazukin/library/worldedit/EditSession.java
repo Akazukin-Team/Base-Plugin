@@ -183,12 +183,12 @@ public class EditSession {
                                     final Vec3<Integer> v3 = e3.getKey().clone().add(0, -min, 0);
                                     final long s3 = System.nanoTime();
                                     final boolean res = Objects.equals(
-                                            LibraryPlugin.COMPAT.getBlockDate2(cs, v3),
+                                            LibraryPlugin.COMPAT.getBlockData2(cs, v3),
                                             e3.getValue());
                                     final long s4 = System.nanoTime();
                                     if (debug) checkBlocksTime.addAndGet(s4 - s3);
                                     if (res) return null;
-                                    LibraryPlugin.COMPAT.setBlockDate2(cs, v3, e3.getValue(), false);
+                                    LibraryPlugin.COMPAT.setBlockData2(cs, v3, e3.getValue(), false);
                                     final long s5 = System.nanoTime();
                                     if (debug) setBlockTimes.addAndGet(s5 - s4);
                                     LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
