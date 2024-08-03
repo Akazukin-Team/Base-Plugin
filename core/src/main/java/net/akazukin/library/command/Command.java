@@ -72,7 +72,7 @@ public abstract class Command implements Listenable {
                                   final String[] args, final String[] args2) {
         if (args2.length > 1) {
             return this.subCommands.parallelStream()
-                    .filter(s -> s.getName().toLowerCase().startsWith(args2[0].toLowerCase()))
+                    .filter(s -> s.getName().toLowerCase().startsWith(args2[0].toLowerCase()) && s.hasPermission(sender))
                     .findFirst()
                     .map(subCommand -> subCommand.getCompletion(sender, cmd, args,
                             ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2)
@@ -82,9 +82,11 @@ public abstract class Command implements Listenable {
 
         final String arg = StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2, 0)).toLowerCase();
         return this.subCommands.parallelStream()
+                .filter(cmD -> cmD.getName().toLowerCase().startsWith(arg) &&
+                        (cmD.getPermission().isEmpty() || sender.hasPermission(cmD.getPermission())))
                 .map(SubCommand::getName)
-                .filter(s -> s.toLowerCase().startsWith(arg))
-                .sorted().toArray(String[]::new);
+                .sorted()
+                .toArray(String[]::new);
     }
 
     public boolean runSubCommand(final CommandSender sender, final String[] args, final String[] args2) {
