@@ -47,7 +47,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Build and Test
-        run: ./gradlew build test
+        run: ./gradlew build test --no-configuration-cache
 
       - name: Make jars
         run: ./gradlew publishToMavenLocal
