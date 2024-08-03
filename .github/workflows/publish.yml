@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Build and Test
-        run: ./gradlew build test
+        run: ./gradlew build test --no-configuration-cache
 
       - name: Upload artifacts to GPR
         run: ./gradlew publishMavenPublicationToGprRepository
