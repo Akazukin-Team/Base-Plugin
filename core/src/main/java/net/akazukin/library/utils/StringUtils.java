@@ -8,8 +8,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StringUtils {
     private static final MessageDigest sha3_512;
@@ -24,8 +25,8 @@ public class StringUtils {
         }
     }
 
-    @Nonnull
-    public static String toSHA(@Nonnull final String str) {
+    @NonNull
+    public static String toSHA(@NonNull final String str) {
         final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
         final byte[] result = sha3_512.digest(bytes);
 
@@ -37,7 +38,7 @@ public class StringUtils {
         return m.find() ? m.replaceAll("§$1") : str;
     }
 
-    @Nullable
+    @NonNull
     public static String getUncoloredString(final String str) {
         final Matcher m = colorPattern2.matcher(str);
         return m.find() ? m.replaceAll("&$1") : str;
@@ -53,6 +54,7 @@ public class StringUtils {
         return UUID.fromString(str);
     }
 
+    @NotNull
     public static String toStringOrEmpty(@Nullable final String obj) {
         return (obj == null) ? "" : obj;
     }

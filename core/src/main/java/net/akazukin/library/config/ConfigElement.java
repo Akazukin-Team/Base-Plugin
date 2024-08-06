@@ -18,7 +18,4 @@ public class ConfigElement<T> {
         this(key, null);
     }
 
-    public void setValue(final Object value) {
-        this.value = (T) value;
-    }
 }

@@ -39,6 +39,8 @@ java {
     withSourcesJar()
 }
 
+jar.enabled = true
+
 publishing {
     repositories {
         maven {

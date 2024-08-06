@@ -11,7 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import javax.net.ssl.HttpsURLConnection;
-import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.LibraryPluginProvider;
 import net.akazukin.library.utils.IOUtils;
 
 public class HttpUtils {
@@ -19,7 +19,8 @@ public class HttpUtils {
         return request(url, query, HttpMethod.POST, contentType);
     }
 
-    public static byte[] request(final String url, final Object query, final HttpMethod method, final HttpContentType contentType) {
+    public static byte[] request(final String url, final Object query, final HttpMethod method,
+                                 final HttpContentType contentType) {
         HttpURLConnection con = null;
         try {
             if (url.startsWith("http://")) {
@@ -35,7 +36,8 @@ public class HttpUtils {
             con.setDoInput(true);
             con.setUseCaches(false);
 
-            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
             if (contentType != null)
                 con.setRequestProperty("Content-Type", contentType.getContentType() + ";charset=utf-8");
 
@@ -62,9 +64,10 @@ public class HttpUtils {
             }
         } catch (final Throwable e) {
             if (e instanceof SocketTimeoutException || e instanceof ConnectException || e instanceof IllegalStateException) {
-                LibraryPlugin.getLogManager().log(Level.SEVERE, "URL: " + url + "  Params: " + query + "  Method: " + method);
+                LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE,
+                        "URL: " + url + "  Params: " + query + "  Method: " + method);
             } else {
-                LibraryPlugin.getLogManager().log(Level.SEVERE, e.getMessage(), e);
+                LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE, e.getMessage(), e);
             }
         } finally {
             if (con != null) con.disconnect();

@@ -42,6 +42,11 @@ dependencies {
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+    annotationProcessor 'org.jetbrains:annotations:24.1.0'
+
+
+    compileOnly libs.gson
     compileOnly libs.doma.core
 
     //testImplementation libs.junit.jupiter

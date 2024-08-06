@@ -5,18 +5,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.command.ICmdSender;
+import net.akazukin.library.command.IPlayerCmdSender;
 import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.entity.MUserEntity;
 import net.akazukin.library.doma.repo.MUserRepo;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.i18n.I18nUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
-public class MessageHelper {
+public abstract class MessageHelper {
     private final List<I18nUtils> i18nUtils;
 
     public MessageHelper(final I18nUtils... i18nUtils) {
@@ -24,17 +21,15 @@ public class MessageHelper {
         Collections.reverse(this.i18nUtils);
     }
 
-    public static String getLocale(final Player player) {
-        return getLocale(player.getUniqueId());
-    }
-
     public void broadcast(final I18n message) {
-        this.broadcast(this.get(getLocale(), message));
+        this.broadcast(this.get(this.getLocale(), message));
     }
 
     public void broadcast(final String message) {
-        Bukkit.broadcastMessage("§7[§6§lAKZ§7]§e " + message);
+        this.sendServer("§7[§6§lAKZ§7]§e " + message);
     }
+
+    protected abstract void sendServer(String msg);
 
     public String get(final String locale, final I18n i18n, final Object... args) {
         for (final I18nUtils i18nUtil : this.i18nUtils) {
@@ -48,55 +43,41 @@ public class MessageHelper {
         return i18n.getKey();
     }
 
-    public static String getLocale() {
-        return LibraryPlugin.CONFIG_UTILS.getConfig("config.yaml").getString("locale");
-    }
+    public abstract String getLocale();
 
-    public void sendMessage(final CommandSender sender, final String message) {
-        if (sender instanceof Player) {
-            this.sendMessage((Player) sender, message);
+    public void sendMessage(final ICmdSender sender, final I18n i18n, final Object... args) {
+        if (sender instanceof IPlayerCmdSender) {
+            this.sendMessage(((IPlayerCmdSender) sender).getUniqueId(), i18n, args);
         } else {
-            this.consoleMessage(message);
+            this.consoleMessage(i18n, args);
         }
-    }
-
-    public void sendMessage(final HumanEntity player, final String message) {
-        if (player == null) return;
-        player.sendMessage("§7[§6§lAKZ§7]§e " + message);
-    }
-
-    public void consoleMessage(final String message) {
-        Bukkit.getConsoleSender().sendMessage("§7[§6§lAKZ§7]§e " + message);
-    }
-
-    public void sendMessage(final CommandSender sender, final I18n message, final Object... args) {
-        if (sender instanceof Player) {
-            this.sendMessage((Player) sender, message, args);
-        } else {
-            this.consoleMessage(message, args);
-        }
-    }
-
-    public void sendMessage(final HumanEntity player, final I18n message, final Object... args) {
-        this.sendMessage(player, this.get(getLocale(player.getUniqueId()), message, args));
-    }
-
-    public static String getLocale(final UUID player) {
-        final MUserEntity entity =
-                LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
-        if (entity != null && entity.getLocale() != null) return entity.getLocale();
-        return getLocale();
     }
 
     public void consoleMessage(final I18n message, final Object... args) {
-        this.consoleMessage(this.get(getLocale(), message, args));
+        this.consoleMessage(this.get(this.getLocale(), message, args));
     }
 
+    public void consoleMessage(final String message) {
+        this.sendConsole("§7[§6§lAKZ§7]§e " + message);
+    }
+
+    protected abstract void sendConsole(String msg);
+
     public void sendMessage(final UUID player, final I18n message, final Object... args) {
-        this.sendMessage(player, this.get(getLocale(player), message, args));
+        this.sendMessage(player, this.get(this.getLocale(player), message, args));
+    }
+
+    public String getLocale(final UUID player) {
+        final MUserEntity entity =
+                LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
+        if (entity != null && entity.getLocale() != null) return entity.getLocale();
+        return this.getLocale();
     }
 
     public void sendMessage(final UUID player, final String message) {
-        this.sendMessage(Bukkit.getPlayer(player), message);
+        if (player == null) return;
+        this.sendPlayer(player, "§7[§6§lAKZ§7]§e " + message);
     }
+
+    protected abstract void sendPlayer(UUID player, String msg);
 }

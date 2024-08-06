@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import lombok.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ArrayUtils {
     public static Collector<?, ?, ?> SHUFFLE = Collectors.collectingAndThen(
@@ -26,13 +26,13 @@ public class ArrayUtils {
     }
 
 
-    @Nonnull
+    @NonNull
     public static <T> String join(final String character, final Collection<T> list) {
         if (list == null) return "";
         return join(character, list.toArray());
     }
 
-    @Nonnull
+    @NonNull
     public static <T> String join(final String character, final T[] list) {
         if (list == null) return "";
         return Arrays.stream(list)

@@ -3,7 +3,7 @@ plugins {
 }
 
 rootProject.name = 'Base-Plugin'
-include('core', 'doma', 'publish')
+include('core', 'bukkit', 'doma', 'publish')
 
 String[] compatProjects = new String[]{
         'v1_8_R3',

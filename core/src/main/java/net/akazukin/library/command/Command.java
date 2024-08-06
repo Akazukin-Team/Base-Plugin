@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
-import net.akazukin.library.LibraryPlugin;
+import net.akazukin.library.LibraryPluginProvider;
 import net.akazukin.library.event.Listenable;
 import net.akazukin.library.i18n.I18n;
 import net.akazukin.library.utils.ArrayUtils;
 import net.akazukin.library.utils.StringUtils;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public abstract class Command implements Listenable {
     @Getter
@@ -68,13 +66,13 @@ public abstract class Command implements Listenable {
         return this.toggle;
     }
 
-    public String[] getCompletion(final CommandSender sender, final org.bukkit.command.Command cmd,
+    public String[] getCompletion(final ICmdSender sender, final String cmdName,
                                   final String[] args, final String[] args2) {
         if (args2.length > 1) {
             return this.subCommands.parallelStream()
                     .filter(s -> s.getName().toLowerCase().startsWith(args2[0].toLowerCase()) && s.hasPermission(sender))
                     .findFirst()
-                    .map(subCommand -> subCommand.getCompletion(sender, cmd, args,
+                    .map(subCommand -> subCommand.getCompletion(sender, cmdName, args,
                             ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2)
                                     .toArray(new String[0])))
                     .orElse(null);
@@ -82,20 +80,22 @@ public abstract class Command implements Listenable {
 
         final String arg = StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2, 0)).toLowerCase();
         return this.subCommands.parallelStream()
-                .filter(cmD -> cmD.getName().toLowerCase().startsWith(arg) &&
-                        (cmD.getPermission().isEmpty() || sender.hasPermission(cmD.getPermission())))
+                .filter(cmD -> cmD.getName().toLowerCase().startsWith(arg) && cmD.hasPermission(sender))
                 .map(SubCommand::getName)
                 .sorted()
                 .toArray(String[]::new);
     }
 
-    public boolean runSubCommand(final CommandSender sender, final String[] args, final String[] args2) {
+    public boolean runSubCommand(final ICmdSender sender, final String[] args, final String[] args2) {
         final SubCommand cmd = this.getSubCommand(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2, 0)));
         if (cmd == null) return false;
         else if (!cmd.validExecutor(sender)) {
-            LibraryPlugin.MESSAGE_HELPER.consoleMessage(I18n.of("library.command.execute.mustBeBy" + (sender instanceof Player ? "Console" : "Player")));
+            LibraryPluginProvider.getApi().getMessageHelper().sendMessage(sender,
+                    I18n.of("library.command.execute.mustBeBy" +
+                            (sender instanceof IPlayerCmdSender ? "Console" : "Player")));
         } else if (!cmd.hasPermission(sender)) {
-            LibraryPlugin.MESSAGE_HELPER.sendMessage(sender, I18n.of("library.message.requirePerm"));
+            LibraryPluginProvider.getApi().getMessageHelper().sendMessage(sender,
+                    I18n.of("library.message.requirePerm"));
         } else {
             cmd.run(sender, args, ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2).toArray(new String[0]));
         }
@@ -107,16 +107,16 @@ public abstract class Command implements Listenable {
                 cmd.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
-    public abstract void run(CommandSender sender, String[] args, String[] args2);
+    public abstract void run(ICmdSender sender, String[] args, String[] args2);
 
-    public final boolean hasPermission(final CommandSender sender) {
-        return this.permission.isEmpty() || !(sender instanceof Player) || sender.hasPermission(this.permission);
+    public final boolean hasPermission(final ICmdSender sender) {
+        return this.permission.isEmpty() || !(sender instanceof IPlayerCmdSender) || ((IPlayerCmdSender) sender).hasPermission(this.permission);
     }
 
-    public final boolean validExecutor(final CommandSender sender) {
-        if (this.executor == CommandExecutor.CONSOLE && !(sender instanceof Player)) {
+    public final boolean validExecutor(final ICmdSender sender) {
+        if (this.executor == CommandExecutor.CONSOLE && !(sender instanceof IPlayerCmdSender)) {
             return true;
-        } else if (this.executor == CommandExecutor.PLAYER && sender instanceof Player) {
+        } else if (this.executor == CommandExecutor.PLAYER && sender instanceof IPlayerCmdSender) {
             return true;
         }
         return this.executor == CommandExecutor.BOTH;

@@ -7,10 +7,16 @@ craftbukkit_version = properties.get("craftbukkit_version")
 
 dependencies {
     compileOnly "org.spigotmc:spigot:${minecraft_version}"
-    compileOnly "org.bukkit:craftbukkit:${craftbukkit_version}"
+    compileOnly("org.bukkit:craftbukkit:${craftbukkit_version}") {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
 
-    compileOnly "com.sk89q.worldedit:worldedit-bukkit:${project.worldedit_version}"
-    compileOnly "com.sk89q.worldedit:worldedit-core:${project.worldedit_core_version}"
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:${project.worldedit_version}") {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
+    compileOnly("com.sk89q.worldedit:worldedit-core:${project.worldedit_core_version}") {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
     if (project.worldguard_version.startsWith("6")) {
         compileOnly "com.sk89q.worldguard:worldguard-legacy:${project.worldguard_version}"
     } else {

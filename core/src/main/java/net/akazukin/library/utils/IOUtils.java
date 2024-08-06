@@ -3,10 +3,11 @@ package net.akazukin.library.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class IOUtils {
     public static String toString(final InputStream inputStream) throws IOException {
-        return new String(readAllBytes(inputStream));
+        return new String(readAllBytes(inputStream), StandardCharsets.UTF_8);
     }
 
     public static byte[] readAllBytes(final InputStream is) throws IOException {

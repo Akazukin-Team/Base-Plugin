@@ -73,7 +73,7 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     public int getMinHeight(final World world) {
-        return world.getMinHeight();
+        return 0;//return world.getMinHeight();
     }
 
     @Override
