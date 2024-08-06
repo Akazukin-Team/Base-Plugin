@@ -1,15 +1,8 @@
 plugins {
     id 'buildlogic.java-common-conventions'
-    id 'buildlogic.java-minecraft-conventions'
-    id 'application'
+    id 'buildlogic.java-manifest-conventions'
 }
 
-application {
-    mainClassName = "net.akazukin.library.Main"
-}
-
-processResources {
-    filesMatching("plugin.yml") {
-        expand(NAME: parent.getProperties().plugin_name, VERSION: parent.getProperties().version, PACKAGE: project.group.toString())
-    }
+dependencies {
+    compileOnly 'io.netty:netty-all:4.2.0.Alpha2'
 }

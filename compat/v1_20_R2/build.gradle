@@ -7,8 +7,9 @@ repositories {
 }
 
 dependencies {
-    include(project(":core"))
+    include(project(":bukkit"))
+    compileOnly project(":core")
     compileOnly('io.netty:netty-all:4.1.111.Final')
 }
 
-jar.dependsOn(":core:jar")
+jar.dependsOn(":bukkit:jar")

@@ -7,22 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import net.akazukin.library.LibraryPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
+import net.akazukin.library.LibraryPluginProvider;
 
 public abstract class EventManager {
-    private final Map<Class<? extends Event>, List<EventHook>> registry = new ConcurrentHashMap<>();
-
-    /**
-     * Call event at bukkit
-     *
-     * @param event to call
-     */
-    public static void callEventToBukkit(final Event event) {
-        Bukkit.getServer().getPluginManager().callEvent(event);
-    }
+    private final Map<Class<?>, List<EventHook>> registry = new ConcurrentHashMap<>();
 
     public abstract void registerListeners();
 
@@ -34,7 +22,7 @@ public abstract class EventManager {
         try {
             this.registerListener(command.newInstance());
         } catch (final InstantiationException | IllegalAccessException e) {
-            LibraryPlugin.getLogManager().log(Level.SEVERE, e.getMessage(), e);
+            LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -47,7 +35,7 @@ public abstract class EventManager {
                 .forEach(m -> {
                     if (!m.isAccessible()) m.setAccessible(true);
 
-                    final Class<? extends Event> eventClass = (Class<? extends Event>) m.getParameterTypes()[0];
+                    final Class<? extends IEvent> eventClass = (Class<? extends IEvent>) m.getParameterTypes()[0];
                     final EventTarget eventTarget = m.getAnnotation(EventTarget.class);
                     synchronized (this.registry) {
                         final List<EventHook> invokableEventTargets =
@@ -85,7 +73,7 @@ public abstract class EventManager {
      *
      * @param event to call
      */
-    public void callEvent(final Event event, final EventPriority priority) {
+    public void callEvent(final Object event, final EventPriority priority) {
         synchronized (this.registry) {
             this.registry.entrySet().stream()
                     .filter(e -> e.getKey().isAssignableFrom(event.getClass()))

@@ -3,10 +3,10 @@ package net.akazukin.library.packetlistener;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import net.akazukin.library.event.events.PacketEvent;
-import net.akazukin.library.event.events.PacketReceiveEvent;
-import net.akazukin.library.event.events.PacketSendEvent;
-import org.bukkit.Bukkit;
+import java.util.logging.Level;
+import net.akazukin.library.LibraryPluginProvider;
+import net.akazukin.library.event.events.IPacketEvent;
+import net.akazukin.library.packetlistener.client.SocketRemoteClient;
 
 /**
  * Custom channel handler.
@@ -17,32 +17,32 @@ import org.bukkit.Bukkit;
  * </p>
  *
  * @author DrogoniEntity
- * @see PacketEvent PacketEvent class.
+ * @see IPacketEvent class.
  */
-public class RemoteClientChannelHandler extends ChannelDuplexHandler {
+public abstract class RemoteClientChannelHandler extends ChannelDuplexHandler {
     /**
      * Channel handler name.
      */
-    public static final String HANDLER_NAME = "akz_prehandler";
+    public static final String HANDLER_NAME = "akz_handler";
 
     /**
      * Remote client who communicate with server.
      */
-    private final RemoteClient client;
+    private final SocketRemoteClient client;
 
     /**
      * Setup channel handler.
      *
      * @param client - remote client.
      */
-    public RemoteClientChannelHandler(final RemoteClient client) {
+    public RemoteClientChannelHandler(final SocketRemoteClient client) {
         this.client = client;
     }
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
         final Pointer<Object> msgPointer = new Pointer<>(msg);
-        if (this.handle(msgPointer, PacketSendEvent.class))
+        if (this.handle(msgPointer, EventType.SEND))
             super.write(ctx, msgPointer.content, promise);
     }
 
@@ -54,34 +54,46 @@ public class RemoteClientChannelHandler extends ChannelDuplexHandler {
      * created and fired by Bukkit's plugin manager.
      * </p>
      *
-     * @param msg        - data to handle.
-     * @param eventClass - {@code PacketEvent} type to fire.
+     * @param msg       - data to handle.
+     * @param eventType - {@code PacketEvent} type to fire.
      * @return {@code true} if event havn't been cancelled.
      */
-    private boolean handle(final Pointer<Object> msg, final Class<? extends PacketEvent> eventClass) {
+    private boolean handle(final Pointer<Object> msg, final EventType eventType) {
         boolean shouldContinue = true;
 
         // Proceed only if msg's class name contains 'net.minecraft' and 'Packet'.
         final String className = msg.content.getClass().getName();
         if (className.contains("net.minecraft") && className.contains("Packet")) {
             try {
-                final PacketEvent event = eventClass.getConstructor(RemoteClient.class, Object.class).newInstance(this.client, msg.content);
-                Bukkit.getServer().getPluginManager().callEvent(event);
+                final IPacketEvent event = this.getEventClass(eventType)
+                        .getConstructor(SocketRemoteClient.class, Object.class)
+                        .newInstance(this.client, msg.content);
+                this.firePktEvent(event);
                 msg.content = event.getPacket();
 
                 shouldContinue = !event.isCancelled();
             } catch (final Throwable ignored) {
-                ignored.printStackTrace();
+                LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE,
+                        "An error has occurred when handle packet", ignored);
             }
         }
 
         return shouldContinue;
     }
 
+    protected abstract Class<? extends IPacketEvent> getEventClass(EventType type);
+
+    protected abstract void firePktEvent(IPacketEvent event);
+
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         final Pointer<Object> msgPointer = new Pointer<>(msg);
-        if (this.handle(msgPointer, PacketReceiveEvent.class))
+        if (this.handle(msgPointer, EventType.RECEIVE))
             super.channelRead(ctx, msgPointer.content);
+    }
+
+    protected enum EventType {
+        SEND,
+        RECEIVE
     }
 }

@@ -1,6 +1,6 @@
 package net.akazukin.library.utils;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class ObjectUtils {
     @Nullable

@@ -7,11 +7,11 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NonNull;
+import net.akazukin.library.LibraryPluginProvider;
 
-@Slf4j
 public class FileUtils {
     public static String getApplicationPath() {
         try {
@@ -56,7 +56,7 @@ public class FileUtils {
         }
     }
 
-    public static boolean delete(@Nonnull final File file) {
+    public static boolean delete(@NonNull final File file) {
         if (!file.exists()) return true;
 
         try {
@@ -73,7 +73,7 @@ public class FileUtils {
                         .allMatch(File::delete);
             }
         } catch (final Throwable ignored) {
-            log.error("Failed to remove file", ignored);
+            LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE, "Failed to remove file", ignored);
             return false;
         }
     }

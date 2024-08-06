@@ -3,7 +3,8 @@ plugins {
 }
 
 dependencies {
-    include(project(":core"))
+    compileOnly project(":core")
+    include(project(":bukkit"))
 }
 
-jar.dependsOn(":core:jar")
+jar.dependsOn(":bukkit:jar")

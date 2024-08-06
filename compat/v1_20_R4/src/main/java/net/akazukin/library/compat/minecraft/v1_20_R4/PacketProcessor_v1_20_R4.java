@@ -66,12 +66,12 @@ public class PacketProcessor_v1_20_R4 implements PacketProcessor<Packet<?>> {
         //CPacket only supports
         if (packet instanceof PacketPlayOutOpenSignEditor) {
             return new COpenSignEditorPacket(
-                    this.compat.getWrappedBlockPos(((PacketPlayOutOpenSignEditor) packet).a()),
+                    this.compat.getWrappedBlockPos(((PacketPlayOutOpenSignEditor) packet).b()),
                     packet.d()
             );
         } else if (packet instanceof PacketPlayInUpdateSign) {
             return new SUpdateSignPacket(
-                    this.compat.getWrappedBlockPos(((PacketPlayInUpdateSign) packet).a()),
+                    this.compat.getWrappedBlockPos(((PacketPlayInUpdateSign) packet).b()),
                     ((PacketPlayInUpdateSign) packet).f(),
                     ((PacketPlayInUpdateSign) packet).e()
             );

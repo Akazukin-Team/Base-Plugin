@@ -1,0 +1,10 @@
+plugins {
+    id 'buildlogic.java-bukkit-conventions'
+}
+
+dependencies {
+    include project(":core")
+    compileOnly project(":doma")
+}
+
+jar.dependsOn(":core:jar")
