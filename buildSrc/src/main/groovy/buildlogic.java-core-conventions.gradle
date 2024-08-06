@@ -4,15 +4,9 @@ plugins {
     id 'application'
 }
 
-dependencies {
-    include libs.gson
-}
-
 application {
     mainClassName = "net.akazukin.library.Main"
 }
-
-jar.enabled = true
 
 processResources {
     filesMatching("plugin.yml") {

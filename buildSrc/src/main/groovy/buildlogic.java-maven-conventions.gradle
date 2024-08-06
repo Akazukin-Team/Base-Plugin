@@ -35,8 +35,6 @@ tasks.register("shadowJar", Jar) {
     }
 }
 
-jar.enabled = true
-
 java {
     withSourcesJar()
 }
