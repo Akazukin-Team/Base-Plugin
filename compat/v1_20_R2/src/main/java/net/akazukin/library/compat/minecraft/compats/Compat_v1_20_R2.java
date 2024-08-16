@@ -66,6 +66,11 @@ public class Compat_v1_20_R2 implements Compat {
     }
 
     @Override
+    public float getAttackCooldown(final Player player) {
+        return ((CraftPlayer) player).getHandle().B(0.5f);
+    }
+
+    @Override
     public int getProtocolVersion() {
         return SharedConstants.c();
     }
@@ -551,7 +556,7 @@ public class Compat_v1_20_R2 implements Compat {
         else
             return null;
 
-        ItemMeta meta = bktItemStack.getItemMeta();
+        final ItemMeta meta = bktItemStack.getItemMeta();
         if (meta == null) return null;
 
         return meta.getPersistentDataContainer().get(

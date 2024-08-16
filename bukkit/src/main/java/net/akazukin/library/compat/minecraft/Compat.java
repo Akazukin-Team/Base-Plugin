@@ -22,6 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public interface Compat {
+    float getAttackCooldown(Player player);
+
     int getProtocolVersion();
 
     int getMinHeight(World world);
@@ -47,7 +49,6 @@ public interface Compat {
     List<Channel> getServerChannels();
 
     void sendSignUpdate(Player player, Location location, String[] result);
-
 
     Boolean hasNBT(Object itemStack);
 
