@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.NonNull;
@@ -46,12 +45,6 @@ public class StringUtils {
 
     public static int getLength(final String str) {
         return str == null ? -1 : str.length();
-    }
-
-    @Nullable
-    public static UUID toUuid(@Nullable final String str) {
-        if (str == null) return null;
-        return UUID.fromString(str);
     }
 
     @NotNull

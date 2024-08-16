@@ -72,8 +72,8 @@ public class FileUtils {
                         })
                         .allMatch(File::delete);
             }
-        } catch (final Throwable ignored) {
-            LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE, "Failed to remove file", ignored);
+        } catch (final Throwable t) {
+            LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE, "Failed to remove file", t);
             return false;
         }
     }

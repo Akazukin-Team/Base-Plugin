@@ -6,14 +6,18 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import net.akazukin.library.doma.LibrarySQLConfig;
 import net.akazukin.library.doma.entity.MUserProfileEntity;
 import net.akazukin.library.doma.repo.MUserProfileRepo;
 import net.akazukin.library.utils.http.HttpUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerUtils {
     public static Player getPlayerFromAddress(final InetSocketAddress addr) {
@@ -144,5 +148,15 @@ public class PlayerUtils {
         profile.setTimestamp(entity.getTimestamp());
 
         return profile;
+    }
+
+    @Nullable
+    public OfflinePlayer getOfflinePlayer(@Nonnull String name) {
+        return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> name.equalsIgnoreCase(p.getName())).findFirst().orElse(null);
+    }
+
+    @Nullable
+    public OfflinePlayer getOfflinePlayer(@Nonnull UUID uuid) {
+        return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> uuid.equals(p.getUniqueId())).findFirst().orElse(null);
     }
 }
