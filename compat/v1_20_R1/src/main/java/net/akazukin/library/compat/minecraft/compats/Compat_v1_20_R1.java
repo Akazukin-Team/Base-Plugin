@@ -65,6 +65,11 @@ public class Compat_v1_20_R1 implements Compat {
     }
 
     @Override
+    public float getAttackCooldown(final Player player) {
+        return ((CraftPlayer) player).getHandle().A(0.5f);
+    }
+
+    @Override
     public int getProtocolVersion() {
         return SharedConstants.c();
     }
