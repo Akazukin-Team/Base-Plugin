@@ -1,7 +1,6 @@
 package net.akazukin.library.event;
 
 import net.akazukin.library.LibraryPlugin;
-import net.akazukin.library.compat.minecraft.data.packets.Packet;
 import net.akazukin.library.event.events.PacketReceiveEvent;
 import net.akazukin.library.event.events.PacketSendEvent;
 import net.akazukin.library.event.events.ServerTickEvent;
@@ -23,72 +22,71 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.HIGHEST);
+        this.callEvent(ServerTickEvent.class, event, net.akazukin.library.event.EventPriority.HIGHEST);
     }
 
-    private void callEvent(final Event event, final net.akazukin.library.event.EventPriority priority) {
-        LibraryPlugin.EVENT_MANAGER.callEvent(event, priority);
+    private void callEvent(final Class<? extends Event> clazz, final Event event,
+                           final net.akazukin.library.event.EventPriority priority) {
+        LibraryPlugin.getPlugin().eventManager.callEvent(clazz, event, priority);
     }
 
     @EventHandler
     public void onEntityDamage(final EntityDamageEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(EntityDamageEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(InventoryOpenEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(InventoryOpenEvent.class, event, net.akazukin.library.event.EventPriority.HIGH);
     }
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(InventoryCloseEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerQuitEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(PlayerJoinEvent.class, event, net.akazukin.library.event.EventPriority.HIGH);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onServerListPing(final ServerListPingEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(ServerListPingEvent.class, event, net.akazukin.library.event.EventPriority.HIGH);
     }
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerMoveEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerInteractEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(AsyncPlayerChatEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onPacketReceive(final PacketReceiveEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
-        final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+        this.callEvent(PacketReceiveEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 
     @EventHandler
     public void onPackeSend(final PacketSendEvent event) {
-        this.callEvent(event, net.akazukin.library.event.EventPriority.NORMAL);
-        final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+        this.callEvent(PacketSendEvent.class, event, net.akazukin.library.event.EventPriority.NORMAL);
     }
 }

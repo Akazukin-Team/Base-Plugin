@@ -5,7 +5,7 @@ import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.manager.PlayerManager;
 import net.akazukin.library.packetlistener.PacketManager;
 
-public final class LibraryEventManager extends EventManager {
+public final class LibraryEventManager<E> extends EventManager<E> {
     @Override
     public void registerListeners() {
         LibraryPlugin.getPlugin().getLogManager().info("Registering event listeners");
