@@ -2,6 +2,7 @@ plugins {
     id 'buildlogic.java-common-conventions'
     id 'buildlogic.java-minecraft-conventions'
 }
+
 Properties props = new Properties()
 try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath(), "application.properties"))) {
     props.load(fis)
@@ -9,6 +10,10 @@ try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath()
 
 processResources {
     filesMatching("plugin.yml") {
-        expand(NAME: parent.getProperties().plugin_name, VERSION: parent.getProperties().version, PACKAGE: project.group.toString())
+        expand(
+                NAME: props.get("name"),
+                VERSION: props.get("version"),
+                MAIN_CLASS: props.get("bktMainClass")
+        )
     }
 }

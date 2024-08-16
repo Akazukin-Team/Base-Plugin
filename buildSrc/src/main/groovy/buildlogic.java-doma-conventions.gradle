@@ -8,8 +8,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor libs.doma.processor
     include libs.doma.core
+    annotationProcessor libs.doma.processor
+
     compileOnly libs.slf4j
 }
 

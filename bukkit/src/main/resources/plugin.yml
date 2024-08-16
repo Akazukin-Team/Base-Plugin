@@ -11,7 +11,7 @@ softdepend:
 
 database: false
 
-main: net.akazukin.library.LibraryPlugin
+main: ${MAIN_CLASS}
 api-version: 1.19
 
 load: STARTUP

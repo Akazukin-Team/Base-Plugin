@@ -10,11 +10,12 @@ try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath()
     props.load(fis)
 }
 
+String mainClass = props.get("mainClass")
 String date = ZonedDateTime.now(ZoneOffset.UTC).getDateTimeString()
 
 jar {
     manifest {
-        attributes 'Main-Class': 'net.akazukin.bot.Main',
+        attributes 'Main-Class': mainClass,
                 'Implementation-Title': props.getProperty("name"),
                 'Created-By': String.valueOf(JavaVersion.current()) + " (" + props.getProperty("vendor") + ")",
                 'Signature-Version': props.getProperty("version"),
@@ -48,5 +49,5 @@ tasks.withType(Jar).configureEach {
 }
 
 application {
-    mainClassName = "net.akazukin.library.Main"
+    mainClassName = mainClass
 }

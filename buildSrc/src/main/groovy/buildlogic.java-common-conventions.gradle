@@ -55,7 +55,10 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    //options.compilerArgs << ''
+    options.compilerArgs << '-Xmaxerrs' << '10000'
+    options.compilerArgs << '-Xmaxwarns' << '10000'
+    options.compilerArgs << '-Xlint'
+    options.compilerArgs << '-Xdiags:verbose'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(properties.getOrDefault("java_version", 8) as int)
