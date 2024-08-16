@@ -1,4 +1,7 @@
 package net.akazukin.library.exception;
 
-public class UnsupportedVersionException extends RuntimeException {
+import java.io.Serializable;
+
+public class UnsupportedVersionException extends RuntimeException implements Serializable {
+    private static final long serialVersionUID = 0L;
 }
