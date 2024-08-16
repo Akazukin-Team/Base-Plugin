@@ -1,16 +1,16 @@
 package net.akazukin.library.event;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import net.akazukin.library.LibraryPluginProvider;
 
-public abstract class EventManager {
-    private final Map<Class<?>, List<EventHook>> registry = new ConcurrentHashMap<>();
+public abstract class EventManager<E> {
+    private final Map<Class<? extends E>, List<EventHook>> registry = new ConcurrentHashMap<>();
 
     public abstract void registerListeners();
 
@@ -35,16 +35,18 @@ public abstract class EventManager {
                 .forEach(m -> {
                     if (!m.isAccessible()) m.setAccessible(true);
 
-                    final Class<? extends IEvent> eventClass = (Class<? extends IEvent>) m.getParameterTypes()[0];
+                    final Class<? extends E> eventClass = (Class<? extends E>) m.getParameterTypes()[0];
                     final EventTarget eventTarget = m.getAnnotation(EventTarget.class);
                     synchronized (this.registry) {
+                        if (!this.registry.containsKey(eventClass))
+                            this.registry.put(eventClass, new CopyOnWriteArrayList<>());
                         final List<EventHook> invokableEventTargets =
-                                this.registry.getOrDefault(eventClass, new ArrayList<>());
+                                this.registry.get(eventClass);
 
                         invokableEventTargets.add(new EventHook(listener, m, eventTarget.priority(),
-                                eventTarget.bktPriority(), eventTarget.ignoreCondition()));
+                                eventTarget.bktPriority(), eventTarget.ignoreCondition(),
+                                eventTarget.ignoreSuperClasses()));
                         invokableEventTargets.sort(Comparator.comparing(EventHook::getPriority));
-                        this.registry.put(eventClass, invokableEventTargets);
                     }
                 });
     }
@@ -73,17 +75,18 @@ public abstract class EventManager {
      *
      * @param event to call
      */
-    public void callEvent(final Object event, final EventPriority priority) {
+    public void callEvent(final Class<? extends E> clazz, final E event, final EventPriority priority) {
         synchronized (this.registry) {
             this.registry.entrySet().stream()
                     .filter(e -> e.getKey().isAssignableFrom(event.getClass()))
                     .forEach(e -> e.getValue().stream()
-                            .filter(e2 -> priority == e2.getBktPriority() && (e2.getEventClass().handleEvents() || e2.isIgnoreCondition()))
+                            .filter(e2 -> priority == e2.getBktPriority() && (e2.getEventClass().handleEvents() || e2.isIgnoreCondition()) && (!e2.isIgnoreSuperClasses() || clazz.equals(e.getKey())))
                             .forEach(hook -> {
                                 try {
                                     hook.getMethod().invoke(hook.getEventClass(), event);
-                                } catch (final Throwable throwable) {
-                                    throwable.printStackTrace();
+                                } catch (final Throwable t) {
+                                    LibraryPluginProvider.getApi().getLogManager().log(Level.SEVERE,
+                                            "An error occurred while processing the EventFlag, " + event.getClass().getSimpleName() + ":" + priority.name(), t);
                                 }
                             }));
         }

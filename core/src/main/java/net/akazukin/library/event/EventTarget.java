@@ -11,6 +11,8 @@ public @interface EventTarget {
 
     boolean ignoreCondition() default false;
 
+    boolean ignoreSuperClasses() default true;
+
     EventPriority bktPriority() default EventPriority.NORMAL;
 
     int priority() default 0;

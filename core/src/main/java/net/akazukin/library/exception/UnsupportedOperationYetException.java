@@ -1,4 +1,7 @@
 package net.akazukin.library.exception;
 
-public class UnsupportedOperationYetException extends UnsupportedOperationException {
+import java.io.Serializable;
+
+public class UnsupportedOperationYetException extends UnsupportedOperationException implements Serializable {
+    private static final long serialVersionUID = 0L;
 }

@@ -44,7 +44,7 @@ public final class GuiManager implements Listenable {
         return this.screens.get(player);
     }
 
-    @EventTarget(bktPriority = EventPriority.HIGH)
+    @EventTarget(bktPriority = EventPriority.HIGH, ignoreSuperClasses = false)
     public void onInventoryClick(final InventoryClickEvent event) {
         if (event.getCurrentItem() != null && ItemUtils.isGuiItem(event.getCurrentItem())) {
             event.setCancelled(true);
@@ -106,7 +106,7 @@ public final class GuiManager implements Listenable {
         ((ContainerGuiBase) gui).onInventoryClose(event);
     }
 
-    @EventTarget
+    @EventTarget(ignoreSuperClasses = false)
     public void onPlayerMove(final PlayerMoveEvent event) {
         final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
         if (prevGui instanceof ChatGui) ((ChatGui) prevGui).onPlayerMove(event);

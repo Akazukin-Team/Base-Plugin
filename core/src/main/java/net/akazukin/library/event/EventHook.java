@@ -12,4 +12,5 @@ public class EventHook {
     int priority;
     EventPriority bktPriority;
     boolean ignoreCondition;
+    boolean ignoreSuperClasses;
 }

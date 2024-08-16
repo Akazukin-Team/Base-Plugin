@@ -32,14 +32,15 @@ import net.akazukin.library.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
 public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI {
     public static LibraryBukkitCommandManager COMMAND_MANAGER;
     public static I18nUtils I18N_UTILS;
-    public static LibraryEventManager EVENT_MANAGER;
     public static Compat COMPAT;
+    public LibraryEventManager<Event> eventManager;
     private ConfigUtils configUtils;
     private BukkitMessageHelper messageHelper;
     private InjectionManager injectionManager;
@@ -152,8 +153,8 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
 
         this.getLogManager().info("Initializing event listeners...");
-        EVENT_MANAGER = new LibraryEventManager();
-        EVENT_MANAGER.registerListeners();
+        eventManager = new LibraryEventManager();
+        eventManager.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         this.getLogManager().info("Successfully initialized event listeners");
 
