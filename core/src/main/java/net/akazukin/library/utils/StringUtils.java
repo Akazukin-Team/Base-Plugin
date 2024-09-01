@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 public class StringUtils {
     private static final MessageDigest sha3_512;
@@ -32,19 +33,20 @@ public class StringUtils {
         return String.format("%040x", new BigInteger(1, result));
     }
 
-    public static String getColoredString(final String str) {
+    public static String getColoredString(final CharSequence str) {
         final Matcher m = colorPattern.matcher(str);
-        return m.find() ? m.replaceAll("§$1") : str;
+        return m.find() ? m.replaceAll("§$1") : str.toString();
     }
 
     @NonNull
-    public static String getUncoloredString(final String str) {
+    public static String getUncoloredString(final CharSequence str) {
         final Matcher m = colorPattern2.matcher(str);
-        return m.find() ? m.replaceAll("&$1") : str;
+        return m.find() ? m.replaceAll("&$1") : str.toString();
     }
 
-    public static int getLength(final String str) {
-        return str == null ? -1 : str.length();
+    @Range(from = -1, to = Integer.MAX_VALUE)
+    public static int getLength(final CharSequence c) {
+        return c == null ? -1 : c.length();
     }
 
     @NotNull
@@ -56,15 +58,16 @@ public class StringUtils {
         return (sec / 60) + ":" + ((sec % 60) < 10 ? "0" : "") + (sec % 60);
     }
 
-    public static boolean isNumeric(final String str) {
+    public static boolean isNumeric(final CharSequence str) {
         if (str == null) return false;
-        final char[] chars = str.toCharArray();
+        //final char[] chars = str.toCharArray();
+        final Character[] chars = str.chars().mapToObj(i -> (char) i).toArray(Character[]::new);
         for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];
             if (!Character.isDigit(c) &&
                     !(i == 0 && chars.length >= 2 && Objects.equals('-', c))) return false;
         }
         return true;
-        //return str.chars().allMatch(Character::isDigit);
+        //return str.chars().parallel().allMatch(Character::isDigit);
     }
 }

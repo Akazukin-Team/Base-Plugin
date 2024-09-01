@@ -32,15 +32,14 @@ import net.akazukin.library.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
 public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI {
-    public static LibraryBukkitCommandManager COMMAND_MANAGER;
     public static I18nUtils I18N_UTILS;
     public static Compat COMPAT;
-    public LibraryEventManager<Event> eventManager;
+    public LibraryBukkitCommandManager commandManager;
+    public LibraryEventManager eventManager;
     private ConfigUtils configUtils;
     private BukkitMessageHelper messageHelper;
     private InjectionManager injectionManager;
@@ -54,23 +53,25 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
     @Override
     public void onLoad() {
-        getPlugin().getLogger().addHandler(new Handler() {
-            private final File file = new File(LibraryPlugin.getPlugin().getDataFolder(), "error.log");
+        this.getLogManager().addHandler(new Handler() {
+            private final File file = new File(LibraryPlugin.this.getDataFolder(), "error.log");
 
             @Override
             public void publish(final LogRecord record) {
-                if (record.getLevel() == Level.SEVERE || record.getThrown() != null) {
-                    try (final FileWriter file = new FileWriter(this.file, true)) {
-                        try (final PrintWriter pw = new PrintWriter(new BufferedWriter(file))) {
+                if (record.getLevel() != Level.SEVERE && record.getThrown() == null) return;
+
+                try (final FileWriter file = new FileWriter(this.file, true)) {
+                    try (final BufferedWriter bw = new BufferedWriter(file)) {
+                        try (final PrintWriter pw = new PrintWriter(bw)) {
                             pw.println("[" + record.getLevel() + "] " + record.getMessage());
-                            //pw.println(pw);
                             if (record.getThrown() != null) {
                                 record.getThrown().printStackTrace(pw);
                             }
+                            pw.println("\n");
                         }
-                    } catch (final IOException e) {
-                        e.printStackTrace();
                     }
+                } catch (final IOException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -89,13 +90,13 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
         this.getLogManager().info("Successfully Initialized version manager");
     }
 
-    public static LibraryPlugin getPlugin() {
-        return JavaPlugin.getPlugin(LibraryPlugin.class);
-    }
-
     @Override
     public Logger getLogManager() {
         return getPlugin().getLogger();
+    }
+
+    public static LibraryPlugin getPlugin() {
+        return JavaPlugin.getPlugin(LibraryPlugin.class);
     }
 
     @Override
@@ -153,15 +154,15 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
 
         this.getLogManager().info("Initializing event listeners...");
-        eventManager = new LibraryEventManager();
-        eventManager.registerListeners();
-        Bukkit.getPluginManager().registerEvents(new Events(), this);
+        this.eventManager = new LibraryEventManager();
+        this.eventManager.registerListeners();
+        Bukkit.getPluginManager().registerEvents(new Events(this.eventManager), this);
         this.getLogManager().info("Successfully initialized event listeners");
 
 
         this.getLogManager().info("Initializing command manager...");
-        COMMAND_MANAGER = new LibraryBukkitCommandManager(this);
-        COMMAND_MANAGER.registerCommands();
+        this.commandManager = new LibraryBukkitCommandManager(this);
+        this.commandManager.registerCommands();
         this.getLogManager().info("Successfully Initialized command manager");
 
 

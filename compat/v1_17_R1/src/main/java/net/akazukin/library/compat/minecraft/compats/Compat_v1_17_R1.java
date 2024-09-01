@@ -7,6 +7,7 @@ import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -143,7 +144,7 @@ public class Compat_v1_17_R1 implements Compat {
         try {
             final List<NetworkManager> networks =
                     (List<NetworkManager>) ReflectionUtils.getField(connection, "g", List.class);
-            return networks.stream().map(network -> network.k).toList();
+            return networks.stream().filter(Objects::nonNull).map(network -> network.k).toList();
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return null;
         }

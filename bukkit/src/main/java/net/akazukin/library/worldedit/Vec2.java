@@ -1,15 +1,15 @@
 package net.akazukin.library.worldedit;
 
-public interface Vec2<N extends Number> {
+public interface Vec2<N extends Number> extends Cloneable {
     N getX();
 
-    Vec2<N> setX(N x);
+    void setX(N x);
 
     N getY();
 
-    Vec2<N> setY(N y);
+    void setY(N y);
 
-    Vec2i add(N x, N y);
+    void add(N x, N y);
 
     Vec2<N> clone();
 }

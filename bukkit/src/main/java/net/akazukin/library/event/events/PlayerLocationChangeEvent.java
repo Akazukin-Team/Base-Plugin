@@ -3,13 +3,15 @@ package net.akazukin.library.event.events;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.akazukin.library.event.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 @ToString
 @Getter
 public class PlayerLocationChangeEvent extends Event implements Cancellable {
+    private static final HandlerList handlers = new HandlerList();
     private final Player player;
     private final double prevX;
     private final double prevY;
@@ -23,5 +25,14 @@ public class PlayerLocationChangeEvent extends Event implements Cancellable {
         this.prevX = prevX;
         this.prevY = prevY;
         this.prevZ = prevZ;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
     }
 }

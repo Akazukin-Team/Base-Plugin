@@ -1,6 +1,5 @@
 package net.akazukin.library.event;
 
-import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.event.events.PacketReceiveEvent;
 import net.akazukin.library.event.events.PacketSendEvent;
 import net.akazukin.library.event.events.ServerTickEvent;
@@ -19,15 +18,14 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
-public class Events implements Listener {
+public class Events extends IEvents<Event> implements Listener {
+    public Events(final EventManager<Event> eventManager) {
+        super(eventManager);
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
         this.callEvent(ServerTickEvent.class, event, net.akazukin.library.event.EventPriority.HIGHEST);
-    }
-
-    private void callEvent(final Class<? extends Event> clazz, final Event event,
-                           final net.akazukin.library.event.EventPriority priority) {
-        LibraryPlugin.getPlugin().eventManager.callEvent(clazz, event, priority);
     }
 
     @EventHandler

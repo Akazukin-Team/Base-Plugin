@@ -55,9 +55,9 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint'
     options.compilerArgs << '-Xmaxerrs' << '10000'
     options.compilerArgs << '-Xmaxwarns' << '10000'
-    options.compilerArgs << '-Xlint'
     options.compilerArgs << '-Xdiags:verbose'
 }
 
