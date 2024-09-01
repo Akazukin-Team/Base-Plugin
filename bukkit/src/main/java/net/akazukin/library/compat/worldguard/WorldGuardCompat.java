@@ -15,11 +15,25 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 
 public class WorldGuardCompat {
-    public static void createRegion(final String name, final Location loc, final Location loc2) {
+    private static WorldGuardCompat INSTANCE;
+
+    public static boolean isEnabled() {
+        final Plugin wg = Bukkit.getPluginManager().getPlugin("worldguard");
+        return wg != null && wg.isEnabled();
+    }
+
+    public static WorldGuardCompat getInstance() {
+        if (INSTANCE == null) INSTANCE = new WorldGuardCompat();
+        return INSTANCE;
+    }
+
+    public void createRegion(final String name, final Location loc, final Location loc2) {
         if (loc == null || loc2 == null || name == null)
             throw new IllegalArgumentException("location cannot be null");
         if (loc.getWorld() == null || loc2.getWorld() == null)
@@ -37,77 +51,79 @@ public class WorldGuardCompat {
         rc.get(BukkitAdapter.adapt(loc.getWorld())).addRegion(region);
     }
 
-    public static void addOwner(final World world, final String regionId, final UUID player) {
-        final DefaultDomain owners = getRegion(world, regionId).getOwners();
+    public void addOwner(final World world, final String regionId, final UUID player) {
+        final DefaultDomain owners = this.getRegion(world, regionId).getOwners();
         owners.addPlayer(player);
-        getRegion(world, regionId).setOwners(owners);
+        this.getRegion(world, regionId).setOwners(owners);
     }
 
-    public static ProtectedRegion getRegion(final World world, final String regionId) {
+    public ProtectedRegion getRegion(final World world,
+                                     final String regionId) {
         final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         return container.get(BukkitAdapter.adapt(world)).getRegion(regionId);
     }
 
-    public static void removeOwner(final World world, final String regionId, final UUID player) {
-        final DefaultDomain owners = getRegion(world, regionId).getOwners();
+    public void removeOwner(final World world, final String regionId, final UUID player) {
+        final DefaultDomain owners = this.getRegion(world, regionId).getOwners();
         owners.removePlayer(player);
-        getRegion(world, regionId).setOwners(owners);
+        this.getRegion(world, regionId).setOwners(owners);
     }
 
-    public static void removeAllOwners(final World world, final String regionId) {
-        final DefaultDomain owners = getRegion(world, regionId).getOwners();
+    public void removeAllOwners(final World world, final String regionId) {
+        final DefaultDomain owners = this.getRegion(world, regionId).getOwners();
         owners.removeAll();
-        getRegion(world, regionId).setOwners(owners);
+        this.getRegion(world, regionId).setOwners(owners);
     }
 
-    public static boolean isOwner(final World world, final String regionId, final UUID player) {
-        final DefaultDomain owners = getRegion(world, regionId).getOwners();
+    public boolean isOwner(final World world, final String regionId, final UUID player) {
+        final DefaultDomain owners = this.getRegion(world, regionId).getOwners();
         return owners.contains(player);
     }
 
-    public static void addMember(final World world, final String regionId, final UUID player) {
-        final DefaultDomain members = getRegion(world, regionId).getMembers();
+    public void addMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = this.getRegion(world, regionId).getMembers();
         members.addPlayer(player);
-        getRegion(world, regionId).setMembers(members);
+        this.getRegion(world, regionId).setMembers(members);
     }
 
-    public static void removeMember(final World world, final String regionId, final UUID player) {
-        final DefaultDomain members = getRegion(world, regionId).getMembers();
+    public void removeMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = this.getRegion(world, regionId).getMembers();
         members.removePlayer(player);
-        getRegion(world, regionId).setMembers(members);
+        this.getRegion(world, regionId).setMembers(members);
     }
 
-    public static void removeAllMembers(final World world, final String regionId) {
-        final DefaultDomain members = getRegion(world, regionId).getMembers();
+    public void removeAllMembers(final World world, final String regionId) {
+        final DefaultDomain members = this.getRegion(world, regionId).getMembers();
         members.removeAll();
-        getRegion(world, regionId).setMembers(members);
+        this.getRegion(world, regionId).setMembers(members);
     }
 
-    public static boolean isMember(final World world, final String regionId, final UUID player) {
-        final DefaultDomain members = getRegion(world, regionId).getMembers();
+    public boolean isMember(final World world, final String regionId, final UUID player) {
+        final DefaultDomain members = this.getRegion(world, regionId).getMembers();
         return members.contains(player);
     }
 
-    public static <K extends Flag<V>, V> void addFlag(final World world, final String regionId, final K key, final V value) {
-        getRegion(world, regionId).setFlag(key, value);
+    public <K extends Flag<V>, V> void addFlag(final World world, final String regionId, final K key,
+                                               final V value) {
+        this.getRegion(world, regionId).setFlag(key, value);
     }
 
-    public static void addFlag(final World world, final String regionId, final int priority) {
-        getRegion(world, regionId).setPriority(priority);
+    public void addFlag(final World world, final String regionId, final int priority) {
+        this.getRegion(world, regionId).setPriority(priority);
     }
 
-    public static List<Set<ProtectedRegion>> removeRegion(final World world) {
+    public List<Set<ProtectedRegion>> removeRegion(final World world) {
         final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         final RegionManager rm = container.get(BukkitAdapter.adapt(world));
-        return rm.getRegions().keySet().stream().map(id -> removeRegion(world, id)).collect(Collectors.toList());
+        return rm.getRegions().keySet().stream().map(id -> this.removeRegion(world, id)).collect(Collectors.toList());
     }
 
-    public static Set<ProtectedRegion> removeRegion(final World world, final String regionId) {
+    public Set<ProtectedRegion> removeRegion(final World world, final String regionId) {
         final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         return container.get(BukkitAdapter.adapt(world)).removeRegion(regionId);
     }
 
-    public static boolean isInRegion(final Location loc, final String region) {
+    public boolean isInRegion(final Location loc, final String region) {
         final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         final RegionQuery query = container.createQuery();
         final ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));

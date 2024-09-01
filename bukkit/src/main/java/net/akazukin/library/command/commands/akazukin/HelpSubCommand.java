@@ -17,13 +17,16 @@ public class HelpSubCommand extends SubCommand {
                                   final String[] args, final String[] args2) {
 
         if (args2.length <= 1) {
-            return LibraryPlugin.COMMAND_MANAGER.getCommands().stream()
+            LibraryPlugin.getPlugin();
+            return LibraryPlugin.getPlugin().commandManager.getCommands().stream()
                     .map(Command::getName)
                     .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
                             0)).toLowerCase()))
                     .toArray(String[]::new);
         } else {
-            Command cmD = LibraryPlugin.COMMAND_MANAGER.getCommand(args2[0]);
+            LibraryPlugin.getPlugin();
+            LibraryPlugin.getPlugin();
+            Command cmD = LibraryPlugin.getPlugin().commandManager.getCommand(args2[0]);
             if (cmD == null) return null;
 
             int lastIndex = 0;
@@ -41,13 +44,13 @@ public class HelpSubCommand extends SubCommand {
     @Override
     public void run(final ICmdSender sender, final String[] args, final String[] args2) {
         System.out.println(sender.getClass().getSimpleName());
-        
+
         if (args.length == 1) {
-            LibraryPlugin.COMMAND_MANAGER.getCommands().forEach(cmd ->
+            LibraryPlugin.getPlugin().commandManager.getCommands().forEach(cmd ->
                     LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
                             I18n.of("library.command.help.commands." + cmd.getName())));
         } else {
-            Command cmd = LibraryPlugin.COMMAND_MANAGER.getCommand(args[1]);
+            Command cmd = LibraryPlugin.getPlugin().commandManager.getCommand(args[1]);
             if (cmd == null) {
                 LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
                         I18n.of("library.command.help.notFound"));

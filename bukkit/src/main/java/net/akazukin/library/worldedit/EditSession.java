@@ -180,7 +180,8 @@ public class EditSession {
 
                         e.getValue().parallelStream()
                                 .map((e3) -> {
-                                    final Vec3<Integer> v3 = e3.getKey().clone().add(0, -min, 0);
+                                    final Vec3<Integer> v3 = e3.getKey().clone();
+                                    v3.add(0, -min, 0);
                                     final long s3 = System.nanoTime();
                                     final boolean res = Objects.equals(
                                             LibraryPlugin.COMPAT.getBlockData2(cs, v3),

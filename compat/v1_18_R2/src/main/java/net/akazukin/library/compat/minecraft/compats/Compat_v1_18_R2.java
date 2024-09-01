@@ -2,6 +2,7 @@ package net.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import net.akazukin.library.compat.minecraft.Compat;
@@ -145,7 +146,7 @@ public class Compat_v1_18_R2 implements Compat {
         try {
             final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g",
                     List.class);
-            return networks.stream().map(network -> network.m).toList();
+            return networks.stream().filter(Objects::nonNull).map(network -> network.m).toList();
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return null;
         }

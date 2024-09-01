@@ -62,6 +62,12 @@ public class ItemUtils {
         return LibraryPlugin.COMPAT.setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
     }
 
+    public static String getDisplayName(@Nonnull final ItemStack itemStack) {
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return null;
+        return itemMeta.getDisplayName();
+    }
+
     public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(displayName);

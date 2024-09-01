@@ -4,8 +4,9 @@ import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.gui.GuiManager;
 import net.akazukin.library.manager.PlayerManager;
 import net.akazukin.library.packetlistener.PacketManager;
+import org.bukkit.event.Event;
 
-public final class LibraryEventManager<E> extends EventManager<E> {
+public final class LibraryEventManager extends EventManager<Event> {
     @Override
     public void registerListeners() {
         LibraryPlugin.getPlugin().getLogManager().info("Registering event listeners");
