@@ -42,6 +42,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -49,6 +50,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
@@ -581,6 +583,12 @@ public class Compat_v1_20_R3 implements Compat {
             provider.a(TicketType.PLUGIN, chunk.f(), 1, Unit.a);
         }
         return (Chunk) chunk;
+    }
+
+    @Override
+    public float getDestroySpeed(final ItemStack itemStack, final BlockState blockState) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.d().a(nmsItemStack, ((CraftBlockState) blockState).getHandle());
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {
