@@ -24,29 +24,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.plugin.Plugin;
 
 public class WorldEditCompat {
-    private static WorldEditCompat INSTANCE;
-
-    public static boolean isEnabled() {
-        final Plugin wg = Bukkit.getPluginManager().getPlugin("worldedit");
-        return wg != null && wg.isEnabled();
+    public static void fill(final Location loc, final Location loc2, final BlockData blockData) {
+        fill(loc, loc2, new ChancePattern(blockData, 1));
     }
 
-    public static WorldEditCompat getInstance() {
-        if (INSTANCE == null) INSTANCE = new WorldEditCompat();
-        return INSTANCE;
-    }
-
-    public void fill(final Location loc, final Location loc2, final BlockData blockData) {
-        this.fill(loc, loc2, new ChancePattern(blockData, 1));
-    }
-
-    public void fill(final Location loc, final Location loc2, final ChancePattern... chancePattern) {
+    public static void fill(final Location loc, final Location loc2, final ChancePattern... chancePattern) {
         if (loc == null || loc2 == null)
             throw new IllegalArgumentException("location cannot be null");
         if (loc.getWorld() == null || loc2.getWorld() == null)
@@ -73,7 +59,7 @@ public class WorldEditCompat {
         }
     }
 
-    public Clipboard load(final File file) {
+    public static Clipboard load(final File file) {
         final ClipboardFormat format = ClipboardFormats.findByFile(file);
 
         try (final FileInputStream fis = new FileInputStream(file)) {
@@ -86,7 +72,7 @@ public class WorldEditCompat {
         return null;
     }
 
-    public void paste(final Clipboard clipboard, final Location loc) {
+    public static void paste(final Clipboard clipboard, final Location loc) {
         try (final EditSession editSession =
                      WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(loc.getWorld()), -1)) {
             final Operation operation =
@@ -101,7 +87,7 @@ public class WorldEditCompat {
     }
 
 
-    public BlockArrayClipboard copy(final Location loc, final Location loc2) {
+    public static BlockArrayClipboard copy(final Location loc, final Location loc2) {
         if (loc == null || loc2 == null)
             throw new IllegalArgumentException("location cannot be null");
         if (loc.getWorld() == null || loc2.getWorld() == null)
@@ -130,7 +116,7 @@ public class WorldEditCompat {
         return clipboard;
     }
 
-    public void save(final File file, final Clipboard clipboard) {
+    public static void save(final File file, final Clipboard clipboard) {
         try (final FileOutputStream fos = new FileOutputStream(file)) {
             try (final ClipboardWriter writer = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getWriter(fos)) {
                 writer.write(clipboard);
@@ -140,7 +126,7 @@ public class WorldEditCompat {
         }
     }
 
-    public boolean regenerateChunk(final Location loc, final Location loc2) {
+    public static boolean regenerateChunk(final Location loc, final Location loc2) {
         final World world_ = BukkitAdapter.adapt(loc.getWorld());
         try (final EditSession editSession =
                      WorldEdit.getInstance().getEditSessionFactory().getEditSession(world_, -1)) {

@@ -26,6 +26,6 @@ public class WorldData {
     }
 
     public boolean isValid() {
-        return this.uid != null && StringUtils.getLength(this.name) > 0;
+        return this.uid != null || StringUtils.getLength(this.name) > 0;
     }
 }
