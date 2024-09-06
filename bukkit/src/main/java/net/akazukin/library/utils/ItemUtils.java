@@ -3,13 +3,13 @@ package net.akazukin.library.utils;
 import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.akazukin.library.LibraryPlugin;
 import net.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -63,26 +63,107 @@ public class ItemUtils {
     }
 
     public static String getDisplayName(@Nonnull final ItemStack itemStack) {
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return null;
-        return itemMeta.getDisplayName();
+        if (!itemStack.hasItemMeta()) return null;
+        return itemStack.getItemMeta().getDisplayName();
     }
 
     public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {
+        if (!itemStack.hasItemMeta()) return;
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(displayName);
         itemStack.setItemMeta(itemMeta);
     }
 
     public static void setLore(@Nonnull final ItemStack itemStack, final List<String> lores) {
+        if (!itemStack.hasItemMeta()) return;
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
     }
 
-    @Nonnull
     public static List<String> getLore(@Nonnull final ItemStack itemStack) {
-        if (itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null) return new ArrayList<>();
+        if (!itemStack.hasItemMeta()) return null;
         return itemStack.getItemMeta().getLore();
+    }
+
+    public static ToolType getToolType(final ItemStack itemStack) {
+        if (itemStack.getType().name().endsWith("_SWORD")) {
+            return ToolType.SWORD;
+        } else if (itemStack.getType().name().endsWith("_PICKAXE")) {
+            return ToolType.PICKAXE;
+        } else if (itemStack.getType().name().endsWith("_AXE")) {
+            return ToolType.AXE;
+        } else if (itemStack.getType().name().endsWith("_SHOVEL")) {
+            return ToolType.SHOVEL;
+        } else if (itemStack.getType().name().endsWith("_HOE")) {
+            return ToolType.HOE;
+
+        } else if (itemStack.getType().name().equals("SHEARS")) {
+            return ToolType.SHEARS;
+        } else if (itemStack.getType().name().equals("SHIELD")) {
+            return ToolType.SHIELD;
+
+        } else if (itemStack.getType().name().equals("BOW")) {
+            return ToolType.BOW;
+        } else if (itemStack.getType().name().equals("FISHING_ROD")) {
+            return ToolType.FISHING_ROD;
+
+        } else if (itemStack.getType().name().endsWith("_HELMET")) {
+            return ToolType.HELMET;
+        } else if (itemStack.getType().name().endsWith("_CHESTPLATE")) {
+            return ToolType.CHESTPLATE;
+        } else if (itemStack.getType().name().endsWith("_LEGGINGS")) {
+            return ToolType.LEGGINGS;
+        } else if (itemStack.getType().name().endsWith("_BOOTS")) {
+            return ToolType.BOOTS;
+        }
+        return null;
+    }
+
+    public static ToolType getBestToolType(final BlockState blockState) {
+        final float sword = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_SWORD), blockState);
+        final float pickaxe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_PICKAXE), blockState);
+        final float axe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_AXE), blockState);
+        final float shovel = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_SHOVEL), blockState);
+        final float hoe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_HOE), blockState);
+        final float shears = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.SHEARS), blockState);
+
+        final float speed = MathUtils.max(sword, pickaxe, axe, shovel, hoe, shears);
+
+        if (sword == pickaxe && pickaxe == axe && axe == shovel && shovel == hoe && hoe == shears) {
+            return null;
+        } else if (sword == speed) {
+            return ToolType.SWORD;
+        } else if (pickaxe == speed) {
+            return ToolType.PICKAXE;
+        } else if (axe == speed) {
+            return ToolType.AXE;
+        } else if (shovel == speed) {
+            return ToolType.SHOVEL;
+        } else if (hoe == speed) {
+            return ToolType.HOE;
+        } else if (shears == speed) {
+            return ToolType.SHEARS;
+        }
+        return null;
+    }
+
+    public enum ToolType {
+        SWORD,
+        PICKAXE,
+        AXE,
+        SHOVEL,
+        HOE,
+
+        BOW,
+        FISHING_ROD,
+
+        SHEARS,
+        SHIELD,
+
+        HELMET,
+        CHESTPLATE,
+        LEGGINGS,
+        BOOTS
     }
 }

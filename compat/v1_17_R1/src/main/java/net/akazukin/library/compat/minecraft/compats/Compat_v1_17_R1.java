@@ -41,6 +41,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -48,6 +49,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
@@ -548,6 +550,12 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public Chunk loadChunk(final Object world, final Vec2<Integer> chunkLoc, final boolean generate) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public float getDestroySpeed(final ItemStack itemStack, final BlockState blockState) {
+        final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItemStack.getItem().getDestroySpeed(nmsItemStack, ((CraftBlockState) blockState).getHandle());
     }
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {

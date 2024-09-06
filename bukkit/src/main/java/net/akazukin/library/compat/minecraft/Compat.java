@@ -14,12 +14,14 @@ import net.akazukin.library.worldedit.Vec3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public interface Compat {
     float getAttackCooldown(Player player);
@@ -159,4 +161,6 @@ public interface Compat {
     void unloadChunk(Object chunk, boolean save);
 
     Object loadChunk(Object world, Vec2<Integer> chunkLoc, boolean generate);
+
+    float getDestroySpeed(ItemStack itemStack, BlockState blockState);
 }
