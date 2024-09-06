@@ -43,7 +43,7 @@ public class WorldUtils {
         if (w != null) {
             Bukkit.unloadWorld(w, false);
             dir = w.getWorldFolder();
-            if (WorldGuardCompat.isEnabled()) WorldGuardCompat.getInstance().removeRegion(w);
+            if (PluginUtils.isEnabled("worldguard")) WorldGuardCompat.removeRegion(w);
         } else {
             dir = new File(Bukkit.getWorldContainer(), worldData.getName());
         }
