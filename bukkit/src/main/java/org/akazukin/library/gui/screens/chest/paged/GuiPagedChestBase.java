@@ -2,10 +2,10 @@ package org.akazukin.library.gui.screens.chest.paged;
 
 import java.util.Arrays;
 import java.util.UUID;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.ChestGuiBase;
 import org.akazukin.library.gui.screens.chest.GuiBase;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.InventoryUtils;
 import org.akazukin.library.utils.ItemUtils;
@@ -77,8 +77,9 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
         final Inventory inv = super.getInventory();
         InventoryUtils.fillBlankItems(inv, BukkitMessageHelper.getLocale(this.player));
         InventoryUtils.fillCloseItem(inv, BukkitMessageHelper.getLocale(this.player));
-        if (this.prevGui != null)
+        if (this.prevGui != null) {
             InventoryUtils.fillBackItem(inv, BukkitMessageHelper.getLocale(this.player));
+        }
 
         inv.setItem(17, this.prevPageItem);
         inv.setItem(26, this.nextPageItem);

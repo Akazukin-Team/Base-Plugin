@@ -2,6 +2,7 @@ package org.akazukin.library.command.commands.akazukin;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.command.CommandExecutor;
 import org.akazukin.library.command.CommandInfo;
@@ -11,7 +12,6 @@ import org.akazukin.library.command.SubCommand;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserEntity;
 import org.akazukin.library.doma.repo.MUserRepo;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.utils.ArrayUtils;
 
 @CommandInfo(name = "language", description = "Change user's language", executor = CommandExecutor.PLAYER)

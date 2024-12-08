@@ -88,15 +88,21 @@ public final class PlayerManager implements Listenable {
 
     @EventTarget
     public void onPlayerDamage(final EntityDamageEvent event) {
-        if (event.isCancelled()) return;
-        if (!(event.getEntity() instanceof Player)) return;
+        if (event.isCancelled()) {
+            return;
+        }
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
 
         this.lastDmgTick.put(event.getEntity().getUniqueId(), this.passedTime);
     }
 
     @EventTarget
     public void onPlayerMove(final PlayerMoveEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
         final Location prevRot = this.prevRot.getOrDefault(event.getPlayer().getUniqueId(),
                 event.getPlayer().getLocation());
@@ -138,7 +144,9 @@ public final class PlayerManager implements Listenable {
 
     @EventTarget
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         this.lastInteractTick.put(event.getPlayer().getUniqueId(), this.passedTime);
     }
 

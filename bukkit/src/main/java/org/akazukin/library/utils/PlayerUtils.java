@@ -25,7 +25,9 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerUtils {
     public static Player getPlayerFromAddress(final InetSocketAddress addr) {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (player.getAddress().equals(addr)) return player;
+            if (player.getAddress().equals(addr)) {
+                return player;
+            }
         }
         return null;
     }
@@ -46,8 +48,9 @@ public class PlayerUtils {
             skinMeta.addProperty("model", profile.getSkinModel());
             skin.add("metadata", skinMeta);
         }
-        if (skin.size() > 0)
+        if (skin.size() > 0) {
             texture.add("SKIN", skin);
+        }
         if (profile.getSkinModel() != null) {
             cape.addProperty("url", profile.getCape());
             texture.add("CAPE", cape);
@@ -63,8 +66,9 @@ public class PlayerUtils {
         WrappedPlayerProfile profile = PlayerUtils.load(player);
         if (profile == null) {
             profile = PlayerUtils.fetchProfile(player);
-            if (profile != null)
+            if (profile != null) {
                 PlayerUtils.save(profile);
+            }
         }
 
         return profile;
@@ -74,12 +78,14 @@ public class PlayerUtils {
         final byte[] res;
         try {
             res = HttpUtils.request("https://sessionserver.mojang.com/session/minecraft/profile/" + player, HttpMethod.GET);
-        } catch (IOException | URISyntaxException e) {
+        } catch (final IOException | URISyntaxException e) {
             e.printStackTrace();
             return null;
             //throw new RuntimeException(e);
         }
-        if (res == null) return null;
+        if (res == null) {
+            return null;
+        }
 
         final JsonParser parser = new JsonParser();
         final JsonObject data = parser.parse(new String(EncodeUtils.decodeBase64(parser
@@ -105,7 +111,7 @@ public class PlayerUtils {
                 .get("url")
                 .getAsString()
         );
-        if (data.getAsJsonObject("textures").getAsJsonObject("SKIN").has("metadata"))
+        if (data.getAsJsonObject("textures").getAsJsonObject("SKIN").has("metadata")) {
             profile.setSkinModel(data
                     .getAsJsonObject("textures")
                     .getAsJsonObject("SKIN")
@@ -114,13 +120,15 @@ public class PlayerUtils {
                     .getAsString()
                     .toUpperCase()
             );
-        if (data.getAsJsonObject("textures").has("CAPE"))
+        }
+        if (data.getAsJsonObject("textures").has("CAPE")) {
             profile.setCape(data
                     .getAsJsonObject("textures")
                     .getAsJsonObject("CAPE")
                     .get("url")
                     .getAsString()
             );
+        }
         profile.setTimestamp(data.get("timestamp").getAsLong());
 
         return profile;
@@ -146,7 +154,9 @@ public class PlayerUtils {
         final MUserProfileEntity entity = LibrarySQLConfig.singleton().getTransactionManager().required(() ->
                 MUserProfileRepo.selectById(player)
         );
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         final WrappedPlayerProfile profile = new WrappedPlayerProfile();
 
         profile.setUniqueId(entity.getPlayerUuid());
@@ -160,12 +170,12 @@ public class PlayerUtils {
     }
 
     @Nullable
-    public OfflinePlayer getOfflinePlayer(@Nonnull String name) {
+    public OfflinePlayer getOfflinePlayer(@Nonnull final String name) {
         return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> name.equalsIgnoreCase(p.getName())).findFirst().orElse(null);
     }
 
     @Nullable
-    public OfflinePlayer getOfflinePlayer(@Nonnull UUID uuid) {
+    public OfflinePlayer getOfflinePlayer(@Nonnull final UUID uuid) {
         return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> uuid.equals(p.getUniqueId())).findFirst().orElse(null);
     }
 }

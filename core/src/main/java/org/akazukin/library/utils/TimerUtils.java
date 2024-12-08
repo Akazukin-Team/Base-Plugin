@@ -110,14 +110,18 @@ public final class TimerUtils {
      * pause the timer
      */
     public void pause() {
-        if (this.pausedAtTime == -1L) this.pausedAtTime = System.nanoTime();
+        if (this.pausedAtTime == -1L) {
+            this.pausedAtTime = System.nanoTime();
+        }
     }
 
     /**
      * resume the timer
      */
     public void resume() {
-        if (this.pausedAtTime == -1L) return;
+        if (this.pausedAtTime == -1L) {
+            return;
+        }
 
         this.startedTime += System.nanoTime() - this.pausedAtTime;
         this.pausedAtTime = -1L;

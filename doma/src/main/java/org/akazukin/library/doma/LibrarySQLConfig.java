@@ -15,7 +15,9 @@ public class LibrarySQLConfig extends SQLConfig {
     }
 
     public static LibrarySQLConfig singleton() {
-        if (CONFIG == null) CONFIG = new LibrarySQLConfig(FILE);
+        if (CONFIG == null) {
+            CONFIG = new LibrarySQLConfig(FILE);
+        }
         return CONFIG;
     }
 }

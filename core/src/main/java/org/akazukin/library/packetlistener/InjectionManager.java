@@ -63,8 +63,9 @@ public class InjectionManager {
         final ChannelPipeline pipeline = client.getChannel().pipeline();
         final List<String> registeredHandlers = pipeline.names();
 
-        if (registeredHandlers.contains(RemoteClientChannelHandler.HANDLER_NAME))
+        if (registeredHandlers.contains(RemoteClientChannelHandler.HANDLER_NAME)) {
             pipeline.remove(RemoteClientChannelHandler.HANDLER_NAME);
+        }
 
         LibraryPluginProvider.getApi().getLogManager().log(Level.OFF,
                 "Successfully rejected connection channel handler of " +

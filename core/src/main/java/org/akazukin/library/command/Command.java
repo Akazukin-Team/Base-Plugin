@@ -89,8 +89,9 @@ public abstract class Command implements Listenable {
 
     public boolean runSubCommand(final ICmdSender sender, final String[] args, final String[] args2) {
         final SubCommand cmd = this.getSubCommand(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2, 0)));
-        if (cmd == null) return false;
-        else if (!cmd.validExecutor(sender)) {
+        if (cmd == null) {
+            return false;
+        } else if (!cmd.validExecutor(sender)) {
             LibraryPluginProvider.getApi().getMessageHelper().sendMessage(sender,
                     I18n.of("library.command.execute.mustBeBy" +
                             (sender instanceof IPlayerCmdSender ? "Console" : "Player")));

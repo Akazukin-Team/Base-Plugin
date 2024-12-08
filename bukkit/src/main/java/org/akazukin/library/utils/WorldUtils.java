@@ -16,7 +16,9 @@ public class WorldUtils {
 
     public static World getOrLoadWorld(@Nonnull final WorldData worldData, @Nonnull final Supplier<World> creator) {
         final World w = getWorld(worldData);
-        if (w != null) return w;
+        if (w != null) {
+            return w;
+        }
 
         return creator.get();
     }
@@ -35,15 +37,18 @@ public class WorldUtils {
     }
 
     public static boolean deleteWorld(@Nonnull final WorldData worldData) {
-        if (!worldData.isValid())
+        if (!worldData.isValid()) {
             throw new IllegalArgumentException("World data is invalid");
+        }
 
         final World w = getWorld(worldData);
         final File dir;
         if (w != null) {
             Bukkit.unloadWorld(w, false);
             dir = w.getWorldFolder();
-            if (PluginUtils.isEnabled("worldguard")) WorldGuardCompat.removeRegion(w);
+            if (PluginUtils.isEnabled("worldguard")) {
+                WorldGuardCompat.removeRegion(w);
+            }
         } else {
             dir = new File(Bukkit.getWorldContainer(), worldData.getName());
         }

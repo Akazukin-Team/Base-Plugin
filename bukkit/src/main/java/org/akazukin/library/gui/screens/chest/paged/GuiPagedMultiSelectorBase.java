@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Getter;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.GuiBase;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.ItemUtils;
 import org.akazukin.util.utils.UUIDUtils;
@@ -44,9 +44,13 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (super.onGuiClick(event)) return true;
+        if (super.onGuiClick(event)) {
+            return true;
+        }
 
-        if (event.getCurrentItem() == null) return false;
+        if (event.getCurrentItem() == null) {
+            return false;
+        }
 
         if (this.doneItem.equals(event.getCurrentItem())) {
             this.done = true;
@@ -63,7 +67,9 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
                         .toArray(ItemStack[]::new);
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
-                if (lore == null) lore = new ArrayList<>();
+                if (lore == null) {
+                    lore = new ArrayList<>();
+                }
                 lore.add(LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player),
                         I18n.of(
                                 "library.gui" +

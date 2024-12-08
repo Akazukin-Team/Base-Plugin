@@ -64,26 +64,34 @@ public class ItemUtils {
     }
 
     public static String getDisplayName(@Nonnull final ItemStack itemStack) {
-        if (!itemStack.hasItemMeta()) return null;
+        if (!itemStack.hasItemMeta()) {
+            return null;
+        }
         return itemStack.getItemMeta().getDisplayName();
     }
 
     public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {
-        if (!itemStack.hasItemMeta()) return;
+        if (!itemStack.hasItemMeta()) {
+            return;
+        }
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(displayName);
         itemStack.setItemMeta(itemMeta);
     }
 
     public static void setLore(@Nonnull final ItemStack itemStack, final List<String> lores) {
-        if (!itemStack.hasItemMeta()) return;
+        if (!itemStack.hasItemMeta()) {
+            return;
+        }
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
     }
 
     public static List<String> getLore(@Nonnull final ItemStack itemStack) {
-        if (!itemStack.hasItemMeta()) return null;
+        if (!itemStack.hasItemMeta()) {
+            return null;
+        }
         return itemStack.getItemMeta().getLore();
     }
 

@@ -28,7 +28,9 @@ public class ConfigUtils2 {
         this.plugin = plugin;
         this.file = file;
         this.id = id;
-        if (!this.file.exists()) this.file.mkdirs();
+        if (!this.file.exists()) {
+            this.file.mkdirs();
+        }
     }
 
     public void loadConfigFiles(final String... filenames) {
@@ -79,10 +81,11 @@ public class ConfigUtils2 {
     }
 
     public Properties getConfig(final String filename) {
-        if (this.configs.containsKey(filename))
+        if (this.configs.containsKey(filename)) {
             return this.configs.get(filename).getConfig();
-        else
+        } else {
             return null;
+        }
     }
 
     public List<String> getFiles() {
@@ -107,8 +110,12 @@ public class ConfigUtils2 {
         }
 
         public void load() throws IOException {
-            if (this.configFile == null) return;
-            if (!this.configFile.exists()) this.configFile.createNewFile();
+            if (this.configFile == null) {
+                return;
+            }
+            if (!this.configFile.exists()) {
+                this.configFile.createNewFile();
+            }
 
             this.config.clear();
             try (final InputStream is = Files.newInputStream(this.configFile.toPath())) {
@@ -125,8 +132,9 @@ public class ConfigUtils2 {
         }
 
         public Properties get() {
-            if (this.config == null)
+            if (this.config == null) {
                 throw new IllegalStateException(this.configFile.getName() + " hasnt loaded yet");
+            }
             return this.config;
         }
     }

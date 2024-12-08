@@ -16,11 +16,15 @@ public class BukkitUtils {
             Bukkit.getScheduler().runTask(plugin, t);
             try {
                 t.join();
-                while (ato.get() == null) Thread.sleep(10);
+                while (ato.get() == null) {
+                    Thread.sleep(10);
+                }
             } catch (final InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        } else runnable.run();
+        } else {
+            runnable.run();
+        }
     }
 
     public static <T> T runTask(final Plugin plugin, final String label, final Supplier<T> runnable) {
@@ -31,11 +35,15 @@ public class BukkitUtils {
             try {
                 t.join();
 
-                while (ato.get() == null) Thread.sleep(10);
+                while (ato.get() == null) {
+                    Thread.sleep(10);
+                }
                 return ato.get();
             } catch (final InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        } else return runnable.get();
+        } else {
+            return runnable.get();
+        }
     }
 }

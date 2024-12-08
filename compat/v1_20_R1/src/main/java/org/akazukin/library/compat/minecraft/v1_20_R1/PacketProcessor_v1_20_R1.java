@@ -1,14 +1,14 @@
 package org.akazukin.library.compat.minecraft.v1_20_R1;
 
 import lombok.AllArgsConstructor;
-import org.akazukin.library.compat.minecraft.compats.Compat_v1_20_R1;
-import org.akazukin.library.compat.minecraft.data.PacketProcessor;
-import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
-import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
+import org.akazukin.library.compat.minecraft.compats.Compat_v1_20_R1;
+import org.akazukin.library.compat.minecraft.data.PacketProcessor;
+import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 
 @AllArgsConstructor
 public class PacketProcessor_v1_20_R1 implements PacketProcessor<Packet<?>> {

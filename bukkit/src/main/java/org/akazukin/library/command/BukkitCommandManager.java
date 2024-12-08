@@ -20,7 +20,7 @@ public abstract class BukkitCommandManager extends CommandManager implements Com
     @Override
     public void registerCommand(final Command command) {
         super.registerCommand(command);
-        
+
         final PluginCommand cmd = this.plugin.getCommand(command.getName());
         if (cmd != null) {
             cmd.setExecutor(this);
@@ -42,7 +42,9 @@ public abstract class BukkitCommandManager extends CommandManager implements Com
         final ICmdSender s = new BukkitPlayerCommandSender((Player) sender);
         if (cmD != null && cmD.hasPermission(s)) {
             final String[] comp = cmD.getCompletion(s, cmd.getName(), args, args);
-            if (comp != null) return Arrays.asList(comp);
+            if (comp != null) {
+                return Arrays.asList(comp);
+            }
         }
         return Collections.emptyList();
     }
@@ -52,7 +54,9 @@ public abstract class BukkitCommandManager extends CommandManager implements Com
             , final String[] args) {
         new Thread(() -> {
             final Command cmd = this.getCommand(label);
-            if (cmd == null || !cmd.handleEvents()) return;
+            if (cmd == null || !cmd.handleEvents()) {
+                return;
+            }
 
             cmd.run(
                     sender instanceof Player ?

@@ -26,7 +26,9 @@ public class EncodeUtils {
      * @return true=Base64文字列
      */
     public static boolean isBase64(final String str) {
-        if (str == null) return false;
+        if (str == null) {
+            return false;
+        }
         return isBase64(str.getBytes()) && base64pattern.matcher(str).matches();
     }
 
@@ -37,8 +39,12 @@ public class EncodeUtils {
      * @return true=Base64文字列
      */
     public static boolean isBase64(final byte[] array) {
-        if (array == null) return false;
-        if (array.length < 1) return false;
+        if (array == null) {
+            return false;
+        }
+        if (array.length < 1) {
+            return false;
+        }
         for (final byte b : array) {
             if (!(b == '=' || (b >= 0 && b < DECODE_TABLE.length && DECODE_TABLE[b] != -1)) &&
                     !(b == ' ' || b == '\n' || b == '\r' || b == '\t')) {
@@ -69,7 +75,9 @@ public class EncodeUtils {
     }
 
     public static String encodeURL(final Object value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         try {
             return URLEncoder.encode(String.valueOf(value), "UTF-8");
         } catch (final UnsupportedEncodingException e) {

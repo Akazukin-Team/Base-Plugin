@@ -42,8 +42,9 @@ public abstract class RemoteClientChannelHandler extends ChannelDuplexHandler {
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
         final Pointer<Object> msgPointer = new Pointer<>(msg);
-        if (this.handle(msgPointer, EventType.SEND))
+        if (this.handle(msgPointer, EventType.SEND)) {
             super.write(ctx, msgPointer.content, promise);
+        }
     }
 
     /**
@@ -88,8 +89,9 @@ public abstract class RemoteClientChannelHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         final Pointer<Object> msgPointer = new Pointer<>(msg);
-        if (this.handle(msgPointer, EventType.RECEIVE))
+        if (this.handle(msgPointer, EventType.RECEIVE)) {
             super.channelRead(ctx, msgPointer.content);
+        }
     }
 
     protected enum EventType {

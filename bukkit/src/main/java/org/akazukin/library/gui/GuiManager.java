@@ -50,11 +50,14 @@ public final class GuiManager implements Listenable {
             event.setCancelled(true);
         }
 
-        if (event.getCurrentItem() == null) return;
+        if (event.getCurrentItem() == null) {
+            return;
+        }
 
         final GuiBase gui = this.screens.get(event.getWhoClicked().getUniqueId());
-        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
+        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle())) {
             return;
+        }
 
         if (event.getView().getType() == InventoryType.CHEST && event.getCurrentItem() != null && !ItemUtils.isGuiItem(event.getCurrentItem())) {
             LibraryPlugin.getPlugin().getLogManager().warning("Not cancelled  | Title: " + event.getView().getTitle() + "  | " +
@@ -73,7 +76,9 @@ public final class GuiManager implements Listenable {
 
     public void setScreen(final HumanEntity player, final Supplier<GuiBase> gui) {
         Bukkit.getScheduler().runTask(LibraryPlugin.getPlugin(), () -> {
-            if (player == null) return;
+            if (player == null) {
+                return;
+            }
             player.closeInventory();
 
             final GuiBase guI = gui.get();
@@ -90,8 +95,9 @@ public final class GuiManager implements Listenable {
     @EventTarget
     public void onInventoryOpen(final InventoryOpenEvent event) {
         final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
-        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
+        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle())) {
             return;
+        }
 
         ((ContainerGuiBase) gui).onInventoryOpen(event);
     }
@@ -99,8 +105,9 @@ public final class GuiManager implements Listenable {
     @EventTarget
     public void onInventoryClose(final InventoryCloseEvent event) {
         final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
-        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle()))
+        if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle())) {
             return;
+        }
 
         this.screens.remove(event.getPlayer().getUniqueId());
         ((ContainerGuiBase) gui).onInventoryClose(event);
@@ -109,13 +116,17 @@ public final class GuiManager implements Listenable {
     @EventTarget(ignoreSuperClasses = false)
     public void onPlayerMove(final PlayerMoveEvent event) {
         final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
-        if (prevGui instanceof ChatGui) ((ChatGui) prevGui).onPlayerMove(event);
+        if (prevGui instanceof ChatGui) {
+            ((ChatGui) prevGui).onPlayerMove(event);
+        }
     }
 
     @EventTarget
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
         final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
-        if (prevGui instanceof ChatGui) ((ChatGui) prevGui).onChat(event);
+        if (prevGui instanceof ChatGui) {
+            ((ChatGui) prevGui).onChat(event);
+        }
     }
 
     @EventTarget
@@ -125,9 +136,13 @@ public final class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketReceive(final PacketReceiveEvent event) {
-        if (!(event.getClient() instanceof BukkitRemoteClient)) return;
+        if (!(event.getClient() instanceof BukkitRemoteClient)) {
+            return;
+        }
         final Player p = ((BukkitRemoteClient) event.getClient()).getPlayer();
-        if (p == null) return;
+        if (p == null) {
+            return;
+        }
 
         final GuiBase gui = this.screens.get(p.getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
@@ -147,9 +162,13 @@ public final class GuiManager implements Listenable {
 
     @EventTarget
     public void onPacketSend(final PacketSendEvent event) {
-        if (!(event.getClient() instanceof BukkitRemoteClient)) return;
+        if (!(event.getClient() instanceof BukkitRemoteClient)) {
+            return;
+        }
         final Player p = ((BukkitRemoteClient) event.getClient()).getPlayer();
-        if (p == null) return;
+        if (p == null) {
+            return;
+        }
 
         final GuiBase gui = this.screens.get(p.getUniqueId());
         if (gui instanceof SignStringSelectorGui) {

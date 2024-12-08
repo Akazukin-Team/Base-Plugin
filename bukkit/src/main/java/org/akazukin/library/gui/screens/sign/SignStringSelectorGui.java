@@ -21,7 +21,9 @@ public class SignStringSelectorGui extends GuiBase {
 
     @Override
     public boolean forceOpen() {
-        if (this.player == null) return false;
+        if (this.player == null) {
+            return false;
+        }
         Bukkit.getWorlds().get(0).getMaxHeight();
         LibraryPlugin.COMPAT.sendSignUpdate(this.player, this.player.getLocation(), Arrays.copyOf(this.result, 4));
         LibraryPlugin.COMPAT.sendPacket(

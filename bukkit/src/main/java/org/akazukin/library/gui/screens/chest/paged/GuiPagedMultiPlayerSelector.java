@@ -33,7 +33,9 @@ public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {
             if (event.getCurrentItem() == null ||
                     event.getCurrentItem().getType() != Material.getMaterial("PLAYER_HEAD") ||
                     !LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "HEAD_UUID")
-            ) return true;
+            ) {
+                return true;
+            }
 
             this.selectedPlayers = Arrays.stream(this.selected)
                     .filter(itemStack -> itemStack.getType() == Material.getMaterial("PLAYER_HEAD") &&

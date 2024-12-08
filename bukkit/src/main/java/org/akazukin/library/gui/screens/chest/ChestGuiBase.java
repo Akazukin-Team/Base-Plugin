@@ -21,9 +21,13 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
 
     @Override
     public boolean forceOpen() {
-        if (this.player == null) return false;
+        if (this.player == null) {
+            return false;
+        }
         final Inventory inv = this.getInventory();
-        if (inv == null) return false;
+        if (inv == null) {
+            return false;
+        }
         final InventoryView inv2 = this.player.openInventory(this.getInventory());
         return inv2 != null;
     }
@@ -35,8 +39,12 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
 
     @Override
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
-        if (!this.canPickup) event.setCancelled(true);
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
+        if (!this.canPickup) {
+            event.setCancelled(true);
+        }
 
         this.onGuiClick(event);
     }
@@ -44,7 +52,9 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     @Override
     @EventTarget
     public final void onInventoryClose(final InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
         this.onGuiClose(event);
     }
 }

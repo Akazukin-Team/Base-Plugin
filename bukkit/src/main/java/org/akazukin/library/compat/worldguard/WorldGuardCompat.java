@@ -20,13 +20,16 @@ import org.bukkit.World;
 
 public class WorldGuardCompat {
     public static void createRegion(final String name, final Location loc, final Location loc2) {
-        if (loc == null || loc2 == null || name == null)
+        if (loc == null || loc2 == null || name == null) {
             throw new IllegalArgumentException("location cannot be null");
-        if (loc.getWorld() == null || loc2.getWorld() == null)
+        }
+        if (loc.getWorld() == null || loc2.getWorld() == null) {
             throw new IllegalArgumentException("location of world cannot be null");
+        }
 
-        if (!loc.getWorld().equals(loc2.getWorld()))
+        if (!loc.getWorld().equals(loc2.getWorld())) {
             throw new IllegalStateException("different worlds   " + loc.getWorld().getName() + "  " + loc2.getWorld().getName());
+        }
 
 
         final BlockVector3 min = BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
@@ -114,7 +117,9 @@ public class WorldGuardCompat {
         final RegionQuery query = container.createQuery();
         final ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
         for (final ProtectedRegion pr : set) {
-            if (pr.getId().equals(region)) return true;
+            if (pr.getId().equals(region)) {
+                return true;
+            }
         }
         return false;
     }

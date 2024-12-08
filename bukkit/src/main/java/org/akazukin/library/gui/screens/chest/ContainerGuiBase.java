@@ -28,8 +28,12 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget(bktPriority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
-        if (!this.canPickup) event.setCancelled(true);
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
+        if (!this.canPickup) {
+            event.setCancelled(true);
+        }
         this.onGuiClick(event);
     }
 
@@ -39,7 +43,9 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
         this.onGuiOpen(event);
     }
 
@@ -48,7 +54,9 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     @EventTarget
     public void onInventoryClose(final InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
         this.onGuiClose(event);
     }
 

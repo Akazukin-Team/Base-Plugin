@@ -1,10 +1,10 @@
 package org.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.paged.IGuiSelector;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.InventoryUtils;
 import org.akazukin.library.utils.ItemUtils;
@@ -45,8 +45,9 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
         final Inventory inv = super.getInventory();
         InventoryUtils.fillBlankItems(inv, BukkitMessageHelper.getLocale(this.player));
         InventoryUtils.fillCloseItem(inv, BukkitMessageHelper.getLocale(this.player));
-        if (this.prevGui != null)
+        if (this.prevGui != null) {
             InventoryUtils.fillBackItem(inv, BukkitMessageHelper.getLocale(this.player));
+        }
 
         inv.setItem(12, this.yesItem);
         inv.setItem(14, this.noItem);
@@ -57,8 +58,12 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
         final boolean rs = super.onGuiClick(event);
-        if (rs) return true;
-        if (event.getCurrentItem() == null) return false;
+        if (rs) {
+            return true;
+        }
+        if (event.getCurrentItem() == null) {
+            return false;
+        }
         if (this.yesItem.equals(event.getCurrentItem())) {
             this.result = true;
             GuiManager.singleton().setScreen(this.player, () -> this.prevGui);

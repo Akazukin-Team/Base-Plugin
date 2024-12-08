@@ -31,26 +31,26 @@ public class CollectorImpl<A, B, R> implements Collector<A, B, R> {
 
     @Override
     public Supplier<B> supplier() {
-        return supplier;
+        return this.supplier;
     }
 
     @Override
     public BiConsumer<B, A> accumulator() {
-        return accumulator;
+        return this.accumulator;
     }
 
     @Override
     public BinaryOperator<B> combiner() {
-        return combiner;
+        return this.combiner;
     }
 
     @Override
     public Function<B, R> finisher() {
-        return finisher;
+        return this.finisher;
     }
 
     @Override
     public Set<Characteristics> characteristics() {
-        return characteristics;
+        return this.characteristics;
     }
 }
