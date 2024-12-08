@@ -11,6 +11,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 tasks.register("sourcesJar", Jar) {
