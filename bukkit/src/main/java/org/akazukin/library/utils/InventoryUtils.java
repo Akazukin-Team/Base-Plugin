@@ -1,8 +1,8 @@
 package org.akazukin.library.utils;
 
 import java.util.Objects;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.i18n.I18n;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;

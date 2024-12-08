@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPluginProvider;
 import org.akazukin.library.event.Listenable;
-import org.akazukin.library.i18n.I18n;
 import org.akazukin.library.utils.ArrayUtils;
 import org.akazukin.library.utils.StringUtils;
+import org.akazukin.util.utils.ListUtils;
 
 public abstract class Command implements Listenable {
     @Getter
@@ -73,7 +74,7 @@ public abstract class Command implements Listenable {
                     .filter(s -> s.getName().toLowerCase().startsWith(args2[0].toLowerCase()) && s.hasPermission(sender))
                     .findFirst()
                     .map(subCommand -> subCommand.getCompletion(sender, cmdName, args,
-                            ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2)
+                            ListUtils.copy(Arrays.asList(args2), 1, args2.length - 2)
                                     .toArray(new String[0])))
                     .orElse(null);
         }
@@ -97,7 +98,7 @@ public abstract class Command implements Listenable {
             LibraryPluginProvider.getApi().getMessageHelper().sendMessage(sender,
                     I18n.of("library.message.requirePerm"));
         } else {
-            cmd.run(sender, args, ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2).toArray(new String[0]));
+            cmd.run(sender, args, ListUtils.copy(Arrays.asList(args2), 1, args2.length - 2).toArray(new String[0]));
         }
         return true;
     }

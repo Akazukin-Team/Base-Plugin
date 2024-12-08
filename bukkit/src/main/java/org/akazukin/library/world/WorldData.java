@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.library.utils.StringUtils;
+import org.akazukin.util.utils.StringUtils;
 import org.bukkit.World;
 
 @AllArgsConstructor

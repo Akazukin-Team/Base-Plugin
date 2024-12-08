@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import org.akazukin.library.LibraryPluginProvider;
+import org.akazukin.util.utils.IOUtils;
 
 public class ConfigUtils2 {
     private final TreeMap<String, Configuration> configs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

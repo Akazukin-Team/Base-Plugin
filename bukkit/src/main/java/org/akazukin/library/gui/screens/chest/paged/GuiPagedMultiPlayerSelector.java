@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.GuiBase;
 import org.akazukin.library.utils.ItemUtils;
-import org.akazukin.library.utils.UUIDUtils;
+import org.akazukin.util.utils.UUIDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;

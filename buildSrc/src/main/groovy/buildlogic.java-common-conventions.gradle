@@ -49,6 +49,9 @@ dependencies {
     compileOnly libs.gson
     compileOnly libs.doma.core
 
+    include libs.akz.util
+    include libs.akz.i18n
+
     //testImplementation libs.junit.jupiter
     //testRuntimeOnly libs.junit.platform
 }

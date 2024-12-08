@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.ChestGuiBase;
 import org.akazukin.library.gui.screens.chest.GuiBase;
-import org.akazukin.library.i18n.I18n;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.InventoryUtils;
 import org.akazukin.library.utils.ItemUtils;

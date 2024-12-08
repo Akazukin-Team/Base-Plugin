@@ -7,7 +7,7 @@ import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.SubCommand;
 import org.akazukin.library.command.commands.akazukin.HelpSubCommand;
 import org.akazukin.library.command.commands.akazukin.LanguageSubCommand;
-import org.akazukin.library.i18n.I18n;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.utils.ArrayUtils;
 
 @CommandInfo(name = "akazukin", description = "akazukin basically command")

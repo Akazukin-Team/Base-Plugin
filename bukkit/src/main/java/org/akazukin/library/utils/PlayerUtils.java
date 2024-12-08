@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
@@ -13,7 +15,8 @@ import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserProfileEntity;
 import org.akazukin.library.doma.repo.MUserProfileRepo;
-import org.akazukin.library.utils.http.HttpUtils;
+import org.akazukin.util.utils.http.HttpMethod;
+import org.akazukin.util.utils.http.HttpUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -68,8 +71,14 @@ public class PlayerUtils {
     }
 
     public static WrappedPlayerProfile fetchProfile(final UUID player) {
-        final byte[] res =
-                HttpUtils.requestGet("https://sessionserver.mojang.com/session/minecraft/profile/" + player);
+        final byte[] res;
+        try {
+            res = HttpUtils.request("https://sessionserver.mojang.com/session/minecraft/profile/" + player, HttpMethod.GET);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+            //throw new RuntimeException(e);
+        }
         if (res == null) return null;
 
         final JsonParser parser = new JsonParser();

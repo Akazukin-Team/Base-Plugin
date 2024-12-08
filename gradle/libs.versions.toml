@@ -1,5 +1,8 @@
 [versions]
 #App deps
+akz-util = "1.0.0"
+akz-event = "1.0.0"
+akz-i18n = "1.0.0"
 lombok = "1.18.34"
 gson = "2.10.1"
 doma = "2.60.1"
@@ -18,6 +21,9 @@ runTask = "2.2.3"
 
 [libraries]
 #App deps
+akz-util = { module = "org.akazukin:util", version.ref = "akz-util" }
+akz-event = { module = "org.akazukin:event", version.ref = "akz-event" }
+akz-i18n = { module = "org.akazukin:i18n", version.ref = "akz-i18n" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }

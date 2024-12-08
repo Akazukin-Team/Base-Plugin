@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
+import org.akazukin.util.utils.MathUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;

@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.paged.IGuiSelector;
-import org.akazukin.library.i18n.I18n;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.InventoryUtils;
 import org.akazukin.library.utils.ItemUtils;
@@ -45,16 +45,10 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
         final ItemStack amountItem = new ItemStack(Material.getMaterial("WHITE_WOOL"));
         ItemUtils.setDisplayName(amountItem,
                 LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player),
-                        I18n.of("library.gui.selector.amount"), this.size));
+                        I18n.of("library.gui.selector.amount", this.size)));
         ItemUtils.setLore(amountItem, Arrays.asList(
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of(
-                                "library.gui.selector" +
-                                        ".max")
-                        , max),
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of(
-                                "library.gui.selector" +
-                                        ".min")
-                        , min)
+                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of("library.gui.selector.max", max)),
+                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of("library.gui.selector.min", min))
         ));
         amountItem.setAmount(this.size);
         this.amountItem = ItemUtils.setGuiItem(amountItem);
@@ -62,8 +56,7 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
         final ItemStack doneItem = new ItemStack(Material.getMaterial("LIME_WOOL"));
         ItemUtils.setDisplayName(doneItem,
                 LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player),
-                        I18n.of(
-                                "library.gui.selector.item.done")));
+                        I18n.of("library.gui.selector.item.done")));
         this.doneItem = ItemUtils.setGuiItem(doneItem);
 
         this.done = false;
@@ -83,13 +76,13 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
         ItemStack increaseItem = new ItemStack(Material.getMaterial("WATER_BUCKET"));
         ItemUtils.setLore(increaseItem,
                 Collections.singletonList(LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player),
-                        I18n.of("library.gui.selector.size.max"), this.max)));
+                        I18n.of("library.gui.selector.size.max", this.max))));
         increaseItem = ItemUtils.setGuiItem(increaseItem);
 
         ItemStack decreaseItem = new ItemStack(Material.getMaterial("LAVA_BUCKET"));
         ItemUtils.setLore(decreaseItem,
                 Collections.singletonList(LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player),
-                        I18n.of("library.gui.selector.size.min"), this.max)));
+                        I18n.of("library.gui.selector.size.min", this.max))));
         decreaseItem = ItemUtils.setGuiItem(decreaseItem);
 
         int index = 19;
@@ -133,7 +126,7 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
                     ItemUtils.setDisplayName(this.amountItem,
                             LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player), I18n.of(
                                     "library" +
-                                            ".gui.selector.amount"), this.size));
+                                            ".gui.selector.amount", this.size)));
                     this.amountItem.setAmount(this.size);
                     event.getView().setItem(13, this.amountItem);
                 }
@@ -151,9 +144,8 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
 
                 if (this.amountItem.equals(event.getView().getItem(13))) {
                     ItemUtils.setDisplayName(this.amountItem,
-                            LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player), I18n.of(
-                                    "library" +
-                                            ".gui.selector.amount"), this.size));
+                            LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(this.player),
+                                    I18n.of("library.gui.selector.amount", this.size)));
                     this.amountItem.setAmount(this.size);
                     event.getView().setItem(13, this.amountItem);
                 }
