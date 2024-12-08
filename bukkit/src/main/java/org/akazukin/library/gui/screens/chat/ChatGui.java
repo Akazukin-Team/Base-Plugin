@@ -19,7 +19,9 @@ public class ChatGui extends GuiBase {
     }
 
     public void onChat(final AsyncPlayerChatEvent event) {
-        if (this.cancelChat) event.setCancelled(true);
+        if (this.cancelChat) {
+            event.setCancelled(true);
+        }
         this.close(event.getMessage());
     }
 

@@ -32,10 +32,16 @@ public class WrappedBlockData {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         final WrappedBlockData that = (WrappedBlockData) o;
-        if (this.isLegacy() != that.isLegacy()) return false;
+        if (this.isLegacy() != that.isLegacy()) {
+            return false;
+        }
         return !this.isLegacy() ?
                 Objects.equals(this.blockData, that.blockData) :
                 this.blockId == that.blockId && this.data == that.data;

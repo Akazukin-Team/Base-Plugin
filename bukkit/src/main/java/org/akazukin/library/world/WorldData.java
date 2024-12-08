@@ -20,8 +20,12 @@ public class WorldData {
     String name;
 
     public boolean equalsBkt(@Nullable final World world) {
-        if (!this.isValid() || world == null) return false;
-        if (Objects.equals(this.uid, world.getUID())) return true;
+        if (!this.isValid() || world == null) {
+            return false;
+        }
+        if (Objects.equals(this.uid, world.getUID())) {
+            return true;
+        }
         return Objects.equals(this.name, world.getName());
     }
 

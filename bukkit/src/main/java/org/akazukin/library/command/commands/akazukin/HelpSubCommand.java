@@ -1,12 +1,12 @@
 package org.akazukin.library.command.commands.akazukin;
 
 import java.util.Arrays;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.command.Command;
 import org.akazukin.library.command.CommandInfo;
 import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.SubCommand;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.utils.ArrayUtils;
 import org.akazukin.util.utils.ListUtils;
 
@@ -27,13 +27,17 @@ public class HelpSubCommand extends SubCommand {
             LibraryPlugin.getPlugin();
             LibraryPlugin.getPlugin();
             Command cmD = LibraryPlugin.getPlugin().commandManager.getCommand(args2[0]);
-            if (cmD == null) return null;
+            if (cmD == null) {
+                return null;
+            }
 
             int lastIndex = 0;
             for (int i = 1; i < Math.min(args2.length - 1, 10); i++) {
                 cmD = cmD.getSubCommand(args2[i]);
                 lastIndex = i;
-                if (cmD == null) return null;
+                if (cmD == null) {
+                    return null;
+                }
             }
 
             return cmD.getCompletion(sender, cmdName, args,

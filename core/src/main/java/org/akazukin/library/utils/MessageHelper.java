@@ -34,12 +34,16 @@ public abstract class MessageHelper {
 
     public String get(final String locale, final I18n i18n) {
         for (final I18nUtils i18nUtil : this.i18nUtils) {
-            final String result = i18n.build(i18nUtil,locale);
-            if (StringUtils.getLength(result) > 0) return org.akazukin.library.utils.StringUtils.getColoredString(result);
+            final String result = i18n.build(i18nUtil, locale);
+            if (StringUtils.getLength(result) > 0) {
+                return org.akazukin.library.utils.StringUtils.getColoredString(result);
+            }
         }
         for (final I18nUtils i18nUtil : this.i18nUtils) {
             final String result = i18n.build(i18nUtil);
-            if (StringUtils.getLength(result) > 0) return org.akazukin.library.utils.StringUtils.getColoredString(result);
+            if (StringUtils.getLength(result) > 0) {
+                return org.akazukin.library.utils.StringUtils.getColoredString(result);
+            }
         }
         return i18n.getId();
     }
@@ -71,12 +75,16 @@ public abstract class MessageHelper {
     public String getLocale(final UUID player) {
         final MUserEntity entity =
                 LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
-        if (entity != null && entity.getLocale() != null) return entity.getLocale();
+        if (entity != null && entity.getLocale() != null) {
+            return entity.getLocale();
+        }
         return this.getLocale();
     }
 
     public void sendMessage(final UUID player, final String message) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
         this.sendPlayer(player, "§7[§6§lAKZ§7]§e " + message);
     }
 

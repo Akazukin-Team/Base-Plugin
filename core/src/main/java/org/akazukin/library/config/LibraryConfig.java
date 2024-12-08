@@ -18,9 +18,13 @@ public class LibraryConfig {
         for (int i = 0; cfg.containsKey(LOCALES.getKey() + ".[" + i + "]"); i++) {
             locales.add(String.valueOf(cfg.get(LOCALES.getKey() + ".[" + i + "]")));
         }
-        if (cfg.get(LOCALES.getKey()) != null) LOCALES.setValue(locales.toArray(new String[0]));
+        if (cfg.get(LOCALES.getKey()) != null) {
+            LOCALES.setValue(locales.toArray(new String[0]));
+        }
 
-        if (cfg.get(LOCALE.getKey()) != null) LOCALE.setValue(String.valueOf(cfg.get(LOCALE.getKey())));
+        if (cfg.get(LOCALE.getKey()) != null) {
+            LOCALE.setValue(String.valueOf(cfg.get(LOCALE.getKey())));
+        }
     }
 
     public static void save(final File file) throws IOException {

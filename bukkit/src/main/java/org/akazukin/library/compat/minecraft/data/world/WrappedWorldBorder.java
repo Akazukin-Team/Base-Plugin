@@ -35,11 +35,11 @@ public class WrappedWorldBorder implements WorldBorder {
 
     @Override
     public void setCenter(final double x, final double z) {
-        if (center == null) {
-            center = new Location(null, x, 0, z);
+        if (this.center == null) {
+            this.center = new Location(null, x, 0, z);
         } else {
-            center.setX(x);
-            center.setZ(x);
+            this.center.setX(x);
+            this.center.setZ(x);
         }
     }
 
@@ -47,6 +47,6 @@ public class WrappedWorldBorder implements WorldBorder {
     @SuppressWarnings("null")
     public boolean isInside(@Nonnull final Location location) {
         return location.getWorld().equals(this.center.getWorld()) &&
-                (center.getX() - size) <= location.getX() && location.getX() + size >= location.getX() && (location.getZ() - size) <= location.getZ() && location.getZ() + size >= location.getZ();
+                (this.center.getX() - this.size) <= location.getX() && location.getX() + this.size >= location.getX() && (location.getZ() - this.size) <= location.getZ() && location.getZ() + this.size >= location.getZ();
     }
 }

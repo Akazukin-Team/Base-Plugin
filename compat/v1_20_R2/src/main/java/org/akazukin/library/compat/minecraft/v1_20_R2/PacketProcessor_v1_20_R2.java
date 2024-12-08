@@ -1,16 +1,16 @@
 package org.akazukin.library.compat.minecraft.v1_20_R2;
 
 import lombok.AllArgsConstructor;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
+import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import org.akazukin.library.compat.minecraft.compats.Compat_v1_20_R2;
 import org.akazukin.library.compat.minecraft.data.PacketProcessor;
 import org.akazukin.library.compat.minecraft.data.packets.CInitializeBorderPacket;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import org.akazukin.library.utils.ArrayUtils;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
-import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
-import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorldBorder;
 
 @AllArgsConstructor

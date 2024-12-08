@@ -58,7 +58,9 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
             @Override
             public void publish(final LogRecord record) {
-                if (record.getLevel() != Level.SEVERE && record.getThrown() == null) return;
+                if (record.getLevel() != Level.SEVERE && record.getThrown() == null) {
+                    return;
+                }
 
                 try (final FileWriter file = new FileWriter(this.file, true)) {
                     try (final BufferedWriter bw = new BufferedWriter(file)) {
@@ -147,7 +149,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
         this.getLogManager().info("Initializing I18n manager...");
         final YamlConfiguration config = this.configUtils.getConfig("config.yaml");
-        I18N_UTILS = new I18nUtils(this.getClassLoader(),"org.akazukin", "library", this.getDataFolder(), config.getString("locale"));
+        I18N_UTILS = new I18nUtils(this.getClassLoader(), "org.akazukin", "library", this.getDataFolder(), config.getString("locale"));
         I18N_UTILS.build(config.getStringList("locales").toArray(new String[0]));
         this.messageHelper = new BukkitMessageHelper(I18N_UTILS);
         this.getLogManager().info("Successfully initialized I18n manager");

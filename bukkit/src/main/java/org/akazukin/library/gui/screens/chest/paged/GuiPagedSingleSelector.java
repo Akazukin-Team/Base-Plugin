@@ -26,7 +26,9 @@ public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSel
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (super.onGuiClick(event)) return true;
+        if (super.onGuiClick(event)) {
+            return true;
+        }
 
         if (Arrays.asList(this.itemStacks).contains(event.getCurrentItem())) {
             this.selected = LibraryPlugin.COMPAT.removePlData(event.getCurrentItem().clone(), "AKZ_GUI_ITEM_UUID");

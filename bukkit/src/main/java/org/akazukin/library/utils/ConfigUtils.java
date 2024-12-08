@@ -97,10 +97,11 @@ public class ConfigUtils {
     }
 
     public YamlConfiguration getConfig(final String filename) {
-        if (this.configs.containsKey(filename))
+        if (this.configs.containsKey(filename)) {
             return this.configs.get(filename).getConfig();
-        else
+        } else {
             return null;
+        }
     }
 
     public String[] getFiles() {
@@ -122,7 +123,9 @@ public class ConfigUtils {
         }
 
         public void load() throws IOException, InvalidConfigurationException {
-            if (this.configFile == null) return;
+            if (this.configFile == null) {
+                return;
+            }
             this.config.load(this.configFile);
         }
 

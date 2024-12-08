@@ -33,13 +33,16 @@ public abstract class EventManager<E> {
         Arrays.stream(listener.getClass().getDeclaredMethods())
                 .filter(m -> m.isAnnotationPresent(EventTarget.class) && m.getParameterTypes().length == 1)
                 .peek(m -> {
-                    if (!m.isAccessible()) m.setAccessible(true);
+                    if (!m.isAccessible()) {
+                        m.setAccessible(true);
+                    }
                 })
                 .forEach(m -> {
                     final Class<? extends E> eventClass = (Class<? extends E>) m.getParameterTypes()[0];
                     final EventTarget eventTarget = m.getAnnotation(EventTarget.class);
-                    if (!this.registry.containsKey(eventClass))
+                    if (!this.registry.containsKey(eventClass)) {
                         this.registry.put(eventClass, new CopyOnWriteArrayList<>());
+                    }
                     final List<EventHook> invokableEventTargets =
                             this.registry.get(eventClass);
 

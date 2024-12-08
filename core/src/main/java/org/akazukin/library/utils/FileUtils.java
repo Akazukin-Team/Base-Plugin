@@ -57,7 +57,9 @@ public class FileUtils {
     }
 
     public static boolean delete(@NonNull final File file) {
-        if (!file.exists()) return true;
+        if (!file.exists()) {
+            return true;
+        }
 
         try {
             if (file.isFile()) {
@@ -68,7 +70,9 @@ public class FileUtils {
                         .reduce(Stream.empty(), (x, y) -> Stream.concat(y, x))
                         .map(Path::toFile)
                         .peek(f -> {
-                            if (!f.canWrite()) f.setWritable(true);
+                            if (!f.canWrite()) {
+                                f.setWritable(true);
+                            }
                         })
                         .allMatch(File::delete);
             }

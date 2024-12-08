@@ -53,7 +53,9 @@ public class ScoreboardManager {
 
     public Score getOrNew(final String id, final Supplier<Score> newScore) {
         final Score s = this.get(id);
-        if (s != null) return s;
+        if (s != null) {
+            return s;
+        }
 
         final Score s2 = newScore.get();
         this.newScores.add(s2);
@@ -116,9 +118,15 @@ public class ScoreboardManager {
                         .collect(Collectors.toList());
 
                 final Scoreboard sb = this.objective.getScoreboard();
-                for (final Score r : removes) sb.resetScores(r.name);
-                for (final Score a : adds) this.objective.getScore(a.name).setScore(a.score);
-                for (final Score m : modifies) this.objective.getScore(m.name).setScore(m.score);
+                for (final Score r : removes) {
+                    sb.resetScores(r.name);
+                }
+                for (final Score a : adds) {
+                    this.objective.getScore(a.name).setScore(a.score);
+                }
+                for (final Score m : modifies) {
+                    this.objective.getScore(m.name).setScore(m.score);
+                }
 
                 this.currentScores.clear();
                 this.currentScores.addAll(this.newScores.stream().map(Score::clone).collect(Collectors.toList()));

@@ -32,13 +32,17 @@ public class StringUtils {
     }
 
     public static boolean isNumeric(final CharSequence str) {
-        if (str == null) return false;
+        if (str == null) {
+            return false;
+        }
         //final char[] chars = str.toCharArray();
         final Character[] chars = str.chars().mapToObj(i -> (char) i).toArray(Character[]::new);
         for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];
             if (!Character.isDigit(c) &&
-                    !(i == 0 && chars.length >= 2 && Objects.equals('-', c))) return false;
+                    !(i == 0 && chars.length >= 2 && Objects.equals('-', c))) {
+                return false;
+            }
         }
         return true;
         //return str.chars().parallel().allMatch(Character::isDigit);

@@ -50,10 +50,14 @@ public class AnvilGui extends ContainerGuiBase {
 
     @Override
     public void onInventoryClick(final InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
 
         final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
-        if (anvil != null) this.name = anvil.getRenameText();
+        if (anvil != null) {
+            this.name = anvil.getRenameText();
+        }
         System.out.println("onInventoryClick - anvil is null: " + (anvil == null));
 
         super.onInventoryClick(event);
@@ -61,10 +65,14 @@ public class AnvilGui extends ContainerGuiBase {
 
     @Override
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
 
         final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
-        if (anvil != null) this.name = anvil.getRenameText();
+        if (anvil != null) {
+            this.name = anvil.getRenameText();
+        }
         System.out.println("onInventoryOpen - anvil is null: " + (anvil == null));
 
         super.onInventoryOpen(event);
@@ -72,10 +80,14 @@ public class AnvilGui extends ContainerGuiBase {
 
     @Override
     public void onInventoryClose(final InventoryCloseEvent event) {
-        if (!event.getView().getTitle().equals(this.title)) return;
+        if (!event.getView().getTitle().equals(this.title)) {
+            return;
+        }
 
         final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
-        if (anvil != null) this.name = anvil.getRenameText();
+        if (anvil != null) {
+            this.name = anvil.getRenameText();
+        }
         System.out.println("onInventoryClose - anvil is null: " + (anvil == null));
 
         super.onInventoryClose(event);

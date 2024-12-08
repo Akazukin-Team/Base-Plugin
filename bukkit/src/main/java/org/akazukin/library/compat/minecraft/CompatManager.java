@@ -27,6 +27,17 @@ public class CompatManager {
         return null;
     }
 
+    public static Compat getCompat(final Class<? extends Compat> clazz, final JavaPlugin plugin) {
+        try {
+            return clazz.getDeclaredConstructor(JavaPlugin.class).newInstance(plugin);
+        } catch (final IllegalArgumentException | InvocationTargetException |
+                       NoSuchMethodException |
+                       IllegalAccessException | InstantiationException e) {
+            LibraryPlugin.getPlugin().getLogManager().log(Level.SEVERE, e.getMessage(), e);
+        }
+        return null;
+    }
+
     public static String getMappingVersion() {
         final String clazz = LibraryPlugin.getPlugin().getServer().getClass().getName();
         if (clazz.matches("org\\.bukkit\\.craftbukkit\\.v_1_[0-9]+_R[0-4]\\.CraftServer")) {
@@ -82,16 +93,5 @@ public class CompatManager {
                 return null;
             }
         }
-    }
-
-    public static Compat getCompat(final Class<? extends Compat> clazz, final JavaPlugin plugin) {
-        try {
-            return clazz.getDeclaredConstructor(JavaPlugin.class).newInstance(plugin);
-        } catch (final IllegalArgumentException | InvocationTargetException |
-                       NoSuchMethodException |
-                       IllegalAccessException | InstantiationException e) {
-            LibraryPlugin.getPlugin().getLogManager().log(Level.SEVERE, e.getMessage(), e);
-        }
-        return null;
     }
 }

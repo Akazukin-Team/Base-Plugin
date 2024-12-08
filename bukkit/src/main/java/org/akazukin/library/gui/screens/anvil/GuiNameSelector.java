@@ -44,7 +44,9 @@ public class GuiNameSelector extends AnvilGui {
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (event.getSlot() == 2 && this.isValid.test(this.name)) this.defaultName = this.name;
+        if (event.getSlot() == 2 && this.isValid.test(this.name)) {
+            this.defaultName = this.name;
+        }
 
         GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
         return true;

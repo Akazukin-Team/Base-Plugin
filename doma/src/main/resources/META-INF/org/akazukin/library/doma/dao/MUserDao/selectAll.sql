@@ -1,2 +1,2 @@
-select /*%expand*/*
-from M_USER
+SELECT /*%expand*/*
+FROM M_USER

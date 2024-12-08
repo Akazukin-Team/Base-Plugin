@@ -11,19 +11,6 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.akazukin.library.compat.minecraft.Compat;
-import org.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
-import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
-import org.akazukin.library.compat.minecraft.data.packets.Packet;
-import org.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
-import org.akazukin.library.exception.UnsupportedOperationYetException;
-import org.akazukin.util.utils.ObjectUtils;
-import org.akazukin.library.utils.ReflectionUtils;
-import org.akazukin.library.world.WrappedBlockData;
-import org.akazukin.library.worldedit.Vec2;
-import org.akazukin.library.worldedit.Vec2i;
-import org.akazukin.library.worldedit.Vec3;
-import org.akazukin.library.worldedit.Vec3i;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,6 +23,19 @@ import net.minecraft.world.inventory.ContainerAnvil;
 import net.minecraft.world.level.ChunkCoordIntPair;
 import net.minecraft.world.level.chunk.Chunk;
 import net.minecraft.world.level.chunk.ChunkSection;
+import org.akazukin.library.compat.minecraft.Compat;
+import org.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
+import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
+import org.akazukin.library.compat.minecraft.data.packets.Packet;
+import org.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
+import org.akazukin.library.exception.UnsupportedOperationYetException;
+import org.akazukin.library.utils.ReflectionUtils;
+import org.akazukin.library.world.WrappedBlockData;
+import org.akazukin.library.worldedit.Vec2;
+import org.akazukin.library.worldedit.Vec2i;
+import org.akazukin.library.worldedit.Vec3;
+import org.akazukin.library.worldedit.Vec3i;
+import org.akazukin.util.utils.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,8 +86,12 @@ public class Compat_v1_17_R1 implements Compat {
 
     @Override
     public WrappedAnvilInventory getWrappedAnvil(final Inventory inventory) {
-        if (!(inventory instanceof CraftInventory)) return null;
-        if (!(((CraftInventory) inventory).getInventory() instanceof ContainerAnvil)) return null;
+        if (!(inventory instanceof CraftInventory)) {
+            return null;
+        }
+        if (!(((CraftInventory) inventory).getInventory() instanceof ContainerAnvil)) {
+            return null;
+        }
 
         return new WrappedAnvilInventory(
                 inventory,
@@ -123,8 +127,9 @@ public class Compat_v1_17_R1 implements Compat {
 
     @Override
     public Vec3i getWrappedBlockPos(final Object pos) {
-        if (!(pos instanceof final BlockPosition pos2))
+        if (!(pos instanceof final BlockPosition pos2)) {
             throw new IllegalArgumentException("Invalid argument position must be a block position");
+        }
 
         return new Vec3i(pos2.getX(), pos2.getY(), pos2.getZ());
     }
@@ -160,12 +165,13 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public Boolean hasNBT(final Object itemStack) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
         return nmsItemStack.hasTag();
     }
@@ -208,12 +214,13 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public String getNBTString(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
         return this.containsNBT(itemStack, key) ? nmsItemStack.getTag().getString(key) : null;
     }
@@ -221,12 +228,13 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public Long getNBTLong(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
         return this.containsNBT(nmsItemStack, key) ? nmsItemStack.getTag().getLong(key) : null;
     }
@@ -239,12 +247,13 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public Boolean containsNBT(final Object itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
         return this.hasNBT(nmsItemStack) && nmsItemStack.getTag().hasKey(key);
     }
@@ -253,21 +262,28 @@ public class Compat_v1_17_R1 implements Compat {
     @SuppressWarnings("unchecked")
     public <T> T removeNBT(final T itemStack, final String key) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
-        if (!this.containsNBT(itemStack, key)) return itemStack;
+        if (!this.containsNBT(itemStack, key)) {
+            return itemStack;
+        }
 
         @Nullable final NBTTagCompound tag = nmsItemStack.getTag();
-        if (tag != null) tag.remove(key);
+        if (tag != null) {
+            tag.remove(key);
+        }
 
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             return (T) nmsItemStack;
-        else return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        } else {
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        }
     }
 
     @Override
@@ -282,24 +298,27 @@ public class Compat_v1_17_R1 implements Compat {
             final WrappedPlayerProfile profile_ = new WrappedPlayerProfile();
             profile_.setUniqueId(profile.getId());
             profile_.setName(profile.getName());
-            if (textures_.has("SKIN"))
+            if (textures_.has("SKIN")) {
                 profile_.setSkin(textures_
                         .getAsJsonObject("SKIN")
                         .get("url")
                         .getAsString());
+            }
             if (textures_.has("SKIN") &&
-                    textures_.getAsJsonObject("SKIN").has("metadata"))
+                    textures_.getAsJsonObject("SKIN").has("metadata")) {
                 profile_.setSkinModel(textures_
                         .getAsJsonObject("SKIN")
                         .getAsJsonObject("metadata")
                         .getAsJsonObject("model")
                         .getAsString()
                         .equals("slim") ? "SLIM" : "CLASSIC");
-            if (textures_.has("CAPE"))
+            }
+            if (textures_.has("CAPE")) {
                 profile_.setCape(textures_
                         .getAsJsonObject("CAPE")
                         .get("url")
                         .getAsString());
+            }
             profile_.setTimestamp(textures__.get("timestamp").getAsLong());
             return profile_;
         }
@@ -340,15 +359,18 @@ public class Compat_v1_17_R1 implements Compat {
     @Override
     public boolean containsPDCData(final Object itemStack, final String key) {
         final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             bktItemStack = (ItemStack) itemStack;
-        else
+        } else {
             throw new IllegalStateException("itemStack is not allowed class");
+        }
 
         final ItemMeta meta = bktItemStack.getItemMeta();
-        if (meta == null) return false;
+        if (meta == null) {
+            return false;
+        }
         return meta.getPersistentDataContainer().getKeys().contains(new NamespacedKey(this.plugin, key));
     }
 
@@ -426,12 +448,13 @@ public class Compat_v1_17_R1 implements Compat {
     @SuppressWarnings("unchecked")
     public <I> I removePDCData(final I itemStack, final String key) {
         final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             bktItemStack = (ItemStack) itemStack;
-        else
+        } else {
             return null;
+        }
 
         final ItemMeta itemMeta = bktItemStack.getItemMeta();
         if (itemMeta != null) {
@@ -441,9 +464,11 @@ public class Compat_v1_17_R1 implements Compat {
             bktItemStack.setItemMeta(itemMeta);
         }
 
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
-        else return (I) bktItemStack;
+        } else {
+            return (I) bktItemStack;
+        }
     }
 
     @Override
@@ -469,20 +494,24 @@ public class Compat_v1_17_R1 implements Compat {
 
     @Override
     public Chunk getNMSChunk(final Object chunk) {
-        if (chunk instanceof CraftChunk)
+        if (chunk instanceof CraftChunk) {
             return ((CraftChunk) chunk).getHandle();
-        else if (chunk instanceof Chunk)
+        } else if (chunk instanceof Chunk) {
             return (Chunk) chunk;
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public WorldServer getNMSWorld(final Object world) {
-        if (world instanceof World)
+        if (world instanceof World) {
             return ((CraftWorld) world).getHandle();
-        else if (world instanceof WorldServer)
+        } else if (world instanceof WorldServer) {
             return (WorldServer) world;
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -560,15 +589,18 @@ public class Compat_v1_17_R1 implements Compat {
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
         final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             bktItemStack = (ItemStack) itemStack;
-        else
+        } else {
             return null;
+        }
 
         final ItemMeta meta = bktItemStack.getItemMeta();
-        if (meta == null) return null;
+        if (meta == null) {
+            return null;
+        }
 
         return meta.getPersistentDataContainer().get(
                 new NamespacedKey(this.plugin, id), type
@@ -579,12 +611,13 @@ public class Compat_v1_17_R1 implements Compat {
     private <I, T> I setPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id,
                                 final T value) {
         final ItemStack bktItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             bktItemStack = CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) itemStack);
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             bktItemStack = (ItemStack) itemStack;
-        else
+        } else {
             return null;
+        }
 
         final ItemMeta itemMeta = bktItemStack.getItemMeta();
         if (itemMeta != null) {
@@ -595,41 +628,47 @@ public class Compat_v1_17_R1 implements Compat {
             bktItemStack.setItemMeta(itemMeta);
         }
 
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             return (I) CraftItemStack.asNMSCopy(bktItemStack);
-        else return (I) bktItemStack;
+        } else {
+            return (I) bktItemStack;
+        }
     }
 
     @SuppressWarnings("unchecked")
     private <T> T setNBT(final T itemStack, final String key, final Object value) {
         final net.minecraft.world.item.ItemStack nmsItemStack;
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             nmsItemStack = (net.minecraft.world.item.ItemStack) itemStack;
-        else if (itemStack instanceof ItemStack)
+        } else if (itemStack instanceof ItemStack) {
             nmsItemStack = CraftItemStack.asNMSCopy((ItemStack) itemStack);
-        else
+        } else {
             return null;
+        }
 
         final NBTTagCompound nbt = nmsItemStack.getOrCreateTag();
-        if (value instanceof Boolean)
+        if (value instanceof Boolean) {
             nbt.setBoolean(key, (Boolean) value);
-        else if (value instanceof String)
+        } else if (value instanceof String) {
             nbt.setString(key, (String) value);
-        else if (value instanceof Integer)
+        } else if (value instanceof Integer) {
             nbt.setInt(key, (Integer) value);
-        else if (value instanceof Long)
+        } else if (value instanceof Long) {
             nbt.setLong(key, (Long) value);
-        else if (value instanceof Byte)
+        } else if (value instanceof Byte) {
             nbt.setByte(key, (Byte) value);
-        else if (value instanceof Short)
+        } else if (value instanceof Short) {
             nbt.setShort(key, (Short) value);
-        else if (value instanceof Double)
+        } else if (value instanceof Double) {
             nbt.setDouble(key, (Double) value);
-        else if (value instanceof UUID)
+        } else if (value instanceof UUID) {
             nbt.a(key, (UUID) value);
+        }
 
-        if (itemStack instanceof net.minecraft.world.item.ItemStack)
+        if (itemStack instanceof net.minecraft.world.item.ItemStack) {
             return (T) nmsItemStack;
-        else return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        } else {
+            return (T) CraftItemStack.asBukkitCopy(nmsItemStack);
+        }
     }
 }

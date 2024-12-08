@@ -30,7 +30,9 @@ public class ReflectionUtils {
     @SuppressWarnings("unchecked")
     public static <T> T getField(final Object obj, final Class<?> superClass, final String field, final Class<T> type) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         final Field f = superClass.getDeclaredField(field);
-        if (!f.isAccessible()) f.setAccessible(true);
+        if (!f.isAccessible()) {
+            f.setAccessible(true);
+        }
         return (T) f.get(obj);
     }
 
@@ -40,7 +42,9 @@ public class ReflectionUtils {
 
     public static void setField(final Object obj, final Class<?> superClass, final String field, final Object value) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         final Field f = superClass.getDeclaredField(field);
-        if (!f.isAccessible()) f.setAccessible(true);
+        if (!f.isAccessible()) {
+            f.setAccessible(true);
+        }
         f.set(obj, value);
     }
 
@@ -54,7 +58,9 @@ public class ReflectionUtils {
             paramClasses[i] = params.getClass();
         }
         final Method m = superClass.getDeclaredMethod(method, paramClasses);
-        if (!m.isAccessible()) m.setAccessible(true);
+        if (!m.isAccessible()) {
+            m.setAccessible(true);
+        }
 
         m.invoke(obj, params);
     }
@@ -69,7 +75,9 @@ public class ReflectionUtils {
             paramClasses[i] = params.getClass();
         }
         final Method m = superClass.getDeclaredMethod(method, paramClasses);
-        if (!m.isAccessible()) m.setAccessible(true);
+        if (!m.isAccessible()) {
+            m.setAccessible(true);
+        }
         return (T) m.invoke(obj, params);
     }
 }

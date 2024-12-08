@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import lombok.Getter;
 import lombok.Setter;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.paged.IGuiSelector;
-import org.akazukin.i18n.I18n;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.utils.InventoryUtils;
 import org.akazukin.library.utils.ItemUtils;
@@ -67,8 +67,9 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
         final Inventory inv = super.getInventory();
         InventoryUtils.fillBlankItems(inv, BukkitMessageHelper.getLocale(this.player));
         InventoryUtils.fillCloseItem(inv, BukkitMessageHelper.getLocale(this.player));
-        if (this.prevGui != null)
+        if (this.prevGui != null) {
             InventoryUtils.fillBackItem(inv, BukkitMessageHelper.getLocale(this.player));
+        }
 
         inv.setItem(13, this.amountItem);
 
@@ -87,7 +88,9 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
 
         int index = 19;
         for (int i = 1; i <= this.max; i = i * 4) {
-            if (this.min > i) continue;
+            if (this.min > i) {
+                continue;
+            }
 
             ItemUtils.setDisplayName(increaseItem, "§a" + i);
             increaseItem.setAmount(i);
@@ -106,7 +109,9 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
 
     @Override
     protected boolean onGuiClick(final InventoryClickEvent event) {
-        if (event.getCurrentItem() == null) return false;
+        if (event.getCurrentItem() == null) {
+            return false;
+        }
 
         if (event.getCurrentItem().equals(this.doneItem)) {
             this.result = this.size;
@@ -120,7 +125,9 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
                         I18n.of("library.gui.selector.size.cantIncrease"));
             } else {
                 this.size += amount;
-                if (this.size > this.max) this.size = this.max;
+                if (this.size > this.max) {
+                    this.size = this.max;
+                }
 
                 if (this.amountItem.equals(event.getView().getItem(13))) {
                     ItemUtils.setDisplayName(this.amountItem,
@@ -140,7 +147,9 @@ public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
                         I18n.of("library.gui.selector.size.cantDecrease"));
             } else {
                 this.size -= amount;
-                if (this.size < this.min) this.size = this.min;
+                if (this.size < this.min) {
+                    this.size = this.min;
+                }
 
                 if (this.amountItem.equals(event.getView().getItem(13))) {
                     ItemUtils.setDisplayName(this.amountItem,

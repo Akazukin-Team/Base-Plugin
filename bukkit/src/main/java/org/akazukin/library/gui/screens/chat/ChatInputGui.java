@@ -17,7 +17,9 @@ public class ChatInputGui extends ChatGui {
     }
 
     private void close(final String msg) {
-        if (this.isValid.test(msg)) this.result = msg;
+        if (this.isValid.test(msg)) {
+            this.result = msg;
+        }
         GuiManager.singleton().setScreen(this.player, () -> this.prevGui);
     }
 }

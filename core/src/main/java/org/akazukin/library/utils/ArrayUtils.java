@@ -23,13 +23,17 @@ public class ArrayUtils {
 
     @Nullable
     public static <T> T getIndex(final T[] arr, final int index) {
-        if (arr == null || arr.length <= index) return null;
+        if (arr == null || arr.length <= index) {
+            return null;
+        }
         return arr[index];
     }
 
     @Nullable
     public static <T> T getIndex(final List<T> list, final int index) {
-        if (list.size() <= index) return null;
+        if (list.size() <= index) {
+            return null;
+        }
         return list.get(index);
     }
 }
