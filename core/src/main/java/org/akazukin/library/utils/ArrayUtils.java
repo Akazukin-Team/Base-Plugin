@@ -1,13 +1,10 @@
 package org.akazukin.library.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ArrayUtils {
@@ -22,16 +19,6 @@ public class ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <R> Collector<R, ?, List<R>> toShuffle() {
         return (Collector<R, ?, List<R>>) SHUFFLE;
-    }
-
-
-    @NonNull
-    public static <T> String join(final String character, final T[] list) {
-        if (list == null) return "";
-        return Arrays.stream(list)
-                .filter(Objects::nonNull)
-                .map(String::valueOf)
-                .collect(Collectors.joining(character));
     }
 
     @Nullable
