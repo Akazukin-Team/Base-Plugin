@@ -14,4 +14,4 @@ dependencies {
     compileOnly libs.slf4j
 }
 
-compileJava.options.compilerArgs = ['-Adoma.domain.converters=net.akazukin.library.doma.domain.DomainConvertersProvider']
+compileJava.options.compilerArgs = ['-Adoma.domain.converters=org.akazukin.library.doma.domain.DomainConvertersProvider']
