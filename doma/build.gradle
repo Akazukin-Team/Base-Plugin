@@ -13,7 +13,7 @@ plugins {
         driverClassName = "org.sqlite.JDBC"
         entity {
             versionColumnNamePattern = "VERSION_NO"
-            packageName = 'net.akazukin.bot.doma.generated.entity'
+            packageName = 'org.akazukin.bot.doma.generated.entity'
             overwrite = true
             useListener = false
             useMappedSuperclass = false
@@ -21,7 +21,7 @@ plugins {
             entityPropertyClassNamesFile = file("$projectDir/codegen-mapping.properties")
         }
         dao {
-            packageName = 'net.akazukin.mapart.doma.generated.dao'
+            packageName = 'org.akazukin.mapart.doma.generated.dao'
             overwrite = true
         }
         sql {
