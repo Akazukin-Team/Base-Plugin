@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
-import org.akazukin.library.utils.MathUtils;
+import org.akazukin.util.utils.MathUtils;
 import org.akazukin.library.utils.ThreadUtils;
 import org.akazukin.library.world.WrappedBlockData;
 import org.bukkit.World;

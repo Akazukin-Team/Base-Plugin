@@ -17,7 +17,7 @@ import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.akazukin.library.compat.minecraft.v1_17_R1.PacketProcessor_v1_17_R1;
 import org.akazukin.library.exception.UnsupportedOperationYetException;
-import org.akazukin.library.utils.ObjectUtils;
+import org.akazukin.util.utils.ObjectUtils;
 import org.akazukin.library.utils.ReflectionUtils;
 import org.akazukin.library.world.WrappedBlockData;
 import org.akazukin.library.worldedit.Vec2;

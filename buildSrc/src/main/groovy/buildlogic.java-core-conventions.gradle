@@ -5,4 +5,5 @@ plugins {
 
 dependencies {
     compileOnly 'io.netty:netty-all:4.2.0.Alpha2'
+    include libs.akz.event
 }

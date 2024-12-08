@@ -2,13 +2,13 @@ package org.akazukin.library.manager;
 
 import java.util.UUID;
 import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.i18n.I18n;
 import org.akazukin.library.i18n.I18nUtils;
 import org.akazukin.library.utils.MessageHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.akazukin.i18n.I18n;
 
 public class BukkitMessageHelper extends MessageHelper {
     public BukkitMessageHelper(final I18nUtils... i18nUtils) {
@@ -19,16 +19,16 @@ public class BukkitMessageHelper extends MessageHelper {
         return LibraryPlugin.getPlugin().getMessageHelper().getLocale(player.getUniqueId());
     }
 
-    public void sendMessage(final CommandSender sender, final I18n i18n, final Object... args) {
+    public void sendMessage(final CommandSender sender, final I18n i18n) {
         if (sender instanceof Player) {
-            this.sendMessage(((Player) sender).getUniqueId(), i18n, args);
+            this.sendMessage(((Player) sender).getUniqueId(), i18n);
         } else {
-            this.consoleMessage(i18n, args);
+            this.consoleMessage(i18n);
         }
     }
 
-    public void sendMessage(final HumanEntity sender, final I18n i18n, final Object... args) {
-        this.sendMessage(sender.getUniqueId(), i18n, args);
+    public void sendMessage(final HumanEntity sender, final I18n i18n) {
+        this.sendMessage(sender.getUniqueId(), i18n);
     }
 
     @Override

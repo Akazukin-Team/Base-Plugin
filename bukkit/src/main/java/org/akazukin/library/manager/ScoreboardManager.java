@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.library.utils.ArrayUtils;
+import org.akazukin.util.utils.ListUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -142,7 +143,7 @@ public class ScoreboardManager {
 
         public Score(final String id) {
             this.id = id;
-            this.name = ArrayUtils.join("",
+            this.name = ListUtils.join("",
                     Arrays.stream(ChatColor.values()).limit(8).map(c -> "§" + c.getChar()).collect(ArrayUtils.toShuffle()));
         }
 

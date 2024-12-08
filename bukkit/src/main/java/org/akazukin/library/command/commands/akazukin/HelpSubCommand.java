@@ -6,9 +6,9 @@ import org.akazukin.library.command.Command;
 import org.akazukin.library.command.CommandInfo;
 import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.SubCommand;
-import org.akazukin.library.i18n.I18n;
+import org.akazukin.i18n.I18n;
 import org.akazukin.library.utils.ArrayUtils;
-import org.akazukin.library.utils.StringUtils;
+import org.akazukin.util.utils.ListUtils;
 
 @CommandInfo(name = "help", description = "Show list of commands and descriptions")
 public class HelpSubCommand extends SubCommand {
@@ -20,7 +20,7 @@ public class HelpSubCommand extends SubCommand {
             LibraryPlugin.getPlugin();
             return LibraryPlugin.getPlugin().commandManager.getCommands().stream()
                     .map(Command::getName)
-                    .filter(s -> s.toLowerCase().startsWith(StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
+                    .filter(s -> s.toLowerCase().startsWith(org.akazukin.library.utils.StringUtils.toStringOrEmpty(ArrayUtils.getIndex(args2,
                             0)).toLowerCase()))
                     .toArray(String[]::new);
         } else {
@@ -37,7 +37,7 @@ public class HelpSubCommand extends SubCommand {
             }
 
             return cmD.getCompletion(sender, cmdName, args,
-                    ArrayUtils.copy(Arrays.asList(args2), 1, args2.length - 2 - lastIndex).toArray(new String[0]));
+                    ListUtils.copy(Arrays.asList(args2), 1, args2.length - 2 - lastIndex).toArray(new String[0]));
         }
     }
 
@@ -72,7 +72,7 @@ public class HelpSubCommand extends SubCommand {
             final SubCommand[] subCmds = cmd.getSubCommands();
             Arrays.stream(subCmds).forEach(cmd_ ->
                     LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
-                            I18n.of((id + ((StringUtils.getLength(cmd_.getName()) > 0) ? "." + cmd_.getName() : "")))));
+                            I18n.of((id + ((org.akazukin.util.utils.StringUtils.getLength(cmd_.getName()) > 0) ? "." + cmd_.getName() : "")))));
         }
     }
 }
