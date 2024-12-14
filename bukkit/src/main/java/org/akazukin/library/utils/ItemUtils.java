@@ -71,19 +71,19 @@ public class ItemUtils {
     }
 
     public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {
-        if (!itemStack.hasItemMeta()) {
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
             return;
         }
-        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(displayName);
         itemStack.setItemMeta(itemMeta);
     }
 
     public static void setLore(@Nonnull final ItemStack itemStack, final List<String> lores) {
-        if (!itemStack.hasItemMeta()) {
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
             return;
         }
-        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
     }
