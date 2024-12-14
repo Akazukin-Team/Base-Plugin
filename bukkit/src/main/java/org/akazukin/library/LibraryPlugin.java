@@ -149,8 +149,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
         this.getLogManager().info("Initializing I18n manager...");
         final YamlConfiguration config = this.configUtils.getConfig("config.yaml");
-        I18N_UTILS = new I18nUtils(this.getClassLoader(), "org.akazukin", "library", this.getDataFolder(), config.getString("locale"));
-        I18N_UTILS.build(config.getStringList("locales").toArray(new String[0]));
+        I18N_UTILS = new I18nUtils(this.getClassLoader(), "org.akazukin", "library", this.getDataFolder(), config.getString("locale"), config.getStringList("locales").toArray(new String[0]));
         this.messageHelper = new BukkitMessageHelper(I18N_UTILS);
         this.getLogManager().info("Successfully initialized I18n manager");
 
