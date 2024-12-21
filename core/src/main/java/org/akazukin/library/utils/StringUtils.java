@@ -3,22 +3,28 @@ package org.akazukin.library.utils;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class StringUtils {
-    private static final Pattern colorPattern = Pattern.compile("&([0-9a-fk-or])");
-    private static final Pattern colorPattern2 = Pattern.compile("§([0-9a-fk-or])");
+    private static final Pattern UNCOLORED_PATTERN = Pattern.compile("&([0-9a-fk-or])");
+    private static final Pattern COLORED_PATTERN = Pattern.compile("§([0-9a-fk-or])");
 
-    public static String getColoredString(final CharSequence str) {
-        final Matcher m = colorPattern.matcher(str);
+    @Nullable
+    public static String getColoredString(@Nullable final CharSequence str) {
+        if (org.akazukin.util.utils.StringUtils.isEmpty(str)) {
+            return str != null ? str.toString() : null;
+        }
+        final Matcher m = UNCOLORED_PATTERN.matcher(str);
         return m.find() ? m.replaceAll("§$1") : str.toString();
     }
 
-    @NonNull
-    public static String getUncoloredString(final CharSequence str) {
-        final Matcher m = colorPattern2.matcher(str);
+    @Nullable
+    public static String getUncoloredString(@Nullable final CharSequence str) {
+        if (org.akazukin.util.utils.StringUtils.isEmpty(str)) {
+            return str != null ? str.toString() : null;
+        }
+        final Matcher m = COLORED_PATTERN.matcher(str);
         return m.find() ? m.replaceAll("&$1") : str.toString();
     }
 
@@ -31,7 +37,7 @@ public class StringUtils {
         return (sec / 60) + ":" + ((sec % 60) < 10 ? "0" : "") + (sec % 60);
     }
 
-    public static boolean isNumeric(final CharSequence str) {
+    public static boolean isNumeric(@Nullable final CharSequence str) {
         if (str == null) {
             return false;
         }
