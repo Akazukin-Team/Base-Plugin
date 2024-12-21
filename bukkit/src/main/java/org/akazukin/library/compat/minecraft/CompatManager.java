@@ -13,6 +13,7 @@ public class CompatManager {
         return getCompat("org.akazukin.library.compat.minecraft.compats.Compat_" + getMappingVersion(), plugin);
     }
 
+    @SuppressWarnings("unchecked")
     public static Compat getCompat(final String clazzName, final JavaPlugin plugin) {
         try {
             final Class<?> clazz = Class.forName(clazzName);
