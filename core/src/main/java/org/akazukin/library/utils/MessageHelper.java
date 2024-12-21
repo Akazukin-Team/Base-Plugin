@@ -6,21 +6,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.I18nObject;
+import org.akazukin.i18n.I18nUtils;
 import org.akazukin.i18n.I18nUtilsHolder;
 import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.IPlayerCmdSender;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserEntity;
 import org.akazukin.library.doma.repo.MUserRepo;
-import org.akazukin.library.i18n.I18nUtils;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MessageHelper extends I18nUtilsHolder {
-    private final List<I18nUtils> i18nUtils;
+    public static final I18nUtils[] EMPTY_I18NUTILS = new I18nUtils[0];
 
     public MessageHelper(final I18nUtils... i18nUtils) {
-        this.i18nUtils = new ArrayList<>(Arrays.asList(i18nUtils));
-        Collections.reverse(this.i18nUtils);
+        super(reverse(new ArrayList<>(Arrays.asList(i18nUtils))).toArray(EMPTY_I18NUTILS));
+    }
+
+    public static List<I18nUtils> reverse(final List<I18nUtils> i18nUtils) {
+        Collections.reverse(i18nUtils);
+        return i18nUtils;
     }
 
     public void broadcast(final I18n message) {
@@ -33,17 +38,18 @@ public abstract class MessageHelper extends I18nUtilsHolder {
 
     protected abstract void sendServer(String msg);
 
+    public abstract String getLocale();
+
+    @Override
     @Nullable
-    public String get(final String locale, final I18n i18n) {
+    public String get(final String locale, final I18nObject i18n) {
         return this.get(locale, i18n, true);
     }
 
     @Override
-    public @Nullable String get(final String locale, final I18n i18n, final boolean defaultLocale) {
+    public @Nullable String get(final String locale, final I18nObject i18n, final boolean defaultLocale) {
         return StringUtils.getColoredString(super.get(locale, i18n, defaultLocale));
     }
-
-    public abstract String getLocale();
 
     public void sendMessage(final ICmdSender sender, final I18n i18n) {
         if (sender instanceof IPlayerCmdSender) {
