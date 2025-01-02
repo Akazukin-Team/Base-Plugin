@@ -1,7 +1,8 @@
 package org.akazukin.library.packetlistener;
 
 import io.netty.channel.Channel;
-import java.util.List;
+import org.akazukin.event.EventTarget;
+import org.akazukin.event.Listenable;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.packetlistener.client.BukkitRemoteClient;
 import org.akazukin.library.packetlistener.client.SocketRemoteClient;
