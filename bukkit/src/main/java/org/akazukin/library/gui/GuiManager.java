@@ -1,8 +1,5 @@
 package org.akazukin.library.gui;
 
-import java.util.HashMap;
-import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
@@ -30,6 +27,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 @Getter
 public final class GuiManager implements Listenable {
@@ -146,7 +147,7 @@ public final class GuiManager implements Listenable {
 
         final GuiBase gui = this.screens.get(p.getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
-            final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+            final Packet pkt = LibraryPlugin.getPlugin().getCompat().getWrappedPacket(event.getPacket());
             if (pkt instanceof SUpdateSignPacket) {
                 ((SignStringSelectorGui) gui).onGuiClose(event);
                 if (gui.getPrevGui() == null) {
@@ -172,7 +173,7 @@ public final class GuiManager implements Listenable {
 
         final GuiBase gui = this.screens.get(p.getUniqueId());
         if (gui instanceof SignStringSelectorGui) {
-            final Packet pkt = LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+            final Packet pkt = LibraryPlugin.getPlugin().getCompat().getWrappedPacket(event.getPacket());
             if (pkt instanceof COpenSignEditorPacket) {
                 ((SignStringSelectorGui) gui).onGuiOpen();
             }

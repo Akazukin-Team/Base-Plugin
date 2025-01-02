@@ -1,7 +1,5 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
-import java.util.Arrays;
-import java.util.Objects;
 import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.GuiBase;
@@ -13,6 +11,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 @Getter
 public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {
@@ -32,15 +33,15 @@ public class GuiPagedMultiPlayerSelector extends GuiPagedMultiSelectorBase {
         if (super.onGuiClick(event)) {
             if (event.getCurrentItem() == null ||
                     event.getCurrentItem().getType() != Material.getMaterial("PLAYER_HEAD") ||
-                    !LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "HEAD_UUID")
+                    !LibraryPlugin.getPlugin().getCompat().containsPlData(event.getCurrentItem(), "HEAD_UUID")
             ) {
                 return true;
             }
 
             this.selectedPlayers = Arrays.stream(this.selected)
                     .filter(itemStack -> itemStack.getType() == Material.getMaterial("PLAYER_HEAD") &&
-                            LibraryPlugin.COMPAT.containsPlData(itemStack, "HEAD_UUID"))
-                    .map(item -> UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "HEAD_UUID")))
+                            LibraryPlugin.getPlugin().getCompat().containsPlData(itemStack, "HEAD_UUID"))
+                    .map(item -> UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(item, "HEAD_UUID")))
                     .filter(Objects::nonNull)
                     .map(Bukkit::getOfflinePlayer)
                     .toArray(OfflinePlayer[]::new);

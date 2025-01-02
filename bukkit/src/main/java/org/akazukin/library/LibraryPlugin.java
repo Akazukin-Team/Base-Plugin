@@ -1,17 +1,6 @@
 package org.akazukin.library;
 
 import io.netty.channel.Channel;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import lombok.Getter;
 import org.akazukin.library.command.LibraryBukkitCommandManager;
 import org.akazukin.library.compat.minecraft.Compat;
@@ -34,10 +23,22 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 @Getter
 public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI {
     public static I18nUtils I18N_UTILS;
-    public static Compat COMPAT;
+    public Compat compat;
     public LibraryBukkitCommandManager commandManager;
     public LibraryEventManager eventManager;
     private ConfigUtils configUtils;
@@ -88,7 +89,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
 
         this.getLogManager().info("Initializing version manager...");
-        COMPAT = CompatManager.initCompat(this);
+        this.compat = CompatManager.initCompat(this);
         this.getLogManager().info("Successfully Initialized version manager");
     }
 
@@ -110,7 +111,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
     public void onDisable() {
         GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
-        final List<Channel> channels = LibraryPlugin.COMPAT.getServerChannels();
+        final List<Channel> channels = this.compat.getServerChannels();
         if (channels == null) {
             this.getLogManager().warning("Couldn't get active server's channels !");
         } else {
@@ -174,7 +175,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
 
         this.getLogManager().info("Initializing packet handler...");
-        final List<Channel> channels = COMPAT.getServerChannels();
+        final List<Channel> channels = this.compat.getServerChannels();
         if (channels == null) {
             this.getLogManager().warning("Couldn't get active server's channels !");
             this.getLogManager().info("Failed to initialize packet listener");

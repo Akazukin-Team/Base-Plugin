@@ -1,8 +1,5 @@
 package org.akazukin.library.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.event.EventPriority;
@@ -19,6 +16,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public final class PlayerManager implements Listenable {
@@ -152,7 +153,7 @@ public final class PlayerManager implements Listenable {
 
     @EventTarget
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        PlayerUtils.save(LibraryPlugin.COMPAT.getGameProfile(event.getPlayer()));
+        PlayerUtils.save(LibraryPlugin.getPlugin().getCompat().getGameProfile(event.getPlayer()));
     }
 
     @Override

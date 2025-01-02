@@ -1,6 +1,5 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
-import java.util.Arrays;
 import lombok.Getter;
 import lombok.Setter;
 import org.akazukin.library.LibraryPlugin;
@@ -9,6 +8,8 @@ import org.akazukin.library.utils.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class GuiPagedSingleSelector extends GuiPagedChestBase implements IGuiSel
         }
 
         if (Arrays.asList(this.itemStacks).contains(event.getCurrentItem())) {
-            this.selected = LibraryPlugin.COMPAT.removePlData(event.getCurrentItem().clone(), "AKZ_GUI_ITEM_UUID");
+            this.selected = LibraryPlugin.getPlugin().getCompat().removePlData(event.getCurrentItem().clone(), "AKZ_GUI_ITEM_UUID");
             return true;
         }
 

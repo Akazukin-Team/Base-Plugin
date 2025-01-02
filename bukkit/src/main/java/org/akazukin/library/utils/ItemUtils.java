@@ -1,10 +1,6 @@
 package org.akazukin.library.utils;
 
 import com.mojang.authlib.GameProfile;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import javax.annotation.Nonnull;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.akazukin.util.utils.MathUtils;
@@ -16,21 +12,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
 public class ItemUtils {
     public static ItemStack setGuiItemType(@Nonnull final ItemStack itemStack, @Nonnull final String type) {
-        return LibraryPlugin.COMPAT.setPlData(itemStack, "AKZ_GUI_ITEM_TYPE", type);
+        return LibraryPlugin.getPlugin().getCompat().setPlData(itemStack, "AKZ_GUI_ITEM_TYPE", type);
     }
 
     public static String getGuiItemType(@Nonnull final ItemStack itemStack) {
-        return LibraryPlugin.COMPAT.getPlDataString(itemStack, "AKZ_GUI_ITEM_TYPE");
+        return LibraryPlugin.getPlugin().getCompat().getPlDataString(itemStack, "AKZ_GUI_ITEM_TYPE");
     }
 
     public static ItemStack setGuiItem(@Nonnull final ItemStack itemStack) {
-        return LibraryPlugin.COMPAT.setPlData(itemStack, "AKZ_GUI_ITEM", true);
+        return LibraryPlugin.getPlugin().getCompat().setPlData(itemStack, "AKZ_GUI_ITEM", true);
     }
 
     public static boolean isGuiItem(@Nonnull final ItemStack itemStack) {
-        return Boolean.TRUE.equals(LibraryPlugin.COMPAT.getPlDataBool(itemStack, "AKZ_GUI_ITEM"));
+        return Boolean.TRUE.equals(LibraryPlugin.getPlugin().getCompat().getPlDataBool(itemStack, "AKZ_GUI_ITEM"));
     }
 
     public static ItemStack getSkullItem(@Nonnull final OfflinePlayer player) {
@@ -60,7 +61,7 @@ public class ItemUtils {
         }
 
         skullItem.setItemMeta(skullItemMeta);
-        return LibraryPlugin.COMPAT.setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
+        return LibraryPlugin.getPlugin().getCompat().setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
     }
 
     public static String getDisplayName(@Nonnull final ItemStack itemStack) {
@@ -130,12 +131,12 @@ public class ItemUtils {
     }
 
     public static ToolType getBestToolType(final BlockState blockState) {
-        final float sword = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_SWORD), blockState);
-        final float pickaxe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_PICKAXE), blockState);
-        final float axe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_AXE), blockState);
-        final float shovel = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_SHOVEL), blockState);
-        final float hoe = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.STONE_HOE), blockState);
-        final float shears = LibraryPlugin.COMPAT.getDestroySpeed(new ItemStack(Material.SHEARS), blockState);
+        final float sword = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.STONE_SWORD), blockState);
+        final float pickaxe = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.STONE_PICKAXE), blockState);
+        final float axe = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.STONE_AXE), blockState);
+        final float shovel = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.STONE_SHOVEL), blockState);
+        final float hoe = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.STONE_HOE), blockState);
+        final float shears = LibraryPlugin.getPlugin().getCompat().getDestroySpeed(new ItemStack(Material.SHEARS), blockState);
 
         final float speed = MathUtils.max(sword, pickaxe, axe, shovel, hoe, shears);
 
