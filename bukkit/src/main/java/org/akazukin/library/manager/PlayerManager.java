@@ -1,10 +1,9 @@
 package org.akazukin.library.manager;
 
 import lombok.Getter;
+import org.akazukin.event.EventTarget;
+import org.akazukin.event.Listenable;
 import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.event.EventPriority;
-import org.akazukin.library.event.EventTarget;
-import org.akazukin.library.event.Listenable;
 import org.akazukin.library.event.events.PlayerLocationChangeEvent;
 import org.akazukin.library.event.events.PlayerRotationEvent;
 import org.akazukin.library.event.events.ServerTickEvent;
@@ -82,7 +81,7 @@ public final class PlayerManager implements Listenable {
         this.lastInteractTick.clear();
     }
 
-    @EventTarget(bktPriority = EventPriority.HIGHEST)
+    @EventTarget(libraryPriority = 4)
     public void onServerTick(final ServerTickEvent event) {
         this.passedTime++;
     }

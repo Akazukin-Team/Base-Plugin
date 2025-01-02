@@ -1,7 +1,7 @@
 package org.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
-import org.akazukin.library.event.EventTarget;
+import org.akazukin.event.EventTarget;
 import org.akazukin.library.utils.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

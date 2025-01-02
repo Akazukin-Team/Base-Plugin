@@ -1,9 +1,10 @@
 package org.akazukin.library;
 
-import java.util.logging.Logger;
-import org.akazukin.library.event.EventManager;
+import org.akazukin.event.EventManager;
 import org.akazukin.library.packetlistener.InjectionManager;
 import org.akazukin.library.utils.MessageHelper;
+
+import java.util.logging.Logger;
 
 public interface LibraryPluginAPI {
     Logger getLogManager();

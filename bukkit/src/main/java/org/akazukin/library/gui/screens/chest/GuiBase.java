@@ -2,7 +2,7 @@ package org.akazukin.library.gui.screens.chest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.akazukin.library.event.Listenable;
+import org.akazukin.event.Listenable;
 import org.bukkit.entity.Player;
 
 @AllArgsConstructor
