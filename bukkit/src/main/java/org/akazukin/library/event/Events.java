@@ -1,5 +1,7 @@
 package org.akazukin.library.event;
 
+import org.akazukin.event.EventManager;
+import org.akazukin.event.IEvents;
 import org.akazukin.library.event.events.PacketReceiveEvent;
 import org.akazukin.library.event.events.PacketSendEvent;
 import org.akazukin.library.event.events.ServerTickEvent;
@@ -25,66 +27,66 @@ public class Events extends IEvents<Event> implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
-        this.callEvent(ServerTickEvent.class, event, org.akazukin.library.event.EventPriority.HIGHEST);
+        this.callEvent(ServerTickEvent.class, event, 5);
     }
 
     @EventHandler
     public void onEntityDamage(final EntityDamageEvent event) {
-        this.callEvent(EntityDamageEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(EntityDamageEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onInventoryOpen(final InventoryOpenEvent event) {
-        this.callEvent(InventoryOpenEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(InventoryOpenEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(final InventoryClickEvent event) {
-        this.callEvent(InventoryOpenEvent.class, event, org.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(InventoryOpenEvent.class, event, EventPriority.HIGH.getSlot());
     }
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent event) {
-        this.callEvent(InventoryCloseEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(InventoryCloseEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        this.callEvent(PlayerQuitEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerQuitEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        this.callEvent(PlayerJoinEvent.class, event, org.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(PlayerJoinEvent.class, event, EventPriority.HIGH.getSlot());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onServerListPing(final ServerListPingEvent event) {
-        this.callEvent(ServerListPingEvent.class, event, org.akazukin.library.event.EventPriority.HIGH);
+        this.callEvent(ServerListPingEvent.class, event, EventPriority.HIGH.getSlot());
     }
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent event) {
-        this.callEvent(PlayerMoveEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerMoveEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        this.callEvent(PlayerInteractEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PlayerInteractEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-        this.callEvent(AsyncPlayerChatEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(AsyncPlayerChatEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onPacketReceive(final PacketReceiveEvent event) {
-        this.callEvent(PacketReceiveEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PacketReceiveEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 
     @EventHandler
     public void onPackeSend(final PacketSendEvent event) {
-        this.callEvent(PacketSendEvent.class, event, org.akazukin.library.event.EventPriority.NORMAL);
+        this.callEvent(PacketSendEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 }

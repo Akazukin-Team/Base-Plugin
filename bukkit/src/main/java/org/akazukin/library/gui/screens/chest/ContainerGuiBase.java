@@ -1,15 +1,15 @@
 package org.akazukin.library.gui.screens.chest;
 
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
-import org.akazukin.library.event.EventPriority;
-import org.akazukin.library.event.EventTarget;
+import org.akazukin.event.EventTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
+
+import javax.annotation.Nonnull;
 
 @Getter
 public abstract class ContainerGuiBase extends GuiBase {
@@ -26,7 +26,7 @@ public abstract class ContainerGuiBase extends GuiBase {
 
     protected abstract Inventory getInventory();
 
-    @EventTarget(bktPriority = EventPriority.HIGH)
+    @EventTarget(libraryPriority = 3)
     public void onInventoryClick(final InventoryClickEvent event) {
         if (!event.getView().getTitle().equals(this.title)) {
             return;

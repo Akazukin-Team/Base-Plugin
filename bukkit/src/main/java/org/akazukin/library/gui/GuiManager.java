@@ -1,13 +1,12 @@
 package org.akazukin.library.gui;
 
 import lombok.Getter;
+import org.akazukin.event.EventTarget;
+import org.akazukin.event.Listenable;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import org.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
-import org.akazukin.library.event.EventPriority;
-import org.akazukin.library.event.EventTarget;
-import org.akazukin.library.event.Listenable;
 import org.akazukin.library.event.events.PacketReceiveEvent;
 import org.akazukin.library.event.events.PacketSendEvent;
 import org.akazukin.library.gui.screens.chat.ChatGui;
@@ -45,7 +44,7 @@ public final class GuiManager implements Listenable {
         return this.screens.get(player);
     }
 
-    @EventTarget(bktPriority = EventPriority.HIGH, ignoreSuperClasses = false)
+    @EventTarget(libraryPriority = 3, ignoreSuperClasses = false)
     public void onInventoryClick(final InventoryClickEvent event) {
         if (event.getCurrentItem() != null && ItemUtils.isGuiItem(event.getCurrentItem())) {
             event.setCancelled(true);
