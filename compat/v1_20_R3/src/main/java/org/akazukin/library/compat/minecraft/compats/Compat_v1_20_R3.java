@@ -1,11 +1,6 @@
 package org.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -62,6 +57,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Compat_v1_20_R3 implements Compat {
     private final JavaPlugin plugin;
@@ -175,7 +176,7 @@ public class Compat_v1_20_R3 implements Compat {
 
     @Override
     public void sendSignUpdate(final Player player, final Location location, final String[] lines) {
-        ((CraftPlayer) player).sendSignChange(location, lines);
+        player.sendSignChange(location, lines);
     }
 
     @Override
@@ -618,6 +619,19 @@ public class Compat_v1_20_R3 implements Compat {
     public float getDestroySpeed(final ItemStack itemStack, final BlockState blockState) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.d().a(nmsItemStack, ((CraftBlockState) blockState).getHandle());
+    }
+
+    @Override
+    public String getBlockName(final Object blockState) {
+        final IBlockData iBlockData;
+        if (blockState instanceof IBlockData) {
+            iBlockData = (IBlockData) blockState;
+        } else if (blockState instanceof CraftBlockState) {
+            iBlockData = ((CraftBlockState) blockState).getHandle();
+        } else {
+            throw new IllegalArgumentException("Invalid block state: " + blockState);
+        }
+        return iBlockData.b().h();
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {

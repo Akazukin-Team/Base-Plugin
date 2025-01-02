@@ -1,10 +1,6 @@
 package org.akazukin.library.compat.minecraft;
 
 import io.netty.channel.Channel;
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.akazukin.library.compat.minecraft.data.packets.Packet;
@@ -22,6 +18,11 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.UUID;
 
 public interface Compat {
     float getAttackCooldown(Player player);
@@ -163,4 +164,6 @@ public interface Compat {
     Object loadChunk(Object world, Vec2<Integer> chunkLoc, boolean generate);
 
     float getDestroySpeed(ItemStack itemStack, BlockState blockState);
+
+    String getBlockName(Object block);
 }

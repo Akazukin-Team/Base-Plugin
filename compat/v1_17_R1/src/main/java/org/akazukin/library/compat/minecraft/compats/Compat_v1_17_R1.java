@@ -5,12 +5,6 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +15,7 @@ import net.minecraft.server.network.ServerConnection;
 import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.ContainerAnvil;
 import net.minecraft.world.level.ChunkCoordIntPair;
+import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.Chunk;
 import net.minecraft.world.level.chunk.ChunkSection;
 import org.akazukin.library.compat.minecraft.Compat;
@@ -59,6 +54,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Compat_v1_17_R1 implements Compat {
     private final PacketProcessor_v1_17_R1 pktProcessor;
@@ -585,6 +587,19 @@ public class Compat_v1_17_R1 implements Compat {
     public float getDestroySpeed(final ItemStack itemStack, final BlockState blockState) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.getItem().getDestroySpeed(nmsItemStack, ((CraftBlockState) blockState).getHandle());
+    }
+
+    @Override
+    public String getBlockName(final Object blockState) {
+        final IBlockData iBlockData;
+        if (blockState instanceof IBlockData) {
+            iBlockData = (IBlockData) blockState;
+        } else if (blockState instanceof CraftBlockState) {
+            iBlockData = ((CraftBlockState) blockState).getHandle();
+        } else {
+            throw new IllegalArgumentException("Invalid block state: " + blockState);
+        }
+        return iBlockData.getBlock().h();
     }
 
     private <I, T> T getPDCData(final I itemStack, final PersistentDataType<T, T> type, final String id) {
