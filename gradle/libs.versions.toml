@@ -3,13 +3,14 @@
 akz-util = "1.0.0"
 akz-event = "1.0.0"
 akz-i18n = "1.0.0"
-lombok = "1.18.34"
 gson = "2.10.1"
-doma = "2.60.1"
+doma = "2.62.1"
 slf4j = "1.7.36"
+lombok = "1.18.36"
+jetbrains-annotations = "26.0.1"
 
 #Test Modules
-junit-jupiter = "5.11.0-M2"
+junit-jupiter = "5.11.4"
 
 
 #Plugins
@@ -24,11 +25,12 @@ runTask = "2.2.3"
 akz-util = { module = "org.akazukin:util", version.ref = "akz-util" }
 akz-event = { module = "org.akazukin:event", version.ref = "akz-event" }
 akz-i18n = { module = "org.akazukin:i18n", version.ref = "akz-i18n" }
-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 #Test Modules
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }

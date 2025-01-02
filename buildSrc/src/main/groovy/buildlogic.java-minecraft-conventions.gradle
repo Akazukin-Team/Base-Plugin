@@ -1,5 +1,5 @@
 plugins {
-    id 'buildlogic.java-common-conventions'
+    id 'buildlogic.java-module-conventions'
 }
 
 minecraft_version = properties.get("minecraft_version")

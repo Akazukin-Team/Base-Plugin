@@ -1,3 +1,18 @@
 plugins {
-    id 'buildlogic.java-minecraft-conventions'
+    id 'buildlogic.java-common-conventions'
+}
+
+dependencies {
+    compileOnly libs.gson
+    compileOnly libs.doma.core
+
+    include libs.akz.util
+    include libs.akz.i18n
+    include libs.akz.event
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    compileOnly libs.jetbrains.annotations
+    annotationProcessor libs.jetbrains.annotations
 }

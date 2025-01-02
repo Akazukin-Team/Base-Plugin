@@ -14,6 +14,11 @@ repositories {
     mavenLocal()
 }
 
+Properties props = new Properties()
+try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath(), "application.properties"))) {
+    props.load(fis)
+}
+
 tasks.register("sourcesJar", Jar) {
     archiveClassifier.set("sources")
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
@@ -56,9 +61,9 @@ publishing {
 
     publications {
         maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.artifact
-            version = project.version
+            groupId = props.getProperty("group")
+            artifactId = props.getProperty("artifact")
+            version = props.getProperty("version")
 
             artifact(tasks.named("sourcesJar")) {
                 classifier "sources"
