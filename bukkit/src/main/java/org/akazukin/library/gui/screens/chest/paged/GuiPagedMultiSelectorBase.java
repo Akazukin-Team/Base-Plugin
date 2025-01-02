@@ -1,10 +1,5 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
@@ -18,6 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGuiSelector {
     @Nonnull
@@ -56,14 +57,14 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
             this.done = true;
             GuiManager.singleton().setScreen(event.getWhoClicked(), () -> this.prevGui);
             return true;
-        } else if (LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
-            if (!this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.add(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
+        } else if (LibraryPlugin.getPlugin().getCompat().containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")) {
+            if (!this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.add(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(event.getCurrentItem(),
                         "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks.clone())
-                        .filter(item -> this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
+                        .filter(item -> this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
+                        .map(item -> LibraryPlugin.getPlugin().getCompat().removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 List<String> lore = ItemUtils.getLore(event.getCurrentItem());
@@ -77,21 +78,21 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
                 ItemUtils.setLore(event.getCurrentItem(), lore);
 
                 return true;
-            } else if (LibraryPlugin.COMPAT.containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
-                    this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
-                this.selectedUuid.remove(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
+            } else if (LibraryPlugin.getPlugin().getCompat().containsPlData(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID") &&
+                    this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(event.getCurrentItem(), "AKZ_GUI_ITEM_UUID")))) {
+                this.selectedUuid.remove(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(event.getCurrentItem(),
                         "AKZ_GUI_ITEM_UUID")));
 
                 this.selected = Arrays.stream(this.itemStacks)
-                        .filter(item -> this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.COMPAT.getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
-                        .map(item -> LibraryPlugin.COMPAT.removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
+                        .filter(item -> this.selectedUuid.contains(UUIDUtils.toUuid(LibraryPlugin.getPlugin().getCompat().getPlDataString(item, "AKZ_GUI_ITEM_UUID"))))
+                        .map(item -> LibraryPlugin.getPlugin().getCompat().removePlData(item.clone(), "AKZ_GUI_ITEM_UUID"))
                         .toArray(ItemStack[]::new);
 
                 Arrays.stream(this.itemStacks)
-                        .filter(itemStack -> LibraryPlugin.COMPAT.containsPlData(itemStack, "AKZ_GUI_ITEM_UUID"))
+                        .filter(itemStack -> LibraryPlugin.getPlugin().getCompat().containsPlData(itemStack, "AKZ_GUI_ITEM_UUID"))
                         .filter(itemStack ->
-                                LibraryPlugin.COMPAT.getPlDataString(itemStack, "AKZ_GUI_ITEM_UUID").equals(
-                                        LibraryPlugin.COMPAT.getPlDataString(event.getCurrentItem(),
+                                LibraryPlugin.getPlugin().getCompat().getPlDataString(itemStack, "AKZ_GUI_ITEM_UUID").equals(
+                                        LibraryPlugin.getPlugin().getCompat().getPlDataString(event.getCurrentItem(),
                                                 "AKZ_GUI_ITEM_UUID")
                                 ))
                         .findFirst()

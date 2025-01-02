@@ -37,11 +37,11 @@ public class AnvilGui extends ContainerGuiBase {
     protected Inventory getInventory() {
         Inventory inv = Bukkit.createInventory(this.player, InventoryType.ANVIL, this.title);
 
-        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(inv);
+        final WrappedAnvilInventory anvil = LibraryPlugin.getPlugin().getCompat().getWrappedAnvil(inv);
         if (anvil != null) {
             this.name = anvil.getRenameText();
             anvil.setMaximumRepairCost(this.cost);
-            inv = LibraryPlugin.COMPAT.getBukkitAnvil(anvil);
+            inv = LibraryPlugin.getPlugin().getCompat().getBukkitAnvil(anvil);
         }
         System.out.println("getInventory - anvil is null: " + (anvil == null));
 
@@ -54,7 +54,7 @@ public class AnvilGui extends ContainerGuiBase {
             return;
         }
 
-        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
+        final WrappedAnvilInventory anvil = LibraryPlugin.getPlugin().getCompat().getWrappedAnvil(event.getInventory());
         if (anvil != null) {
             this.name = anvil.getRenameText();
         }
@@ -69,7 +69,7 @@ public class AnvilGui extends ContainerGuiBase {
             return;
         }
 
-        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
+        final WrappedAnvilInventory anvil = LibraryPlugin.getPlugin().getCompat().getWrappedAnvil(event.getInventory());
         if (anvil != null) {
             this.name = anvil.getRenameText();
         }
@@ -84,7 +84,7 @@ public class AnvilGui extends ContainerGuiBase {
             return;
         }
 
-        final WrappedAnvilInventory anvil = LibraryPlugin.COMPAT.getWrappedAnvil(event.getInventory());
+        final WrappedAnvilInventory anvil = LibraryPlugin.getPlugin().getCompat().getWrappedAnvil(event.getInventory());
         if (anvil != null) {
             this.name = anvil.getRenameText();
         }

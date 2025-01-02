@@ -1,7 +1,5 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
-import java.util.Arrays;
-import java.util.UUID;
 import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.ChestGuiBase;
@@ -14,6 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final int maxRows;
@@ -28,7 +29,7 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
         super(title, Math.max(maxRows, minRows), player, false, prevGui);
         this.itemStacks = Arrays.stream(itemStacks).map(item -> {
             item = ItemUtils.setGuiItem(item);
-            return LibraryPlugin.COMPAT.setPlData(item, "AKZ_GUI_ITEM_UUID", String.valueOf(UUID.randomUUID()));
+            return LibraryPlugin.getPlugin().getCompat().setPlData(item, "AKZ_GUI_ITEM_UUID", String.valueOf(UUID.randomUUID()));
         }).toArray(ItemStack[]::new);
         this.maxRows = Math.max(maxRows, minRows);
         this.minRows = Math.min(maxRows, minRows);

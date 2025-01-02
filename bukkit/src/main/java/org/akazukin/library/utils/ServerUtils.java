@@ -106,6 +106,6 @@ public class ServerUtils {
     }
 
     public static int getProtocolVersion() {
-        return LibraryPlugin.COMPAT.getProtocolVersion();
+        return LibraryPlugin.getPlugin().getCompat().getProtocolVersion();
     }
 }

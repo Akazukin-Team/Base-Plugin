@@ -1,6 +1,5 @@
 package org.akazukin.library.gui.screens.sign;
 
-import java.util.Arrays;
 import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
@@ -10,6 +9,8 @@ import org.akazukin.library.gui.screens.chest.GuiBase;
 import org.akazukin.library.worldedit.Vec3i;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
 
 @Getter
 public class SignStringSelectorGui extends GuiBase {
@@ -25,8 +26,8 @@ public class SignStringSelectorGui extends GuiBase {
             return false;
         }
         Bukkit.getWorlds().get(0).getMaxHeight();
-        LibraryPlugin.COMPAT.sendSignUpdate(this.player, this.player.getLocation(), Arrays.copyOf(this.result, 4));
-        LibraryPlugin.COMPAT.sendPacket(
+        LibraryPlugin.getPlugin().getCompat().sendSignUpdate(this.player, this.player.getLocation(), Arrays.copyOf(this.result, 4));
+        LibraryPlugin.getPlugin().getCompat().sendPacket(
                 this.player,
                 new COpenSignEditorPacket(
                         new Vec3i(this.player.getLocation().getBlockX(), this.player.getLocation().getBlockY(),
@@ -41,7 +42,7 @@ public class SignStringSelectorGui extends GuiBase {
     }
 
     public void onGuiClose(final PacketReceiveEvent event) {
-        final SUpdateSignPacket pkt = (SUpdateSignPacket) LibraryPlugin.COMPAT.getWrappedPacket(event.getPacket());
+        final SUpdateSignPacket pkt = (SUpdateSignPacket) LibraryPlugin.getPlugin().getCompat().getWrappedPacket(event.getPacket());
         this.result = pkt.getLines();
     }
 
