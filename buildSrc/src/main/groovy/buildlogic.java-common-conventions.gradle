@@ -11,6 +11,7 @@ configurations {
 
 
 repositories {
+    mavenCentral()
     maven {
         name = "spigot-repo"
         url = "https://repo.rosewooddev.io/repository/public/"
@@ -34,26 +35,12 @@ repositories {
         name = "Jitpack"
         url = "https://jitpack.io/"
     }
-    mavenCentral()
     mavenLocal()
 }
 
 dependencies {
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-
-    compileOnly 'org.jetbrains:annotations:24.1.0'
-    annotationProcessor 'org.jetbrains:annotations:24.1.0'
-
-
-    compileOnly libs.gson
-    compileOnly libs.doma.core
-
-    include libs.akz.util
-    include libs.akz.i18n
-
-    //testImplementation libs.junit.jupiter
-    //testRuntimeOnly libs.junit.platform
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform
 }
 
 tasks.withType(JavaCompile).configureEach {

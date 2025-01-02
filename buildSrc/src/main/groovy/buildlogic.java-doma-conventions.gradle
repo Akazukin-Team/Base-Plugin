@@ -1,10 +1,6 @@
 plugins {
-    id 'buildlogic.java-common-conventions'
+    id 'buildlogic.java-module-conventions'
     id 'org.domaframework.doma.compile'
-}
-
-repositories {
-    mavenLocal()
 }
 
 dependencies {
