@@ -1,11 +1,7 @@
 package org.akazukin.library.compat.minecraft.compats;
 
 import io.netty.channel.Channel;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import javax.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.core.component.DataComponents;
@@ -67,6 +63,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+@Slf4j
 public class Compat_v1_20_R4 implements Compat {
     private final JavaPlugin plugin;
     public PacketProcessor_v1_20_R4 pktProcessor;
@@ -178,7 +181,7 @@ public class Compat_v1_20_R4 implements Compat {
 
     @Override
     public void sendSignUpdate(final Player player, final Location location, final String[] lines) {
-        ((CraftPlayer) player).sendSignChange(location, lines);
+        player.sendSignChange(location, lines);
     }
 
     @Override
@@ -618,6 +621,19 @@ public class Compat_v1_20_R4 implements Compat {
     public float getDestroySpeed(final ItemStack itemStack, final BlockState blockState) {
         final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.g().a(nmsItemStack, ((CraftBlockState) blockState).getHandle());
+    }
+
+    @Override
+    public String getBlockName(final Object blockState) {
+        final IBlockData iBlockData;
+        if (blockState instanceof IBlockData) {
+            iBlockData = (IBlockData) blockState;
+        } else if (blockState instanceof CraftBlockState) {
+            iBlockData = ((CraftBlockState) blockState).getHandle();
+        } else {
+            throw new IllegalArgumentException("Invalid block state: " + blockState);
+        }
+        return iBlockData.b().g();
     }
 
     private <I, R, T> T getPDCData(final I itemStack, final PersistentDataType<R, T> type, final String id) {
