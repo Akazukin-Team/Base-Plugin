@@ -1,5 +1,17 @@
 package org.akazukin.library.worldedit;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.akazukin.library.LibraryPlugin;
+import org.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
+import org.akazukin.library.utils.ThreadUtils;
+import org.akazukin.library.world.WrappedBlockData;
+import org.akazukin.util.utils.MathUtils;
+import org.bukkit.World;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,17 +27,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
-import org.akazukin.library.utils.ThreadUtils;
-import org.akazukin.library.world.WrappedBlockData;
-import org.akazukin.util.utils.MathUtils;
-import org.bukkit.World;
 
 @RequiredArgsConstructor
 public class EditSession {
@@ -77,8 +78,8 @@ public class EditSession {
     }
 
     public void complete() {
-        final Object w = LibraryPlugin.COMPAT.getNMSWorld(this.world);
-        final int min = LibraryPlugin.COMPAT.getMinHeight(this.world);
+        final Object w = LibraryPlugin.getPlugin().getCompat().getNMSWorld(this.world);
+        final int min = LibraryPlugin.getPlugin().getCompat().getMinHeight(this.world);
 
         final ExecutorService pool = Executors.newFixedThreadPool(this.threads);
 
@@ -123,7 +124,7 @@ public class EditSession {
 
         chunks.forEach(c -> pool.submit(() -> ThreadUtils.parallel(() -> {
             final long s6 = System.nanoTime();
-            final Object chunk = LibraryPlugin.COMPAT.getNMSChunk(w, c);
+            final Object chunk = LibraryPlugin.getPlugin().getCompat().getNMSChunk(w, c);
             final long s7 = System.nanoTime();
             if (debug) {
                 getChunkTime.addAndGet(s7 - s6);
@@ -183,7 +184,7 @@ public class EditSession {
                     )))
                     .entrySet().parallelStream()
                     .forEach(e -> {
-                        final Object cs = LibraryPlugin.COMPAT.getNMSChunkSection2(chunk,
+                        final Object cs = LibraryPlugin.getPlugin().getCompat().getNMSChunkSection2(chunk,
                                 e.getKey().getY() - (min >> 4));
 
                         e.getValue().parallelStream()
@@ -192,7 +193,7 @@ public class EditSession {
                                     v3.add(0, -min, 0);
                                     final long s3 = System.nanoTime();
                                     final boolean res = Objects.equals(
-                                            LibraryPlugin.COMPAT.getBlockData2(cs, v3),
+                                            LibraryPlugin.getPlugin().getCompat().getBlockData2(cs, v3),
                                             e3.getValue());
                                     final long s4 = System.nanoTime();
                                     if (debug) {
@@ -201,12 +202,12 @@ public class EditSession {
                                     if (res) {
                                         return null;
                                     }
-                                    LibraryPlugin.COMPAT.setBlockData2(cs, v3, e3.getValue(), false);
+                                    LibraryPlugin.getPlugin().getCompat().setBlockData2(cs, v3, e3.getValue(), false);
                                     final long s5 = System.nanoTime();
                                     if (debug) {
                                         setBlockTimes.addAndGet(s5 - s4);
                                     }
-                                    LibraryPlugin.COMPAT.updateLightsAtBlock(w, v3);
+                                    LibraryPlugin.getPlugin().getCompat().updateLightsAtBlock(w, v3);
                                     final long s15 = System.nanoTime();
                                     if (debug) {
                                         updateLightTimes.addAndGet(s15 - s5);
@@ -232,7 +233,7 @@ public class EditSession {
                                         initPktsTime.addAndGet(s4 - s3);
                                     }
                                     this.world.getPlayers().forEach(p ->
-                                            LibraryPlugin.COMPAT.sendPacket(p, pkt));
+                                            LibraryPlugin.getPlugin().getCompat().sendPacket(p, pkt));
                                     final long s5 = System.nanoTime();
                                     if (debug) {
                                         sendPktsTimes.addAndGet(s5 - s4);
@@ -244,7 +245,7 @@ public class EditSession {
 
             final long s8 = System.nanoTime();
             this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
-            //LibraryPlugin.COMPAT.unloadChunk(chunk, true);
+            //LibraryPlugin.getPlugin().getCompat().unloadChunk(chunk, true);
             final long s9 = System.nanoTime();
             if (debug) {
                 updateChunkTime.addAndGet(s9 - s8);
