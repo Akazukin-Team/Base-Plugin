@@ -1,18 +1,19 @@
 package org.akazukin.library.command;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.akazukin.event.Listenable;
+import org.akazukin.i18n.I18n;
+import org.akazukin.library.LibraryPluginProvider;
+import org.akazukin.library.utils.ArrayUtils;
+import org.akazukin.library.utils.StringUtils;
+import org.akazukin.util.utils.ListUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import lombok.Getter;
-import lombok.Setter;
-import org.akazukin.i18n.I18n;
-import org.akazukin.library.LibraryPluginProvider;
-import org.akazukin.library.event.Listenable;
-import org.akazukin.library.utils.ArrayUtils;
-import org.akazukin.library.utils.StringUtils;
-import org.akazukin.util.utils.ListUtils;
 
 public abstract class Command implements Listenable {
     @Getter

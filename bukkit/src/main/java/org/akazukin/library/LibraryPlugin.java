@@ -38,9 +38,9 @@ import java.util.logging.Logger;
 @Getter
 public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI {
     public static I18nUtils I18N_UTILS;
-    public Compat compat;
     public LibraryBukkitCommandManager commandManager;
     public LibraryEventManager eventManager;
+    private Compat compat;
     private ConfigUtils configUtils;
     private BukkitMessageHelper messageHelper;
     private InjectionManager injectionManager;
