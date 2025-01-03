@@ -27,7 +27,7 @@ public class PacketManager implements Listenable {
         }
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerQuit(final PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 

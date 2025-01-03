@@ -50,7 +50,7 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
     }
 
     @Override
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public final void onInventoryClose(final InventoryCloseEvent event) {
         if (!event.getView().getTitle().equals(this.title)) {
             return;

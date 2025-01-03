@@ -41,7 +41,7 @@ public abstract class ContainerGuiBase extends GuiBase {
         return false;
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onInventoryOpen(final InventoryOpenEvent event) {
         if (!event.getView().getTitle().equals(this.title)) {
             return;
@@ -52,7 +52,7 @@ public abstract class ContainerGuiBase extends GuiBase {
     protected void onGuiOpen(final InventoryOpenEvent event) {
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onInventoryClose(final InventoryCloseEvent event) {
         if (!event.getView().getTitle().equals(this.title)) {
             return;
