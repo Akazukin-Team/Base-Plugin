@@ -194,28 +194,6 @@ public class EditSession {
             e.printStackTrace();
         }
         pool.shutdownNow();
-
-        if (debug) {
-            System.out.println("LoadChunk: " + (s12 - s)
-                    + ", GetChunk: " + getChunkTime.get()
-                    + ", InitRegion: " + initRegionTime.get()
-                    + ", InitRegion2: " + initRegion2Time.get()
-                    + ", CheckBlock: " + checkBlocksTime.get()
-                    + ", SetBlock: " + setBlockTimes.get()
-                    + ", UpdateLight: " + updateLightTimes.get()
-                    + ", InitPkts: " + initPktsTime.get()
-                    + ", SendPkts: " + sendPktsTimes.get()
-                    + ", UnloadChunk: " + updateChunkTime.get()
-                    + ", Total: " + totalTime.get()
-            );
-        }
-
-        if (debug) {
-            System.out.println("TotalBlocks: " + totalBlocks.get() +
-                    ", Pos: " + poses.get() +
-                    ", Chunks: " + totalChunks.get() +
-                    ", Chunks2: " + totalChunks2.get());
-        }
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
