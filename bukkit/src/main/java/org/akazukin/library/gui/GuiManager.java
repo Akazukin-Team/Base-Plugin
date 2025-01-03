@@ -92,7 +92,7 @@ public final class GuiManager implements Listenable {
         this.setScreen(Bukkit.getPlayer(player), gui);
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onInventoryOpen(final InventoryOpenEvent event) {
         final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle())) {
@@ -102,7 +102,7 @@ public final class GuiManager implements Listenable {
         ((ContainerGuiBase) gui).onInventoryOpen(event);
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onInventoryClose(final InventoryCloseEvent event) {
         final GuiBase gui = this.screens.get(event.getPlayer().getUniqueId());
         if (!(gui instanceof ContainerGuiBase) || !event.getView().getTitle().equals(((ContainerGuiBase) gui).getTitle())) {
@@ -113,7 +113,7 @@ public final class GuiManager implements Listenable {
         ((ContainerGuiBase) gui).onInventoryClose(event);
     }
 
-    @EventTarget(ignoreSuperClasses = false)
+    @EventTarget(libraryPriority = 2, ignoreSuperClasses = false)
     public void onPlayerMove(final PlayerMoveEvent event) {
         final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
         if (prevGui instanceof ChatGui) {
@@ -121,7 +121,7 @@ public final class GuiManager implements Listenable {
         }
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
         final GuiBase prevGui = this.screens.get(event.getPlayer().getUniqueId());
         if (prevGui instanceof ChatGui) {
@@ -129,12 +129,12 @@ public final class GuiManager implements Listenable {
         }
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerQuit(final PlayerQuitEvent event) {
         this.screens.remove(event.getPlayer().getUniqueId());
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPacketReceive(final PacketReceiveEvent event) {
         if (!(event.getClient() instanceof BukkitRemoteClient)) {
             return;
@@ -160,7 +160,7 @@ public final class GuiManager implements Listenable {
         }
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPacketSend(final PacketSendEvent event) {
         if (!(event.getClient() instanceof BukkitRemoteClient)) {
             return;

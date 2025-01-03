@@ -86,7 +86,7 @@ public final class PlayerManager implements Listenable {
         this.passedTime++;
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerDamage(final EntityDamageEvent event) {
         if (event.isCancelled()) {
             return;
@@ -98,7 +98,7 @@ public final class PlayerManager implements Listenable {
         this.lastDmgTick.put(event.getEntity().getUniqueId(), this.passedTime);
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerMove(final PlayerMoveEvent event) {
         if (event.isCancelled()) {
             return;
@@ -142,7 +142,7 @@ public final class PlayerManager implements Listenable {
         this.lastMoveTick.put(event.getPlayer().getUniqueId(), this.passedTime);
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.isCancelled()) {
             return;
@@ -150,7 +150,7 @@ public final class PlayerManager implements Listenable {
         this.lastInteractTick.put(event.getPlayer().getUniqueId(), this.passedTime);
     }
 
-    @EventTarget
+    @EventTarget(libraryPriority = 2)
     public void onPlayerJoin(final PlayerJoinEvent event) {
         PlayerUtils.save(LibraryPlugin.getPlugin().getCompat().getGameProfile(event.getPlayer()));
     }
