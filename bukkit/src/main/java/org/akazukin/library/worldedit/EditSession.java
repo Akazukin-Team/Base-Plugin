@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -98,37 +97,11 @@ public class EditSession {
 
         this.vecs.keySet().parallelStream().forEach(v -> chunks.add(new Vec2i(v.getX() >> 4, v.getZ() >> 4)));
 
-        final long s = System.nanoTime();
         chunks.forEach((c) -> this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin()));
-        final long s12 = System.nanoTime();
-
-        final boolean debug = false;
-
-        final AtomicLong checkBlocksTime = new AtomicLong();
-        final AtomicLong setBlockTimes = new AtomicLong();
-        final AtomicLong updateLightTimes = new AtomicLong();
-        final AtomicLong initPktsTime = new AtomicLong();
-        final AtomicLong sendPktsTimes = new AtomicLong();
-        final AtomicLong initRegionTime = new AtomicLong();
-        final AtomicLong initRegion2Time = new AtomicLong();
-        final AtomicLong updateChunkTime = new AtomicLong();
-        final AtomicLong getChunkTime = new AtomicLong();
-        final AtomicLong totalTime = new AtomicLong();
-
-        final AtomicLong totalChunks = new AtomicLong();
-        final AtomicLong totalChunks2 = new AtomicLong();
-
-        final AtomicLong totalBlocks = new AtomicLong();
-        final AtomicLong poses = new AtomicLong();
 
 
         chunks.forEach(c -> pool.submit(() -> ThreadUtils.parallel(() -> {
-            final long s6 = System.nanoTime();
             final Object chunk = LibraryPlugin.getPlugin().getCompat().getNMSChunk(w, c);
-            final long s7 = System.nanoTime();
-            if (debug) {
-                getChunkTime.addAndGet(s7 - s6);
-            }
 
             final long s2 = System.nanoTime();
             final Map<Vec3<Integer>, WrappedBlockData> pos = new HashMap<>(
@@ -146,8 +119,7 @@ public class EditSession {
 
                                 if (MathUtils.contains(c.getX(), minX >> 4, maxX >> 4) &&
                                         MathUtils.contains(c.getY(), minZ >> 4, maxZ >> 4)) {
-                                    final List<Map.Entry<Vec3<Integer>, WrappedBlockData>> sets2 =
-                                            new ArrayList<>();
+                                    final List<Map.Entry<Vec3<Integer>, WrappedBlockData>> sets2 = new ArrayList<>();
 
                                     IntStream.range(Math.max(minX, c.getX() << 4),
                                             Math.min(maxX, (c.getX() << 4) + 15) + 1).forEach(x ->
@@ -164,18 +136,10 @@ public class EditSession {
                             .filter(Objects::nonNull)
                             .flatMap(Collection::stream)
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-            final long s10 = System.nanoTime();
-            if (debug) {
-                initRegionTime.addAndGet(s10 - s2);
-            }
 
             pos.putAll(this.vecs.entrySet().parallelStream().filter(e ->
                             c.getX() == e.getKey().getX() >> 4 && c.getY() == e.getKey().getZ() >> 4)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-            final long s11 = System.nanoTime();
-            if (debug) {
-                initRegion2Time.addAndGet(s11 - s10);
-            }
 
             pos.entrySet().stream()
                     .collect(Collectors.groupingBy(e2 -> new Vec3i(
@@ -192,26 +156,12 @@ public class EditSession {
                                     final Vec3<Integer> v3 = e3.getKey().clone();
                                     v3.add(0, -min, 0);
                                     final long s3 = System.nanoTime();
-                                    final boolean res = Objects.equals(
-                                            LibraryPlugin.getPlugin().getCompat().getBlockData2(cs, v3),
-                                            e3.getValue());
-                                    final long s4 = System.nanoTime();
-                                    if (debug) {
-                                        checkBlocksTime.addAndGet(s4 - s3);
-                                    }
+                                    final boolean res = Objects.equals(LibraryPlugin.getPlugin().getCompat().getBlockData2(cs, v3), e3.getValue());
                                     if (res) {
                                         return null;
                                     }
                                     LibraryPlugin.getPlugin().getCompat().setBlockData2(cs, v3, e3.getValue(), false);
-                                    final long s5 = System.nanoTime();
-                                    if (debug) {
-                                        setBlockTimes.addAndGet(s5 - s4);
-                                    }
                                     LibraryPlugin.getPlugin().getCompat().updateLightsAtBlock(w, v3);
-                                    final long s15 = System.nanoTime();
-                                    if (debug) {
-                                        updateLightTimes.addAndGet(s15 - s5);
-                                    }
                                     return new PlaceResult(e3.getKey(), e3.getValue(), cs);
                                 })
                                 .filter(Objects::nonNull)
@@ -228,31 +178,13 @@ public class EditSession {
                                                                     result.getBlockData()))
                                                             .toArray(SMultiBlockChangePacket.BlockInfo[]::new)
                                             );
-                                    final long s4 = System.nanoTime();
-                                    if (debug) {
-                                        initPktsTime.addAndGet(s4 - s3);
-                                    }
                                     this.world.getPlayers().forEach(p ->
                                             LibraryPlugin.getPlugin().getCompat().sendPacket(p, pkt));
-                                    final long s5 = System.nanoTime();
-                                    if (debug) {
-                                        sendPktsTimes.addAndGet(s5 - s4);
-                                    }
                                 });
-
-                        totalBlocks.addAndGet(e.getValue().size());
                     });
 
-            final long s8 = System.nanoTime();
             this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
             //LibraryPlugin.getPlugin().getCompat().unloadChunk(chunk, true);
-            final long s9 = System.nanoTime();
-            if (debug) {
-                updateChunkTime.addAndGet(s9 - s8);
-            }
-            if (debug) {
-                totalTime.addAndGet(s9 - s6);
-            }
         }, 100)));
 
         pool.shutdown();
@@ -262,28 +194,6 @@ public class EditSession {
             e.printStackTrace();
         }
         pool.shutdownNow();
-
-        if (debug) {
-            System.out.println("LoadChunk: " + (s12 - s)
-                    + ", GetChunk: " + getChunkTime.get()
-                    + ", InitRegion: " + initRegionTime.get()
-                    + ", InitRegion2: " + initRegion2Time.get()
-                    + ", CheckBlock: " + checkBlocksTime.get()
-                    + ", SetBlock: " + setBlockTimes.get()
-                    + ", UpdateLight: " + updateLightTimes.get()
-                    + ", InitPkts: " + initPktsTime.get()
-                    + ", SendPkts: " + sendPktsTimes.get()
-                    + ", UnloadChunk: " + updateChunkTime.get()
-                    + ", Total: " + totalTime.get()
-            );
-        }
-
-        if (debug) {
-            System.out.println("TotalBlocks: " + totalBlocks.get() +
-                    ", Pos: " + poses.get() +
-                    ", Chunks: " + totalChunks.get() +
-                    ", Chunks2: " + totalChunks2.get());
-        }
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
