@@ -3,8 +3,10 @@ package org.akazukin.library.compat.minecraft.v1_18_R2;
 import lombok.AllArgsConstructor;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import org.akazukin.library.compat.minecraft.compats.Compat_v1_18_R2;
 import org.akazukin.library.compat.minecraft.data.PacketProcessor;
+import org.akazukin.library.compat.minecraft.data.packets.SBlockChangePacket;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import org.akazukin.library.utils.ArrayUtils;
 
@@ -22,6 +24,11 @@ public class PacketProcessor_v1_18_R2 implements PacketProcessor<Packet<?>> {
                     ArrayUtils.getIndex(((SUpdateSignPacket) packet).getLines(), 1),
                     ArrayUtils.getIndex(((SUpdateSignPacket) packet).getLines(), 2),
                     ArrayUtils.getIndex(((SUpdateSignPacket) packet).getLines(), 3)
+            );
+        } else if (packet instanceof SBlockChangePacket) {
+            return new PacketPlayOutBlockChange(
+                    this.compat.getNMSBlockPos(((SBlockChangePacket) packet).getPos()),
+                    this.compat.getBlockData(((SBlockChangePacket) packet).getBlockData())
             );
         }
         return null;

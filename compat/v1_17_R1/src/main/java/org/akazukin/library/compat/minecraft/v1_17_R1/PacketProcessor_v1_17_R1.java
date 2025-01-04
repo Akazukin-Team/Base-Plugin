@@ -3,10 +3,12 @@ package org.akazukin.library.compat.minecraft.v1_17_R1;
 import lombok.AllArgsConstructor;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import org.akazukin.library.compat.minecraft.compats.Compat_v1_17_R1;
 import org.akazukin.library.compat.minecraft.data.PacketProcessor;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import org.akazukin.library.compat.minecraft.data.packets.SBlockChangePacket;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 
 @AllArgsConstructor
@@ -19,6 +21,11 @@ public class PacketProcessor_v1_17_R1 implements PacketProcessor<Packet<?>> {
         if (packet instanceof COpenSignEditorPacket) {
             return new PacketPlayOutOpenSignEditor(
                     this.compat.getNMSBlockPos(((COpenSignEditorPacket) packet).getWrappedBlockPos())
+            );
+        } else if (packet instanceof SBlockChangePacket) {
+            return new PacketPlayOutBlockChange(
+                    this.compat.getNMSBlockPos(((SBlockChangePacket) packet).getPos()),
+                    this.compat.getBlockData(((SBlockChangePacket) packet).getBlockData())
             );
         }
         return null;
