@@ -103,7 +103,6 @@ public class EditSession {
         chunks.forEach(c -> pool.submit(() -> ThreadUtils.parallel(() -> {
             final Object chunk = LibraryPlugin.getPlugin().getCompat().getNMSChunk(w, c);
 
-            final long s2 = System.nanoTime();
             final Map<Vec3<Integer>, WrappedBlockData> pos = new HashMap<>(
                     this.regions.entrySet().parallelStream().map(r -> {
                                 final Vec3<?> vec = r.getKey().getFirst();
@@ -156,11 +155,11 @@ public class EditSession {
                                     final Vec3<Integer> v3 = e3.getKey().clone();
                                     v3.add(0, -min, 0);
                                     final long s3 = System.nanoTime();
-                                    final boolean res = Objects.equals(LibraryPlugin.getPlugin().getCompat().getBlockData2(cs, v3), e3.getValue());
+                                    final boolean res = Objects.equals(LibraryPlugin.getPlugin().getCompat().getWrappedBlockData(cs, v3), e3.getValue());
                                     if (res) {
                                         return null;
                                     }
-                                    LibraryPlugin.getPlugin().getCompat().setBlockData2(cs, v3, e3.getValue(), false);
+                                    LibraryPlugin.getPlugin().getCompat().setWrappedBlockData(cs, v3, e3.getValue(), false);
                                     LibraryPlugin.getPlugin().getCompat().updateLightsAtBlock(w, v3);
                                     return new PlaceResult(e3.getKey(), e3.getValue(), cs);
                                 })

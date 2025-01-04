@@ -148,10 +148,16 @@ public interface Compat {
 
     void updateChunk(Object world, Vec2<Integer> chunkLoc);
 
-    WrappedBlockData setBlockData2(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
-                                   boolean applyPhysics);
+    WrappedBlockData setWrappedBlockData(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
+                                         boolean applyPhysics);
 
-    WrappedBlockData getBlockData2(Object chunkSection, Vec3<Integer> vec3i);
+    WrappedBlockData getWrappedBlockData(Object chunkSection, Vec3<Integer> vec3i);
+
+    Object getBlockData(Object blockData);
+
+    Object getBlockData(Object chunkSection, Vec3<Integer> vec3i);
+
+    Object getBlockData2(Object chunkSection, Vec3<Integer> fixedVec3i);
 
     Object getNMSChunkSection(Object chunkSection);
 
