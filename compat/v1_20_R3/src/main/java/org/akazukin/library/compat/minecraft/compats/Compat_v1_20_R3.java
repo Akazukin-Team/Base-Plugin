@@ -46,6 +46,7 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
@@ -491,7 +492,7 @@ public class Compat_v1_20_R3 implements Compat {
     public Object setBlockData(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
                                final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
-        return this.setBlockData2(cs, vec3i, blockData, applyPhysics);
+        return this.setWrappedBlockData(cs, vec3i, blockData, applyPhysics);
     }
 
     @Override
@@ -553,9 +554,9 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public WrappedBlockData setBlockData2(final Object chunkSection, final Vec3<Integer> vec3i,
-                                          final WrappedBlockData blockData,
-                                          final boolean applyPhysics) {
+    public WrappedBlockData setWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i,
+                                                final WrappedBlockData blockData,
+                                                final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
 
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
@@ -564,9 +565,32 @@ public class Compat_v1_20_R3 implements Compat {
     }
 
     @Override
-    public WrappedBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> vec3i) {
+    public WrappedBlockData getWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+        return new WrappedBlockData(this.getBlockData(chunkSection, vec3i));
+    }
+
+    @Override
+    public IBlockData getBlockData(final Object blockData) {
+        if (blockData instanceof IBlockData) {
+            return (IBlockData) blockData;
+        } else if (blockData instanceof CraftBlockState) {
+            return ((CraftBlockState) blockData).getHandle();
+        } else if (blockData instanceof CraftBlockData) {
+            return ((CraftBlockData) blockData).getState();
+        } else {
+            throw new IllegalArgumentException("blockData must be an instance of IBlockData, CraftBlockData or CraftBlockState");
+        }
+    }
+
+    @Override
+    public IBlockData getBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+        return this.getBlockData2(chunkSection, new Vec3i(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
+    }
+
+    @Override
+    public IBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> fixedVec3i) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
-        return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
+        return cs.a(fixedVec3i.getX(), fixedVec3i.getY(), fixedVec3i.getZ());
     }
 
     @Override
@@ -574,7 +598,7 @@ public class Compat_v1_20_R3 implements Compat {
         if (chunkSection instanceof ChunkSection) {
             return (ChunkSection) chunkSection;
         } else {
-            return null;
+            throw new IllegalArgumentException("chunkSection is not a chunk section");
         }
     }
 

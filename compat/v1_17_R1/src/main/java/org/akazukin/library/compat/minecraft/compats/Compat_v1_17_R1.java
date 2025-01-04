@@ -45,6 +45,7 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
@@ -547,20 +548,48 @@ public class Compat_v1_17_R1 implements Compat {
     }
 
     @Override
-    public WrappedBlockData setBlockData2(final Object chunkSection, final Vec3<Integer> vec3i,
-                                          final WrappedBlockData blockData,
-                                          final boolean applyPhysics) {
+    public WrappedBlockData setWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i,
+                                                final WrappedBlockData blockData,
+                                                final boolean applyPhysics) {
         throw new UnsupportedOperationYetException();
     }
 
     @Override
-    public WrappedBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> vec3i) {
-        throw new UnsupportedOperationYetException();
+    public WrappedBlockData getWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+        return new WrappedBlockData(this.getBlockData(chunkSection, vec3i));
     }
 
     @Override
-    public Object getNMSChunkSection(final Object chunkSection) {
-        throw new UnsupportedOperationYetException();
+    public IBlockData getBlockData(final Object blockData) {
+        if (blockData instanceof IBlockData) {
+            return (IBlockData) blockData;
+        } else if (blockData instanceof CraftBlockState) {
+            return ((CraftBlockState) blockData).getHandle();
+        } else if (blockData instanceof CraftBlockData) {
+            return ((CraftBlockData) blockData).getState();
+        } else {
+            throw new IllegalArgumentException("blockData must be an instance of IBlockData, CraftBlockData or CraftBlockState");
+        }
+    }
+
+    @Override
+    public IBlockData getBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+        return this.getBlockData2(chunkSection, new Vec3i(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
+    }
+
+    @Override
+    public IBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> fixedVec3i) {
+        final ChunkSection cs = this.getNMSChunkSection(chunkSection);
+        return cs.getType(fixedVec3i.getX(), fixedVec3i.getY(), fixedVec3i.getZ());
+    }
+
+    @Override
+    public ChunkSection getNMSChunkSection(final Object chunkSection) {
+        if (chunkSection instanceof ChunkSection) {
+            return (ChunkSection) chunkSection;
+        } else {
+            throw new IllegalArgumentException("chunkSection is not a chunk section");
+        }
     }
 
     @Override
