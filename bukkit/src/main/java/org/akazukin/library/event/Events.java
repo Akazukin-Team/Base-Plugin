@@ -27,7 +27,7 @@ public class Events extends IEvents<Event> implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerTick(final ServerTickEvent event) {
-        this.callEvent(ServerTickEvent.class, event, 5);
+        this.callEvent(ServerTickEvent.class, event, EventPriority.HIGHEST.getSlot());
     }
 
     @EventHandler
