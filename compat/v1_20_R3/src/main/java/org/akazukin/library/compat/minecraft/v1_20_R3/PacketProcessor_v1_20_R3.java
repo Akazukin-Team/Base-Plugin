@@ -1,12 +1,12 @@
 package org.akazukin.library.compat.minecraft.v1_20_R3;
 
 import it.unimi.dsi.fastutil.shorts.ShortArraySet;
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import net.minecraft.core.SectionPosition;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutMultiBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import net.minecraft.world.level.block.state.IBlockData;
@@ -14,10 +14,13 @@ import org.akazukin.library.compat.minecraft.compats.Compat_v1_20_R3;
 import org.akazukin.library.compat.minecraft.data.PacketProcessor;
 import org.akazukin.library.compat.minecraft.data.packets.CInitializeBorderPacket;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import org.akazukin.library.compat.minecraft.data.packets.SBlockChangePacket;
 import org.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import org.akazukin.library.utils.ArrayUtils;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
+
+import java.util.Arrays;
 
 @AllArgsConstructor
 public class PacketProcessor_v1_20_R3 implements PacketProcessor<Packet<?>> {
@@ -56,6 +59,11 @@ public class PacketProcessor_v1_20_R3 implements PacketProcessor<Packet<?>> {
                     Arrays.stream(((SMultiBlockChangePacket) packet).getBlockInfo())
                             .map(b -> (IBlockData) b.getBlockData().getBlockData())
                             .toArray(IBlockData[]::new)
+            );
+        } else if (packet instanceof SBlockChangePacket) {
+            return new PacketPlayOutBlockChange(
+                    this.compat.getNMSBlockPos(((SBlockChangePacket) packet).getPos()),
+                    this.compat.getBlockData(((SBlockChangePacket) packet).getBlockData())
             );
         }
         return null;

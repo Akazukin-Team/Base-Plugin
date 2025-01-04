@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import org.akazukin.library.compat.minecraft.compats.Compat_v1_20_R2;
 import org.akazukin.library.compat.minecraft.data.PacketProcessor;
 import org.akazukin.library.compat.minecraft.data.packets.CInitializeBorderPacket;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
+import org.akazukin.library.compat.minecraft.data.packets.SBlockChangePacket;
 import org.akazukin.library.compat.minecraft.data.packets.SUpdateSignPacket;
 import org.akazukin.library.utils.ArrayUtils;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorldBorder;
@@ -38,6 +40,11 @@ public class PacketProcessor_v1_20_R2 implements PacketProcessor<Packet<?>> {
             return new ClientboundInitializeBorderPacket(
                     ((CraftWorldBorder) ((CInitializeBorderPacket) packet).getWorldBorder())
                             .getHandle()
+            );
+        } else if (packet instanceof SBlockChangePacket) {
+            return new PacketPlayOutBlockChange(
+                    this.compat.getNMSBlockPos(((SBlockChangePacket) packet).getPos()),
+                    this.compat.getBlockData(((SBlockChangePacket) packet).getBlockData())
             );
         }
         return null;
