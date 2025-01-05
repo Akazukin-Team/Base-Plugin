@@ -149,12 +149,12 @@ public class Compat_v1_17_R1 implements Compat {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Channel> getServerChannels() {
+    public Channel[] getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().getServerConnection();
         try {
             final List<NetworkManager> networks =
                     (List<NetworkManager>) ReflectionUtils.getField(connection, "g", List.class);
-            return networks.stream().filter(Objects::nonNull).map(network -> network.k).toList();
+            return new ArrayList<>(networks).stream().filter(Objects::nonNull).map(network -> network.k).toArray(Channel[]::new);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return null;
         }
