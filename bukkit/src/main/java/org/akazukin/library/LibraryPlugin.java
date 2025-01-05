@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -111,12 +111,12 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
     public void onDisable() {
         GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
-        final List<Channel> channels = this.compat.getServerChannels();
+        final Channel[] channels = this.compat.getServerChannels();
         if (channels == null) {
             this.getLogManager().warning("Couldn't get active server's channels !");
         } else {
             try {
-                channels.stream()
+                Arrays.stream(channels)
                         .map(SocketRemoteClient::new)
                         .forEach(this.injectionManager::removeCustomHandler);
             } catch (final NoClassDefFoundError e) {
@@ -175,12 +175,12 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
 
         this.getLogManager().info("Initializing packet handler...");
-        final List<Channel> channels = this.compat.getServerChannels();
+        final Channel[] channels = this.compat.getServerChannels();
         if (channels == null) {
             this.getLogManager().warning("Couldn't get active server's channels !");
             this.getLogManager().info("Failed to initialize packet listener");
         } else {
-            channels.stream()
+            Arrays.stream(channels)
                     .map(SocketRemoteClient::new)
                     .forEach(this.injectionManager::injectCustomHandler);
             this.getLogManager().info("Successfully initialized packet handler");

@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Compat_v1_16_R3 implements Compat {
     private final PacketProcessor_v1_16_R3 pktProcessor;
@@ -151,12 +150,12 @@ public class Compat_v1_16_R3 implements Compat {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Channel> getServerChannels() {
+    public Channel[] getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().getServerConnection();
         try {
             final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection,
                     "connectedChannels", List.class);
-            return networks.stream().filter(Objects::nonNull).map(network -> network.channel).collect(Collectors.toList());
+            return new ArrayList<>(networks).stream().filter(Objects::nonNull).map(network -> network.channel).toArray(Channel[]::new);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return null;
         }

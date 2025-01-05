@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.UUID;
 
 public interface Compat {
@@ -49,7 +48,7 @@ public interface Compat {
 
     Channel getPlayerChannel(Player player);
 
-    List<Channel> getServerChannels();
+    Channel[] getServerChannels();
 
     void sendSignUpdate(Player player, Location location, String[] result);
 

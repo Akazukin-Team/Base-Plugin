@@ -66,6 +66,7 @@ import org.bukkit.profile.PlayerProfile;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -168,12 +169,12 @@ public class Compat_v1_20_R4 implements Compat {
     }
 
     @Override
-    public List<Channel> getServerChannels() {
+    public Channel[] getServerChannels() {
         final ServerConnection connection = ((CraftServer) Bukkit.getServer()).getServer().ai();
         try {
             final List<NetworkManager> networks = (List<NetworkManager>) ReflectionUtils.getField(connection, "g",
                     List.class);
-            return networks.stream().filter(Objects::nonNull).map(network -> network.n).toList();
+            return new ArrayList<>(networks).stream().filter(Objects::nonNull).map(network -> network.n).toArray(Channel[]::new);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
