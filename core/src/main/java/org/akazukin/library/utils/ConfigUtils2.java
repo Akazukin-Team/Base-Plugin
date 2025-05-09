@@ -1,5 +1,10 @@
 package org.akazukin.library.utils;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.akazukin.library.LibraryPluginProvider;
+import org.akazukin.util.utils.IOUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,10 +18,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import lombok.Getter;
-import lombok.Setter;
-import org.akazukin.library.LibraryPluginProvider;
-import org.akazukin.util.utils.IOUtils;
 
 public class ConfigUtils2 {
     private final TreeMap<String, Configuration> configs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

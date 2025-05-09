@@ -1,8 +1,9 @@
 package org.akazukin.library.packetlistener.client;
 
 import io.netty.channel.Channel;
-import java.util.UUID;
 import lombok.Getter;
+
+import java.util.UUID;
 
 @Getter
 public abstract class UserRemoteClient extends SocketRemoteClient {

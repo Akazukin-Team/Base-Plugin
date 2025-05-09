@@ -1,9 +1,10 @@
 package org.akazukin.library.utils;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 public class BukkitUtils {
     public static void runTask(final Plugin plugin, final String label, final Runnable runnable) {

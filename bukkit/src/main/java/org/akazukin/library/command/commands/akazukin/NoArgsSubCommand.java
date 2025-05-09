@@ -7,7 +7,7 @@ import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.SubCommand;
 
 @CommandInfo(name = "", description = "Show information", executor = CommandExecutor.BOTH)
-public class NoArgsSubCommand extends SubCommand {
+public class NoArgsSubCommand extends SubCommand<ICmdSender> {
     @Override
     public void run(final ICmdSender sender, final String[] args, final String[] args2) {
         sender.sendMessage("§6§l" + LibraryPlugin.getPlugin().getName());

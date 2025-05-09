@@ -20,12 +20,13 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
+import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.bukkit.Location;
-import org.bukkit.block.data.BlockData;
 
 public class WorldEditCompat {
     public static void fill(final Location loc, final Location loc2, final BlockData blockData) {

@@ -1,0 +1,15 @@
+plugins {
+    id 'buildlogic.java-compat-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly project(":core")
+    include project(":bukkit")
+    compileOnly 'io.netty:netty-all:4.1.111.Final'
+}
+
+jar.dependsOn(":bukkit:jar")

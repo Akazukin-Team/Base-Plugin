@@ -1,9 +1,10 @@
 package org.akazukin.library.world;
 
-import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
+
+import java.util.Random;
 
 public class VoidChunkGenerator extends ChunkGenerator {
     @Override

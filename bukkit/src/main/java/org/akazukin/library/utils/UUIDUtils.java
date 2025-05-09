@@ -1,7 +1,8 @@
 package org.akazukin.library.utils;
 
-import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.regex.Pattern;
 
 public class UUIDUtils {
     private final static Pattern UUID = Pattern.compile(

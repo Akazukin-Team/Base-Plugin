@@ -1,9 +1,10 @@
 package org.akazukin.library.command;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.akazukin.library.exception.UnsupportedOperationYetException;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 public class BktCmdSender2 implements PlayerWrapper {

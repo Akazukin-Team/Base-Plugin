@@ -7,12 +7,11 @@ import org.akazukin.library.command.CommandInfo;
 import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.SubCommand;
 import org.akazukin.library.utils.ArrayUtils;
-import org.akazukin.util.utils.ListUtils;
 
 import java.util.Arrays;
 
 @CommandInfo(name = "help", description = "Show list of commands and descriptions")
-public class HelpSubCommand extends SubCommand {
+public class HelpSubCommand extends SubCommand<ICmdSender> {
     @Override
     public String[] getCompletion(final ICmdSender sender, final String cmdName,
                                   final String[] args, final String[] args2) {
@@ -24,7 +23,7 @@ public class HelpSubCommand extends SubCommand {
                             0)).toLowerCase()))
                     .toArray(String[]::new);
         } else {
-            Command cmD = LibraryPlugin.getPlugin().commandManager.getCommand(args2[0]);
+            Command<? super ICmdSender> cmD = LibraryPlugin.getPlugin().commandManager.getCommand(args2[0]);
             if (cmD == null) {
                 return null;
             }
@@ -38,8 +37,7 @@ public class HelpSubCommand extends SubCommand {
                 }
             }
 
-            return cmD.getCompletion(sender, cmdName, args,
-                    ListUtils.copy(Arrays.asList(args2), 1, args2.length - 2 - lastIndex).toArray(new String[0]));
+            return cmD.getCompletion(sender, cmdName, args, org.akazukin.util.utils.ArrayUtils.copyOfRange(args2, 1, args2.length - lastIndex - 1));
         }
     }
 
@@ -50,7 +48,7 @@ public class HelpSubCommand extends SubCommand {
                     LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
                             I18n.of("library.command.help.commands." + cmd.getName())));
         } else {
-            Command cmd = LibraryPlugin.getPlugin().commandManager.getCommand(args[1]);
+            Command<? super ICmdSender> cmd = LibraryPlugin.getPlugin().commandManager.getCommand(args[1]);
             if (cmd == null) {
                 LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
                         I18n.of("library.command.help.notFound"));
@@ -69,7 +67,7 @@ public class HelpSubCommand extends SubCommand {
             }
 
             LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender, I18n.of(id.toString()));
-            final SubCommand[] subCmds = cmd.getSubCommands();
+            final SubCommand<? super ICmdSender>[] subCmds = cmd.getSubCommands();
             Arrays.stream(subCmds).forEach(cmd_ ->
                     LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender,
                             I18n.of((id + ((org.akazukin.util.utils.StringUtils.getLength(cmd_.getName()) > 0) ? "." + cmd_.getName() : "")))));

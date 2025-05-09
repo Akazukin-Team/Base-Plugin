@@ -3,8 +3,8 @@ package org.akazukin.library;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import org.akazukin.library.command.LibraryBukkitCommandManager;
-import org.akazukin.library.compat.minecraft.Compat;
 import org.akazukin.library.compat.minecraft.CompatManager;
+import org.akazukin.library.compat.minecraft.ICompat;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.dao.MUserDaoImpl;
 import org.akazukin.library.doma.dao.MUserProfileDaoImpl;
@@ -40,7 +40,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
     public static I18nUtils I18N_UTILS;
     public LibraryBukkitCommandManager commandManager;
     public LibraryEventManager eventManager;
-    private Compat compat;
+    private ICompat compat;
     private ConfigUtils configUtils;
     private BukkitMessageHelper messageHelper;
     private InjectionManager injectionManager;

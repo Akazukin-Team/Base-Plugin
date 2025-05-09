@@ -1,24 +1,25 @@
 package org.akazukin.library.compat.minecraft;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
 import lombok.Getter;
 import org.akazukin.library.LibraryPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+
 @Getter
 public class CompatManager {
-    public static Compat initCompat(final JavaPlugin plugin) {
-        return getCompat("org.akazukin.library.compat.minecraft.compats.Compat_" + getMappingVersion(), plugin);
+    public static ICompat initCompat(final JavaPlugin plugin) {
+        return getCompat("org.akazukin.library.compat.minecraft.compats." + getMappingVersion() + ".Compat", plugin);
     }
 
     @SuppressWarnings("unchecked")
-    public static Compat getCompat(final String clazzName, final JavaPlugin plugin) {
+    public static ICompat getCompat(final String clazzName, final JavaPlugin plugin) {
         try {
             final Class<?> clazz = Class.forName(clazzName);
-            if (Compat.class.isAssignableFrom(clazz)) {
-                return getCompat((Class<? extends Compat>) clazz, plugin);
+            if (ICompat.class.isAssignableFrom(clazz)) {
+                return getCompat((Class<? extends ICompat>) clazz, plugin);
             } else {
                 throw new IllegalArgumentException("The class was not extends ComaptClass");
             }
@@ -28,7 +29,7 @@ public class CompatManager {
         return null;
     }
 
-    public static Compat getCompat(final Class<? extends Compat> clazz, final JavaPlugin plugin) {
+    public static ICompat getCompat(final Class<? extends ICompat> clazz, final JavaPlugin plugin) {
         try {
             return clazz.getDeclaredConstructor(JavaPlugin.class).newInstance(plugin);
         } catch (final IllegalArgumentException | InvocationTargetException |
@@ -46,7 +47,21 @@ public class CompatManager {
         }
 
         switch (Bukkit.getServer().getBukkitVersion().split("-")[0]) {
-            case "1.21": {
+            case "1.21.5": {
+                return "v1_21_R4";
+            }
+
+            case "1.21.4": {
+                return "v1_21_R3";
+            }
+
+            case "1.21.3": {
+                return "v1_21_R2";
+            }
+
+            case "1.21":
+            case "1.21.1":
+            case "1.21.2": {
                 return "v1_21_R1";
             }
 

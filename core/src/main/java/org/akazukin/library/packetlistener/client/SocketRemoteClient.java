@@ -1,9 +1,10 @@
 package org.akazukin.library.packetlistener.client;
 
 import io.netty.channel.Channel;
-import java.net.InetSocketAddress;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.net.InetSocketAddress;
 
 @Getter
 @AllArgsConstructor

@@ -1,7 +1,5 @@
 package org.akazukin.library.gui.screens.chest;
 
-import java.util.Arrays;
-import java.util.Collections;
 import lombok.Getter;
 import lombok.Setter;
 import org.akazukin.i18n.I18n;
@@ -16,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     protected final ItemStack doneItem;

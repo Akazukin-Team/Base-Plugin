@@ -1,10 +1,11 @@
 package org.akazukin.library.gui.screens.chat;
 
-import java.util.function.Predicate;
 import lombok.Getter;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.GuiBase;
 import org.bukkit.entity.Player;
+
+import java.util.function.Predicate;
 
 @Getter
 @Deprecated

@@ -3,10 +3,11 @@ package org.akazukin.library.packetlistener;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import java.util.logging.Level;
 import org.akazukin.library.LibraryPluginProvider;
 import org.akazukin.library.event.events.IPacketEvent;
 import org.akazukin.library.packetlistener.client.SocketRemoteClient;
+
+import java.util.logging.Level;
 
 /**
  * Custom channel handler.

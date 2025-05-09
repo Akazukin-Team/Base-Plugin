@@ -1,10 +1,11 @@
 package org.akazukin.library.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class StringUtils {
     private static final Pattern UNCOLORED_PATTERN = Pattern.compile("&([0-9a-fk-or])");

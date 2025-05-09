@@ -1,6 +1,5 @@
 package org.akazukin.library.manager;
 
-import java.util.UUID;
 import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.i18n.I18nUtils;
@@ -9,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class BukkitMessageHelper extends MessageHelper {
     public BukkitMessageHelper(final I18nUtils... i18nUtils) {

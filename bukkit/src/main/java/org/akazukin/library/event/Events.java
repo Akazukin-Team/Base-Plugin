@@ -2,6 +2,8 @@ package org.akazukin.library.event;
 
 import org.akazukin.event.EventManager;
 import org.akazukin.event.IEvents;
+import org.akazukin.library.LibraryPlugin;
+import org.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.akazukin.library.event.events.PacketReceiveEvent;
 import org.akazukin.library.event.events.PacketSendEvent;
 import org.akazukin.library.event.events.ServerTickEvent;
@@ -87,6 +89,7 @@ public class Events extends IEvents<Event> implements Listener {
 
     @EventHandler
     public void onPackeSend(final PacketSendEvent event) {
+        final Packet pkt = LibraryPlugin.getPlugin().getCompat().getWrappedPacket(event.getPacket());
         this.callEvent(PacketSendEvent.class, event, EventPriority.NORMAL.getSlot());
     }
 }

@@ -1,12 +1,13 @@
 package org.akazukin.library.utils;
 
-import java.util.Objects;
 import org.akazukin.i18n.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public class InventoryUtils {
     public static boolean isCloseItem(final ItemStack itemStack) {

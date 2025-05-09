@@ -1,12 +1,13 @@
 package org.akazukin.library.compat.minecraft.data.packets;
 
 import com.mojang.datafixers.util.Pair;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 // PacketPlayOutEntityEquipment
 @AllArgsConstructor
