@@ -10,7 +10,7 @@ public class LibraryBukkitCommandManager extends BukkitCommandManager {
 
     public void registerCommands() {
         this.registerCommands(
-                AkazukinCommand.class
+                new AkazukinCommand()
         );
     }
 }
