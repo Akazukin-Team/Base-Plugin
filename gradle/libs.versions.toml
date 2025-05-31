@@ -1,6 +1,6 @@
 [versions]
 #App deps
-akz-util = "3.0.0"
+akz-util = "4.0.0"
 akz-event = "1.0.0"
 akz-i18n = "2.0.0"
 gson = "2.13.1"
