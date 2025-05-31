@@ -1,8 +1,9 @@
 package org.akazukin.library.doma.domain;
 
-import java.util.UUID;
 import org.seasar.doma.ExternalDomain;
 import org.seasar.doma.jdbc.domain.DomainConverter;
+
+import java.util.UUID;
 
 @ExternalDomain
 public class UUIDConverter implements DomainConverter<UUID, String> {

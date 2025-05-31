@@ -1,16 +1,16 @@
 [versions]
 #App deps
-akz-util = "1.0.0"
+akz-util = "3.0.0"
 akz-event = "1.0.0"
-akz-i18n = "1.0.0"
-gson = "2.10.1"
+akz-i18n = "2.0.0"
+gson = "2.13.1"
 doma = "2.62.1"
 slf4j = "1.7.36"
-lombok = "1.18.36"
-jetbrains-annotations = "26.0.1"
+lombok = "1.18.38"
+jetbrains-annotations = "26.0.2"
 
 #Test Modules
-junit-jupiter = "5.11.4"
+junit-jupiter = "5.13.0-M3"
 
 
 #Plugins

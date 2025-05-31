@@ -1,10 +1,5 @@
 package org.akazukin.library.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 import org.akazukin.i18n.I18n;
 import org.akazukin.i18n.I18nObject;
 import org.akazukin.i18n.I18nUtils;
@@ -15,6 +10,12 @@ import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserEntity;
 import org.akazukin.library.doma.repo.MUserRepo;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class MessageHelper extends I18nUtilsHolder {
     public static final I18nUtils[] EMPTY_I18NUTILS = new I18nUtils[0];

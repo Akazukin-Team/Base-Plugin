@@ -5,11 +5,11 @@ package org.akazukin.library.packetlistener;
  *
  * <p>
  * A pointer is used to warp an object. You can use it to pass wrapped object
- * into methods and handle their container between each methods.
+ * into methods and handle their container between each method.
  * </p>
  *
  * <p>
- * However, when you modify {@code content}, it will not applied the change in
+ * However, when you modify {@code content}, it will not apply the change in
  * memory change like in C. To know pointer's content at any time, you can look
  * at {@code content} data.
  * </p>

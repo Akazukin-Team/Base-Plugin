@@ -11,12 +11,13 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.bukkit.Location;
+import org.bukkit.World;
+
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 public class WorldGuardCompat {
     public static void createRegion(final String name, final Location loc, final Location loc2) {

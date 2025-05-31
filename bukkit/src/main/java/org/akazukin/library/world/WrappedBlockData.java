@@ -1,10 +1,11 @@
 package org.akazukin.library.world;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)

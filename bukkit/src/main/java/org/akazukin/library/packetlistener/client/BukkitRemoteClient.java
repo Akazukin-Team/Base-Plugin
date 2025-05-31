@@ -1,9 +1,10 @@
 package org.akazukin.library.packetlistener.client;
 
 import io.netty.channel.Channel;
-import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 @Getter
 public class BukkitRemoteClient extends UserRemoteClient {

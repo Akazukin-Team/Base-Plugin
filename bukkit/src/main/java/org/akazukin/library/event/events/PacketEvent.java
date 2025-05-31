@@ -10,7 +10,8 @@ import org.bukkit.event.HandlerList;
 public class PacketEvent extends Event implements IPacketEvent {
     private static final HandlerList handlers = new HandlerList();
     private final SocketRemoteClient client;
-    private final Object packet;
+    @Setter
+    private Object packet;
     @Setter
     private boolean cancelled = false;
 

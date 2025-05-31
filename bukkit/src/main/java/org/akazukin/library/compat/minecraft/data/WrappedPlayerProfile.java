@@ -1,7 +1,8 @@
 package org.akazukin.library.compat.minecraft.data;
 
-import java.util.UUID;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 public class WrappedPlayerProfile {

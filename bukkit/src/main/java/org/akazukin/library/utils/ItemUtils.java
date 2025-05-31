@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -64,6 +65,7 @@ public class ItemUtils {
         return LibraryPlugin.getPlugin().getCompat().setPlData(skullItem, "HEAD_UUID", String.valueOf(player.getUniqueId()));
     }
 
+    @Nullable
     public static String getDisplayName(@Nonnull final ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {
             return null;
@@ -89,6 +91,7 @@ public class ItemUtils {
         itemStack.setItemMeta(itemMeta);
     }
 
+    @Nullable
     public static List<String> getLore(@Nonnull final ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {
             return null;

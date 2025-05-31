@@ -1,12 +1,13 @@
 package org.akazukin.library.doma.entity;
 
-import java.util.UUID;
 import lombok.Data;
 import org.seasar.doma.Column;
 import org.seasar.doma.Entity;
 import org.seasar.doma.Id;
 import org.seasar.doma.Table;
 import org.seasar.doma.Version;
+
+import java.util.UUID;
 
 @Entity
 @Data

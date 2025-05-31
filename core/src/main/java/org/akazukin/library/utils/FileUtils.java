@@ -1,5 +1,8 @@
 package org.akazukin.library.utils;
 
+import lombok.NonNull;
+import org.akazukin.library.LibraryPluginProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-import lombok.NonNull;
-import org.akazukin.library.LibraryPluginProvider;
 
 public class FileUtils {
     public static String getApplicationPath() {

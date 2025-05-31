@@ -1,8 +1,9 @@
 package org.akazukin.library.command;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 public final class BukkitPlayerCommandSender implements IPlayerCmdSender {

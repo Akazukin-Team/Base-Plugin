@@ -1,9 +1,6 @@
 package org.akazukin.library.packetlistener;
 
 import io.netty.channel.ChannelPipeline;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.logging.Level;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -11,6 +8,10 @@ import lombok.experimental.FieldDefaults;
 import org.akazukin.library.LibraryPluginProvider;
 import org.akazukin.library.packetlistener.client.SocketRemoteClient;
 import org.akazukin.library.packetlistener.client.UserRemoteClient;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Utility used to perform custom channel handler injection.

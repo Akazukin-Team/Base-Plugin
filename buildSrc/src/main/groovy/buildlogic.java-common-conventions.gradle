@@ -51,8 +51,10 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << '-Xdiags:verbose'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(properties.getOrDefault("java_version", 8) as int)
-compileJava.sourceCompatibility = compileJava.targetCompatibility = properties.getOrDefault("java_version", 8)
+def toolchainVer = properties.getOrDefault("java.toolchain", 8) as int
+java.toolchain.languageVersion = JavaLanguageVersion.of(toolchainVer)
+compileJava.sourceCompatibility = properties.getOrDefault("java.sourceCompat", toolchainVer)
+compileJava.targetCompatibility = properties.getOrDefault("java.targetCompat", toolchainVer)
 
 
 tasks.named('test') {
