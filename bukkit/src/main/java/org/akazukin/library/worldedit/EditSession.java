@@ -194,24 +194,34 @@ public class EditSession {
                     })
                     .map(r -> {
                         if (r instanceof BlockRegionData) {
-                            final Set<BlockPosData> sets2 = new HashSet<>();
-
                             final Vec3<Integer> start = r.getPos();
                             final Vec3<Integer> size = ((BlockRegionData) r).getSize();
-                            for (int x = Math.max(start.getX(), c.getX() << 4),
-                                 xE = Math.min(start.getX() + size.getX() + 1, (c.getX() + 1) << 4);
-                                 x < xE; x++) {
-                                for (int z = Math.max(start.getZ(), c.getY() << 4),
-                                     zE = Math.min(start.getZ() + size.getZ() + 1, (c.getY() + 1) << 4);
-                                     z < zE; z++) {
-                                    for (int y = minY,
-                                         yE = Math.min(start.getY() + size.getY(), maxY);
-                                         y < yE; y++) {
-                                        sets2.add(new BlockPosData(new Vec3i(x, y, z), r.getBlockData()));
+                            final int xS = Math.max(start.getX(), c.getX() << 4);
+                            //final int xE = Math.min(start.getX() + size.getX() + 1, (c.getX() + 1) << 4);
+                            final int xDiff = Math.min(size.getX(), 16);
+                            final int zS = Math.max(start.getZ(), c.getY() << 4);
+                            //final int zE = Math.min(start.getZ() + size.getZ() + 1, (c.getY() + 1) << 4);
+                            final int zDiff = Math.min(size.getZ(), 16);
+                            final int yS = Math.max(start.getY(), minY);
+                            //final int yE = Math.min(start.getY() + size.getY(), maxY);
+                            final int yDiff = Math.min(size.getY(), maxY - yS);
+
+                            final BlockPosData[] arr = new BlockPosData[xDiff * yDiff * zDiff];
+
+                            for (int x = 0, i = 0;
+                                 x < xDiff;
+                                 x++) {
+                                for (int z = 0;
+                                     z < zDiff;
+                                     z++) {
+                                    for (int y = 0;
+                                         y < yDiff;
+                                         y++, i++) {
+                                        arr[i] = new BlockPosData(new Vec3i(x + xS, y + yS, z + zS), r.getBlockData());
                                     }
                                 }
                             }
-                            return sets2.toArray(EMPTY_BLOCK_POS_DATA);
+                            return arr;
                         } else {
                             return new BlockPosData[]{r};
                         }
@@ -223,7 +233,6 @@ public class EditSession {
                     .entrySet()
                     .stream()
                     .map(e -> {
-                        //.forEach((key, value) -> {
                         final Object cs = LibraryPlugin.getPlugin().getCompat()
                                 .getNMSChunkSection2(chunk, e.getKey());
 
@@ -245,7 +254,7 @@ public class EditSession {
                         if (placeRes.length != 0) {
                             // Update the blocks in the chunk sections
                             return new SMultiBlockChangePacket(
-                                    new Vec3i(c.getX(), e.getKey() + minY, c.getY()), placeRes);
+                                    new Vec3i(c.getX(), e.getKey() + (minY >> 4), c.getY()), placeRes);
                         } else {
                             return null;
                         }
