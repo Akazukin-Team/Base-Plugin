@@ -1,7 +1,7 @@
 package org.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
-import org.akazukin.event.EventTarget;
+import org.akazukin.event.annotation.EventTarget;
 import org.akazukin.library.utils.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,9 +13,9 @@ import org.bukkit.inventory.InventoryView;
 public abstract class ChestGuiBase extends ContainerGuiBase {
     protected int rows;
 
-    public ChestGuiBase(final String title, final int rows, final Player player, final boolean canPickup,
-                        final GuiBase prevGui) {
-        super(title, player, canPickup, prevGui);
+    protected ChestGuiBase(final String title, final int rows, final Player player, final boolean lock,
+                           final GuiBase prevGui) {
+        super(title, player, lock, prevGui);
         this.rows = rows;
     }
 
@@ -42,7 +42,7 @@ public abstract class ChestGuiBase extends ContainerGuiBase {
         if (!event.getView().getTitle().equals(this.title)) {
             return;
         }
-        if (!this.canPickup) {
+        if (!this.lock) {
             event.setCancelled(true);
         }
 

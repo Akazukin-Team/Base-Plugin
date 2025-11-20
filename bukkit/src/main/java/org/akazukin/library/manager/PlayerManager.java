@@ -1,8 +1,8 @@
 package org.akazukin.library.manager;
 
 import lombok.Getter;
-import org.akazukin.event.EventTarget;
 import org.akazukin.event.Listenable;
+import org.akazukin.event.annotation.EventTarget;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.event.events.PlayerLocationChangeEvent;
 import org.akazukin.library.event.events.PlayerRotationEvent;
@@ -31,7 +31,7 @@ public final class PlayerManager implements Listenable {
     private final Map<UUID, Long> lastLocTick = new HashMap<>();
     private final Map<UUID, Long> lastInteractTick = new HashMap<>();
     @Getter
-    private long passedTime = 0L;
+    private long passedTime;
 
     public long getLastDamageTick(final Player player) {
         return this.getLastDamageTick(player.getUniqueId());

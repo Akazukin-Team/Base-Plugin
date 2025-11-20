@@ -8,7 +8,6 @@ import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserProfileEntity;
 import org.akazukin.library.doma.repo.MUserProfileRepo;
-import org.akazukin.util.utils.http.HttpMethod;
 import org.akazukin.util.utils.http.HttpUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -78,7 +77,7 @@ public class PlayerUtils {
     public static WrappedPlayerProfile fetchProfile(final UUID player) {
         final byte[] res;
         try {
-            res = HttpUtils.request("https://sessionserver.mojang.com/session/minecraft/profile/" + player, null, null, HttpMethod.GET).getResponse();
+            res = HttpUtils.request("https://sessionserver.mojang.com/session/minecraft/profile/" + player, null, null, "GET").getResponse();
         } catch (final IOException | URISyntaxException e) {
             e.printStackTrace();
             return null;

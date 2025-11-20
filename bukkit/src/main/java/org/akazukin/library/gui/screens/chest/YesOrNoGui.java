@@ -1,7 +1,7 @@
 package org.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.paged.IGuiSelector;
@@ -20,7 +20,7 @@ public class YesOrNoGui extends ChestGuiBase implements IGuiSelector {
     @Getter
     private Boolean result;
     @Getter
-    private boolean done = false;
+    private boolean done;
 
     public YesOrNoGui(final String title, final Player player, final GuiBase prevGui) {
         super(title, 4, player, false, prevGui);

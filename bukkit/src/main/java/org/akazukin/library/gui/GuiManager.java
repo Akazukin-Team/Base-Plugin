@@ -1,8 +1,8 @@
 package org.akazukin.library.gui;
 
 import lombok.Getter;
-import org.akazukin.event.EventTarget;
 import org.akazukin.event.Listenable;
+import org.akazukin.event.annotation.EventTarget;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.compat.minecraft.data.packets.COpenSignEditorPacket;
 import org.akazukin.library.compat.minecraft.data.packets.Packet;
@@ -33,12 +33,7 @@ import java.util.function.Supplier;
 
 @Getter
 public final class GuiManager implements Listenable {
-    private static final GuiManager SINGLETON = new GuiManager();
     private final HashMap<UUID, GuiBase> screens = new HashMap<>();
-
-    public static GuiManager singleton() {
-        return SINGLETON;
-    }
 
     public GuiBase getScreen(final UUID player) {
         return this.screens.get(player);

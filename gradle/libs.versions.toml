@@ -1,8 +1,8 @@
 [versions]
 #App deps
-akz-util = "4.0.0"
-akz-event = "1.0.0"
-akz-i18n = "2.0.0"
+akz-util = "5.0.0-SNAPSHOT"
+akz-event = "3.0.0"
+akz-i18n = "3.0.0-SNAPSHOT"
 gson = "2.13.1"
 doma = "2.62.1"
 slf4j = "1.7.36"

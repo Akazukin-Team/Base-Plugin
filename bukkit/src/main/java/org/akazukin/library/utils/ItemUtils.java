@@ -16,6 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemUtils {
@@ -82,12 +83,12 @@ public class ItemUtils {
         itemStack.setItemMeta(itemMeta);
     }
 
-    public static void setLore(@Nonnull final ItemStack itemStack, final List<String> lores) {
+    public static void setLore(@Nonnull final ItemStack itemStack, final String[] lores) {
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return;
         }
-        itemMeta.setLore(lores);
+        itemMeta.setLore(Arrays.asList(lores));
         itemStack.setItemMeta(itemMeta);
     }
 

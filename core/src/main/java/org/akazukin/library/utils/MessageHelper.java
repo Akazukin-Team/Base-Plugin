@@ -1,56 +1,35 @@
 package org.akazukin.library.utils;
 
-import org.akazukin.i18n.I18n;
-import org.akazukin.i18n.I18nObject;
-import org.akazukin.i18n.I18nUtils;
-import org.akazukin.i18n.I18nUtilsHolder;
+import org.akazukin.i18n.manager.II18nFormatter;
+import org.akazukin.i18n.manager.data.I18nLang;
+import org.akazukin.i18n.object.I18n;
+import org.akazukin.i18n.object.I18nObject;
 import org.akazukin.library.command.ICmdSender;
 import org.akazukin.library.command.IPlayerCmdSender;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.entity.MUserEntity;
 import org.akazukin.library.doma.repo.MUserRepo;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
-public abstract class MessageHelper extends I18nUtilsHolder {
-    public static final I18nUtils[] EMPTY_I18NUTILS = new I18nUtils[0];
+public abstract class MessageHelper {
+    II18nFormatter formatter;
 
-    public MessageHelper(final I18nUtils... i18nUtils) {
-        super(reverse(new ArrayList<>(Arrays.asList(i18nUtils))).toArray(EMPTY_I18NUTILS));
+    protected MessageHelper(final II18nFormatter formatter) {
+        this.formatter = formatter;
     }
 
-    public static List<I18nUtils> reverse(final List<I18nUtils> i18nUtils) {
-        Collections.reverse(i18nUtils);
-        return i18nUtils;
+    public void broadcast(final I18nObject message) {
+        this.broadcast(message.buildRequiredWithFallback(this.formatter, this.getLocale()));
     }
 
-    public void broadcast(final I18n message) {
-        this.broadcast(this.get(this.getLocale(), message));
-    }
+    public abstract I18nLang getLocale();
 
     public void broadcast(final String message) {
         this.sendServer("§7[§6§lAKZ§7]§e " + message);
     }
 
     protected abstract void sendServer(String msg);
-
-    public abstract String getLocale();
-
-    @Override
-    @Nullable
-    public String get(final String locale, final I18nObject i18n) {
-        return this.get(locale, i18n, true);
-    }
-
-    @Override
-    public @Nullable String get(final String locale, final I18nObject i18n, final boolean defaultLocale) {
-        return StringUtils.getColoredString(super.get(locale, i18n, defaultLocale));
-    }
 
     public void sendMessage(final ICmdSender sender, final I18n i18n) {
         if (sender instanceof IPlayerCmdSender) {
@@ -60,8 +39,8 @@ public abstract class MessageHelper extends I18nUtilsHolder {
         }
     }
 
-    public void consoleMessage(final I18n message) {
-        this.consoleMessage(this.get(this.getLocale(), message));
+    public void consoleMessage(final I18nObject message) {
+        this.consoleMessage(message.buildRequiredWithFallback(this.formatter, this.getLocale()));
     }
 
     public void consoleMessage(final String message) {
@@ -70,11 +49,12 @@ public abstract class MessageHelper extends I18nUtilsHolder {
 
     protected abstract void sendConsole(String msg);
 
-    public void sendMessage(final UUID player, final I18n message) {
-        this.sendMessage(player, this.get(this.getLocale(player), message));
+    public void sendMessage(final UUID player, final I18nObject message) {
+        this.sendMessage(player,
+                message.buildRequiredWithFallback(this.formatter, this.getLocale(player)));
     }
 
-    public String getLocale(final UUID player) {
+    public I18nLang getLocale(final UUID player) {
         final MUserEntity entity =
                 LibrarySQLConfig.singleton().getTransactionManager().required(() -> MUserRepo.selectById(player));
         if (entity != null && entity.getLocale() != null) {

@@ -1,7 +1,8 @@
 package org.akazukin.library.utils;
 
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
+import org.akazukin.library.manager.BukkitMessageHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -38,8 +39,10 @@ public class InventoryUtils {
 
     public static ItemStack getBlankItem(final String locale) {
         ItemStack blankItem = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
-        ItemUtils.setDisplayName(blankItem, LibraryPlugin.getPlugin().getMessageHelper().get(locale, I18n.of("library" +
-                ".gui.item.blank")));
+        ItemUtils.setDisplayName(blankItem,
+                I18n.of("library.gui.item.blank").buildRequiredWithFallback(
+                        LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
+                        BukkitMessageHelper.getLocale(player)));
         blankItem = ItemUtils.setGuiItem(blankItem);
         return ItemUtils.setGuiItemType(blankItem, "BLANK");
     }

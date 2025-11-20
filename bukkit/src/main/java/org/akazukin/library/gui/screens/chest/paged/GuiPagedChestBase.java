@@ -1,6 +1,6 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.screens.chest.ChestGuiBase;
 import org.akazukin.library.gui.screens.chest.GuiBase;
@@ -22,10 +22,10 @@ public abstract class GuiPagedChestBase extends ChestGuiBase {
     protected final ItemStack[] itemStacks;
     protected final ItemStack prevPageItem;
     protected final ItemStack nextPageItem;
-    protected int page = 0;
+    protected int page;
 
-    public GuiPagedChestBase(final String title, final int maxRows, final int minRows, final Player player,
-                             final ItemStack[] itemStacks, final GuiBase prevGui) {
+    protected GuiPagedChestBase(final String title, final int maxRows, final int minRows, final Player player,
+                                final ItemStack[] itemStacks, final GuiBase prevGui) {
         super(title, Math.max(maxRows, minRows), player, false, prevGui);
         this.itemStacks = Arrays.stream(itemStacks).map(item -> {
             item = ItemUtils.setGuiItem(item);

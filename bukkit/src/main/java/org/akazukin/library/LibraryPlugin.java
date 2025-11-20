@@ -1,7 +1,14 @@
 package org.akazukin.library;
 
 import io.netty.channel.Channel;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import org.akazukin.i18n.config.I18nManagerConfig;
+import org.akazukin.i18n.config.II18nManagerConfig;
+import org.akazukin.i18n.manager.I18nManager;
+import org.akazukin.i18n.manager.II18nManager;
+import org.akazukin.i18n.manager.data.I18nLang;
 import org.akazukin.library.command.LibraryBukkitCommandManager;
 import org.akazukin.library.compat.minecraft.CompatManager;
 import org.akazukin.library.compat.minecraft.ICompat;
@@ -12,8 +19,8 @@ import org.akazukin.library.event.Events;
 import org.akazukin.library.event.LibraryEventManager;
 import org.akazukin.library.event.events.ServerTickEvent;
 import org.akazukin.library.gui.GuiManager;
-import org.akazukin.library.i18n.I18nUtils;
 import org.akazukin.library.manager.BukkitMessageHelper;
+import org.akazukin.library.manager.I18nLocaleManager;
 import org.akazukin.library.packetlistener.BukkitChannelHandler;
 import org.akazukin.library.packetlistener.InjectionManager;
 import org.akazukin.library.packetlistener.client.SocketRemoteClient;
@@ -35,15 +42,18 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI {
-    public static I18nUtils I18N_UTILS;
-    public LibraryBukkitCommandManager commandManager;
-    public LibraryEventManager eventManager;
-    private ICompat compat;
-    private ConfigUtils configUtils;
-    private BukkitMessageHelper messageHelper;
-    private InjectionManager injectionManager;
+    II18nManager i18nManager;
+    LibraryBukkitCommandManager commandManager;
+    LibraryEventManager eventManager;
+    GuiManager guiManager;
+    ICompat compat;
+    ConfigUtils configUtils;
+    BukkitMessageHelper messageHelper;
+    InjectionManager injectionManager;
+    I18nLocaleManager i18nLocaleMgr;
 
     {
         LibraryPluginProvider.setApi(this);
@@ -109,7 +119,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
     @Override
     public void onDisable() {
-        GuiManager.singleton().getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
+        this.guiManager.getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
         final Channel[] channels = this.compat.getServerChannels();
         if (channels == null) {
@@ -150,13 +160,23 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
 
         this.getLogManager().info("Initializing I18n manager...");
         final YamlConfiguration config = this.configUtils.getConfig("config.yaml");
-        I18N_UTILS = new I18nUtils(this.getClassLoader(), "org.akazukin", "library", this.getDataFolder(), config.getString("locale"), config.getStringList("locales").toArray(new String[0]));
-        this.messageHelper = new BukkitMessageHelper(I18N_UTILS);
+
+        {
+            final II18nManagerConfig i18nCfg = I18nManagerConfig.builder()
+                    .setClassLoader(this.getClassLoader())
+                    .setDomain("org.akazukin")
+                    .setAppId("library")
+                    .setDataFolder(this.getDataFolder())
+                    .setFallbackLang(new I18nLang("", ""))
+                    .build();
+            this.i18nManager = I18nManager.create(i18nCfg);
+        }
+        this.messageHelper = new BukkitMessageHelper(this.i18nManager.getFormatter());
         this.getLogManager().info("Successfully initialized I18n manager");
 
 
         this.getLogManager().info("Initializing event listeners...");
-        this.eventManager = new LibraryEventManager();
+        this.eventManager = new LibraryEventManager(this);
         this.eventManager.registerListeners();
         Bukkit.getPluginManager().registerEvents(new Events(this.eventManager), this);
         this.getLogManager().info("Successfully initialized event listeners");

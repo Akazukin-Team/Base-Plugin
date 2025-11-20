@@ -1,7 +1,7 @@
 package org.akazukin.library.gui.screens.chest.paged;
 
 import lombok.Getter;
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.GuiBase;
@@ -29,7 +29,7 @@ public class GuiPagedMultiSelectorBase extends GuiPagedChestBase implements IGui
     @Nonnull
     protected ItemStack[] selected = new ItemStack[0];
     @Getter
-    private boolean done = false;
+    private boolean done;
 
     public GuiPagedMultiSelectorBase(final String title, final int maxRows, final int minRows, final Player player,
                                      @Nonnull final ItemStack[] itemStacks, @Nonnull final GuiBase prevGui) {

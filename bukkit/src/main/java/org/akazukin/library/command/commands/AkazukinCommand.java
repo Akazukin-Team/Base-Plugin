@@ -1,6 +1,6 @@
 package org.akazukin.library.command.commands;
 
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.command.Command;
 import org.akazukin.library.command.CommandInfo;

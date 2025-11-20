@@ -2,7 +2,7 @@ package org.akazukin.library.gui.screens.chest;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.akazukin.event.EventTarget;
+import org.akazukin.event.annotation.EventTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,13 +15,13 @@ import javax.annotation.Nonnull;
 public abstract class ContainerGuiBase extends GuiBase {
     protected final String title;
     @Setter
-    protected boolean canPickup;
+    protected boolean lock;
 
-    public ContainerGuiBase(@Nonnull final String title, @Nonnull final Player player, final boolean canPickup,
-                            final GuiBase prevGui) {
+    protected ContainerGuiBase(@Nonnull final String title, @Nonnull final Player player, final boolean lock,
+                               final GuiBase prevGui) {
         super(player, prevGui);
         this.title = title;
-        this.canPickup = canPickup;
+        this.lock = lock;
     }
 
     protected abstract Inventory getInventory();
@@ -31,7 +31,7 @@ public abstract class ContainerGuiBase extends GuiBase {
         if (!event.getView().getTitle().equals(this.title)) {
             return;
         }
-        if (!this.canPickup) {
+        if (!this.lock) {
             event.setCancelled(true);
         }
         this.onGuiClick(event);

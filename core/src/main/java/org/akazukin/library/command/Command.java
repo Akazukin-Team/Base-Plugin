@@ -3,7 +3,7 @@ package org.akazukin.library.command;
 import lombok.Getter;
 import lombok.Setter;
 import org.akazukin.event.Listenable;
-import org.akazukin.i18n.I18n;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPluginProvider;
 import org.akazukin.library.utils.ArrayUtils;
 import org.akazukin.library.utils.StringUtils;
@@ -27,7 +27,7 @@ public abstract class Command<T extends ICmdSender> implements Listenable {
     @Setter
     private boolean toggle = true;
 
-    public Command() {
+    protected Command() {
         final CommandInfo commandInfo = this.getClass().getAnnotation(CommandInfo.class);
 
         this.name = commandInfo.name();

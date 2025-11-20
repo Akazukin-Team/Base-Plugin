@@ -1,8 +1,10 @@
 package org.akazukin.library.gui.screens.chest;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.akazukin.i18n.I18n;
+import lombok.experimental.FieldDefaults;
+import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.gui.screens.chest.paged.IGuiSelector;
@@ -15,52 +17,62 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collections;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class GuiSizeSelector extends ChestGuiBase implements IGuiSelector {
     protected final ItemStack doneItem;
     protected final ItemStack amountItem;
     @Getter
-    private final int max;
+    int max;
     @Getter
-    private final int min;
+    int min;
+    @Getter
+    int defaultSize;
+    @Getter
+    int result = -1;
     @Setter
-    private int defaultSize;
+    int size;
     @Getter
-    private int result;
-    private int size;
-    @Getter
-    private boolean done;
+    boolean done;
 
-    public GuiSizeSelector(final String title, final Player player, final int min, final int max, final int defaulT,
+    public GuiSizeSelector(final String title, final Player player,
                            final GuiBase prevGui) {
         super(title, 6, player, false, prevGui);
-        this.min = Math.min(min, max);
-        this.max = Math.max(min, max);
-
-        this.defaultSize = defaulT;
-        this.size = defaulT;
-        this.result = defaulT;
 
         final ItemStack amountItem = new ItemStack(Material.getMaterial("WHITE_WOOL"));
         ItemUtils.setDisplayName(amountItem,
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player),
-                        I18n.of("library.gui.selector.amount", this.size)));
-        ItemUtils.setLore(amountItem, Arrays.asList(
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of("library.gui.selector.max", max)),
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player), I18n.of("library.gui.selector.min", min))
-        ));
-        amountItem.setAmount(this.size);
+                I18n.of("library.gui.selector.amount", this.size).buildRequiredWithFallback(
+                        LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
+                        BukkitMessageHelper.getLocale(player)));
+        ItemUtils.setLore(amountItem,
+                new String[]{
+                        I18n.of("library.gui.selector.max", this.max).buildRequiredWithFallback(
+                                LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
+                                BukkitMessageHelper.getLocale(player)),
+                        I18n.of("library.gui.selector.min", this.min).buildRequiredWithFallback(
+                                LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
+                                BukkitMessageHelper.getLocale(player))
+                }
+        );
         this.amountItem = ItemUtils.setGuiItem(amountItem);
 
         final ItemStack doneItem = new ItemStack(Material.getMaterial("LIME_WOOL"));
         ItemUtils.setDisplayName(doneItem,
-                LibraryPlugin.getPlugin().getMessageHelper().get(BukkitMessageHelper.getLocale(player),
-                        I18n.of("library.gui.selector.item.done")));
+                I18n.of("library.gui.selector.item.done").buildRequiredWithFallback(
+                        LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
+                        BukkitMessageHelper.getLocale(player)));
         this.doneItem = ItemUtils.setGuiItem(doneItem);
+    }
 
-        this.done = false;
+    public void setMax(final int max) {
+        this.max = max;
+        this.min = Math.min(this.min, max);
+    }
+
+    public void setMin(final int min) {
+        this.min = min;
+        this.max = Math.max(this.min, this.max);
     }
 
     @Override
