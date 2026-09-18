@@ -11,27 +11,16 @@ import org.akazukin.library.doma.repo.MUserProfileRepo;
 import org.akazukin.util.utils.http.HttpUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
 public class PlayerUtils {
-    public static Player getPlayerFromAddress(final InetSocketAddress addr) {
-        for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (player.getAddress().equals(addr)) {
-                return player;
-            }
-        }
-        return null;
-    }
-
     public static GameProfile getProfile(final WrappedPlayerProfile profile) {
         final GameProfile profile2 = new GameProfile(profile.getUniqueId(), profile.getName());
         final JsonObject json = new JsonObject();
@@ -48,7 +37,7 @@ public class PlayerUtils {
             skinMeta.addProperty("model", profile.getSkinModel());
             skin.add("metadata", skinMeta);
         }
-        if (skin.size() > 0) {
+        if (!skin.isEmpty()) {
             texture.add("SKIN", skin);
         }
         if (profile.getSkinModel() != null) {
@@ -64,12 +53,32 @@ public class PlayerUtils {
 
     public static WrappedPlayerProfile get(final UUID player) {
         WrappedPlayerProfile profile = PlayerUtils.load(player);
-        if (profile == null) {
-            profile = PlayerUtils.fetchProfile(player);
-            if (profile != null) {
-                PlayerUtils.save(profile);
-            }
+        if (profile != null) {
+            return profile;
         }
+        profile = PlayerUtils.fetchProfile(player);
+        if (profile != null) {
+            PlayerUtils.save(profile);
+        }
+        return profile;
+    }
+
+    @Nullable
+    public static WrappedPlayerProfile load(@NotNull final UUID player) {
+        final MUserProfileEntity entity = LibrarySQLConfig.singleton().getTransactionManager().required(() ->
+                MUserProfileRepo.selectById(player));
+        if (entity == null) {
+            return null;
+        }
+
+        final WrappedPlayerProfile profile = new WrappedPlayerProfile();
+
+        profile.setUniqueId(entity.getPlayerUuid());
+        profile.setName(entity.getName());
+        profile.setSkin(entity.getSkin());
+        profile.setSkinModel(entity.getSkinModel());
+        profile.setCape(entity.getCape());
+        profile.setTimestamp(entity.getTimestamp());
 
         return profile;
     }
@@ -87,17 +96,16 @@ public class PlayerUtils {
             return null;
         }
 
-        final JsonParser parser = new JsonParser();
-        final JsonObject data = parser.parse(new String(EncodeUtils.decodeBase64(parser
-                        .parse(new String(
-                                res,
-                                StandardCharsets.UTF_8))
-                        .getAsJsonObject()
-                        .getAsJsonArray("properties")
-                        .get(0)
-                        .getAsJsonObject()
-                        .get("value")
-                        .getAsString()), StandardCharsets.UTF_8)
+        final JsonObject data = JsonParser.parseString(new String(EncodeUtils.decodeBase64(
+                        JsonParser.parseString(new String(
+                                        res,
+                                        StandardCharsets.UTF_8))
+                                .getAsJsonObject()
+                                .getAsJsonArray("properties")
+                                .get(0)
+                                .getAsJsonObject()
+                                .get("value")
+                                .getAsString()), StandardCharsets.UTF_8)
                 )
                 .getAsJsonObject();
 
@@ -150,32 +158,13 @@ public class PlayerUtils {
         });
     }
 
-    public static WrappedPlayerProfile load(final UUID player) {
-        final MUserProfileEntity entity = LibrarySQLConfig.singleton().getTransactionManager().required(() ->
-                MUserProfileRepo.selectById(player)
-        );
-        if (entity == null) {
-            return null;
-        }
-        final WrappedPlayerProfile profile = new WrappedPlayerProfile();
-
-        profile.setUniqueId(entity.getPlayerUuid());
-        profile.setName(entity.getName());
-        profile.setSkin(entity.getSkin());
-        profile.setSkinModel(entity.getSkinModel());
-        profile.setCape(entity.getCape());
-        profile.setTimestamp(entity.getTimestamp());
-
-        return profile;
-    }
-
     @Nullable
-    public OfflinePlayer getOfflinePlayer(@Nonnull final String name) {
+    public OfflinePlayer getOfflinePlayer(@NotNull final String name) {
         return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> name.equalsIgnoreCase(p.getName())).findFirst().orElse(null);
     }
 
     @Nullable
-    public OfflinePlayer getOfflinePlayer(@Nonnull final UUID uuid) {
+    public OfflinePlayer getOfflinePlayer(@NotNull final UUID uuid) {
         return Arrays.stream(Bukkit.getOfflinePlayers()).filter(p -> uuid.equals(p.getUniqueId())).findFirst().orElse(null);
     }
 }

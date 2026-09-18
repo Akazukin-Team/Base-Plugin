@@ -12,31 +12,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 public class ItemUtils {
-    public static ItemStack setGuiItemType(@Nonnull final ItemStack itemStack, @Nonnull final String type) {
+    public static ItemStack setGuiItemType(@NotNull final ItemStack itemStack, @NotNull final String type) {
         return LibraryPlugin.getPlugin().getCompat().setPlData(itemStack, "AKZ_GUI_ITEM_TYPE", type);
     }
 
-    public static String getGuiItemType(@Nonnull final ItemStack itemStack) {
+    public static String getGuiItemType(@NotNull final ItemStack itemStack) {
         return LibraryPlugin.getPlugin().getCompat().getPlDataString(itemStack, "AKZ_GUI_ITEM_TYPE");
     }
 
-    public static ItemStack setGuiItem(@Nonnull final ItemStack itemStack) {
+    public static ItemStack setGuiItem(@NotNull final ItemStack itemStack) {
         return LibraryPlugin.getPlugin().getCompat().setPlData(itemStack, "AKZ_GUI_ITEM", true);
     }
 
-    public static boolean isGuiItem(@Nonnull final ItemStack itemStack) {
+    public static boolean isGuiItem(@NotNull final ItemStack itemStack) {
         return Boolean.TRUE.equals(LibraryPlugin.getPlugin().getCompat().getPlDataBool(itemStack, "AKZ_GUI_ITEM"));
     }
 
-    public static ItemStack getSkullItem(@Nonnull final OfflinePlayer player) {
+    public static ItemStack getSkullItem(@NotNull final OfflinePlayer player) {
         final ItemStack skullItem = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
         final SkullMeta skullItemMeta = (SkullMeta) skullItem.getItemMeta();
 
@@ -67,14 +67,14 @@ public class ItemUtils {
     }
 
     @Nullable
-    public static String getDisplayName(@Nonnull final ItemStack itemStack) {
+    public static String getDisplayName(@NotNull final ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {
             return null;
         }
         return itemStack.getItemMeta().getDisplayName();
     }
 
-    public static void setDisplayName(@Nonnull final ItemStack itemStack, final String displayName) {
+    public static void setDisplayName(@NotNull final ItemStack itemStack, final String displayName) {
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return;
@@ -83,7 +83,7 @@ public class ItemUtils {
         itemStack.setItemMeta(itemMeta);
     }
 
-    public static void setLore(@Nonnull final ItemStack itemStack, final String[] lores) {
+    public static void setLore(@NotNull final ItemStack itemStack, final String[] lores) {
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return;
@@ -93,11 +93,11 @@ public class ItemUtils {
     }
 
     @Nullable
-    public static List<String> getLore(@Nonnull final ItemStack itemStack) {
+    public static String[] getLore(@NotNull final ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {
             return null;
         }
-        return itemStack.getItemMeta().getLore();
+        return itemStack.getItemMeta().getLore().toArray(new String[0]);
     }
 
     public static ToolType getToolType(final ItemStack itemStack) {

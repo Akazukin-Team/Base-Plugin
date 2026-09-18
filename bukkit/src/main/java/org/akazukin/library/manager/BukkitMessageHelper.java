@@ -1,9 +1,12 @@
 package org.akazukin.library.manager;
 
 import org.akazukin.i18n.manager.II18nFormatter;
-import org.akazukin.i18n.manager.data.I18nLang;
-import org.akazukin.i18n.object.I18nObject;
+import org.akazukin.i18n.manager.data.II18nLang;
+import org.akazukin.i18n.object.II18nObject;
 import org.akazukin.library.LibraryPlugin;
+import org.akazukin.library.doma.LibrarySQLConfig;
+import org.akazukin.library.doma.entity.MUserEntity;
+import org.akazukin.library.doma.repo.MUserRepo;
 import org.akazukin.library.utils.MessageHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,11 +20,14 @@ public class BukkitMessageHelper extends MessageHelper {
         super(formatter);
     }
 
-    public static I18nLang getLocale(final HumanEntity player) {
-        return LibraryPlugin.getPlugin().getMessageHelper().getLocale(player.getUniqueId());
+    public static II18nLang getLocale(final HumanEntity player) {
+        return LibrarySQLConfig.singleton().getTransactionManager().required(() -> {
+            final MUserEntity entity = MUserRepo.selectById(player.getUniqueId());
+            return entity == null ? null : entity.getLocale();
+        });
     }
 
-    public void sendMessage(final CommandSender sender, final I18nObject i18n) {
+    public void sendMessage(final CommandSender sender, final II18nObject i18n) {
         if (sender instanceof Player) {
             this.sendMessage(((Player) sender).getUniqueId(), i18n);
         } else {
@@ -29,18 +35,19 @@ public class BukkitMessageHelper extends MessageHelper {
         }
     }
 
-    public void sendMessage(final HumanEntity sender, final I18nObject i18n) {
+    public void sendMessage(final HumanEntity sender, final II18nObject i18n) {
         this.sendMessage(sender.getUniqueId(), i18n);
-    }
-
-    @Override
-    public I18nLang getLocale() {
-        return LibraryPlugin.getPlugin().getConfigUtils().getConfig("config.yaml").getString("locale");
     }
 
     @Override
     protected void sendServer(final String msg) {
         Bukkit.broadcastMessage(msg);
+    }
+
+    @Override
+    public II18nLang getLocale() {
+        final String locale = LibraryPlugin.getPlugin().getConfigUtils().getConfig("config.yaml").getString("locale");
+        return new org.akazukin.i18n.manager.data.I18nLang(locale, locale);
     }
 
     @Override
@@ -53,3 +60,5 @@ public class BukkitMessageHelper extends MessageHelper {
         Bukkit.getPlayer(player).sendMessage(msg);
     }
 }
+
+

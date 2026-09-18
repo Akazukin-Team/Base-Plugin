@@ -16,7 +16,7 @@ public class PlayerRotationEvent extends Event implements Cancellable {
     private final float prevYaw;
     private final float prevPitch;
     @Setter
-    private boolean cancelled = false;
+    private boolean cancelled;
 
     public PlayerRotationEvent(final Player player, final float prevYaw, final float prevPitch) {
         super(false);

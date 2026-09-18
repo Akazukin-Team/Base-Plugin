@@ -1,8 +1,8 @@
 package org.akazukin.library.utils;
 
+import org.akazukin.i18n.manager.data.II18nLang;
 import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.manager.BukkitMessageHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -27,7 +27,7 @@ public class InventoryUtils {
         return Bukkit.createInventory(null, 9 * rows, name);
     }
 
-    public static void fillBlankItems(final Inventory inventory, final String locale) {
+    public static void fillBlankItems(final Inventory inventory, final II18nLang locale) {
         fillItems(inventory, getBlankItem(locale));
     }
 
@@ -37,36 +37,36 @@ public class InventoryUtils {
         }
     }
 
-    public static ItemStack getBlankItem(final String locale) {
+    public static ItemStack getBlankItem(final II18nLang locale) {
         ItemStack blankItem = new ItemStack(Material.getMaterial("LIGHT_GRAY_STAINED_GLASS_PANE"));
         ItemUtils.setDisplayName(blankItem,
-                I18n.of("library.gui.item.blank").buildRequiredWithFallback(
-                        LibraryPlugin.getPlugin().getI18nManager().getFormatter(),
-                        BukkitMessageHelper.getLocale(player)));
+                I18n.of("library.gui.item.blank")
+                        .buildRequiredWithFallback(
+                                LibraryPlugin.getPlugin().getI18nManager().getFormatter(), locale));
         blankItem = ItemUtils.setGuiItem(blankItem);
         return ItemUtils.setGuiItemType(blankItem, "BLANK");
     }
 
-    public static void fillCloseItem(final Inventory inventory, final String locale) {
+    public static void fillCloseItem(final Inventory inventory, final II18nLang locale) {
         inventory.setItem(inventory.getSize() - 9, getCloseItem(locale));
     }
 
-    public static ItemStack getCloseItem(final String locale) {
+    public static ItemStack getCloseItem(final II18nLang locale) {
         ItemStack closeItem = new ItemStack(Material.getMaterial("BARRIER"));
-        ItemUtils.setDisplayName(closeItem, LibraryPlugin.getPlugin().getMessageHelper().get(locale, I18n.of("library" +
-                ".gui.item.close")));
+        ItemUtils.setDisplayName(closeItem, I18n.of("library.gui.item.close")
+                .buildRequiredWithFallback(LibraryPlugin.getPlugin().getI18nManager().getFormatter(), locale));
         closeItem = ItemUtils.setGuiItem(closeItem);
         return ItemUtils.setGuiItemType(closeItem, "CLOSE");
     }
 
-    public static void fillBackItem(final Inventory inventory, final String locale) {
+    public static void fillBackItem(final Inventory inventory, final II18nLang locale) {
         inventory.setItem(inventory.getSize() - 8, getBackItem(locale));
     }
 
-    public static ItemStack getBackItem(final String locale) {
+    public static ItemStack getBackItem(final II18nLang locale) {
         ItemStack backItem = new ItemStack(Material.getMaterial("IRON_DOOR"));
-        ItemUtils.setDisplayName(backItem, LibraryPlugin.getPlugin().getMessageHelper().get(locale, I18n.of("library" +
-                ".gui.item.back")));
+        ItemUtils.setDisplayName(backItem, I18n.of("library.gui.item.back")
+                .buildRequiredWithFallback(LibraryPlugin.getPlugin().getI18nManager().getFormatter(), locale));
         backItem = ItemUtils.setGuiItem(backItem);
         return ItemUtils.setGuiItemType(backItem, "BACK");
     }

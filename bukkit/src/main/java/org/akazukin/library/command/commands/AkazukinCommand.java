@@ -5,6 +5,7 @@ import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.command.Command;
 import org.akazukin.library.command.CommandInfo;
 import org.akazukin.library.command.ICmdSender;
+import org.akazukin.library.command.LibraryBukkitCommandManager;
 import org.akazukin.library.command.SubCommand;
 import org.akazukin.library.command.commands.akazukin.HelpSubCommand;
 import org.akazukin.library.command.commands.akazukin.LanguageSubCommand;
@@ -13,9 +14,9 @@ import org.akazukin.library.utils.ArrayUtils;
 @CommandInfo(name = "akazukin", description = "akazukin basically command")
 public final class AkazukinCommand extends Command<ICmdSender> {
 
-    public AkazukinCommand() {
+    public AkazukinCommand(final LibraryBukkitCommandManager commandManager) {
         this.addSubCommands(
-                new HelpSubCommand(),
+                new HelpSubCommand(commandManager),
                 new LanguageSubCommand()
         );
     }
@@ -28,3 +29,5 @@ public final class AkazukinCommand extends Command<ICmdSender> {
         }
     }
 }
+
+

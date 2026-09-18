@@ -1,18 +1,22 @@
 package org.akazukin.library.worldedit;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerMultiBlockChange;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.akazukin.library.LibraryPlugin;
-import org.akazukin.library.compat.minecraft.data.packets.SMultiBlockChangePacket;
-import org.akazukin.library.world.WrappedBlockData;
+import org.akazukin.library.compat.minecraft.ICompat;
+import org.akazukin.library.utils.LambdaUtils2;
+import org.akazukin.library.utils.WorldUtils;
+import org.akazukin.library.world.IWrappedBlockData;
 import org.akazukin.util.utils.LambdaUtils;
 import org.akazukin.util.utils.MathUtils;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +33,7 @@ public class EditSession {
     private final int threads;
     private final World world;
 
-    public void setBlock(final Vec3<Integer> loc, final WrappedBlockData state) {
+    public void setBlock(final Vec3i loc, final IWrappedBlockData state) {
         this.setBlock(new BlockPosData(loc, state));
     }
 
@@ -56,7 +60,7 @@ public class EditSession {
      * @param pos2  The second corner position of the block or region, represented as a 3D vector.
      * @param state The block state to be applied, encapsulating block data, ID, and any metadata.
      */
-    public void setBlock(final Vec3<Integer> pos, final Vec3<Integer> pos2, final WrappedBlockData state) {
+    public void setBlock(final Vec3i pos, final Vec3i pos2, final IWrappedBlockData state) {
         final Vec3i minPos = new Vec3i(
                 Math.min(pos.getX(), pos2.getX()),
                 Math.min(pos.getY(), pos2.getY()),
@@ -106,29 +110,38 @@ public class EditSession {
     public synchronized void complete() {
         System.out.println("Preinitializing EditSession");
 
-        final Object w = LibraryPlugin.getPlugin().getCompat().getNMSWorld(this.world);
+        final ICompat compat = LibraryPlugin.getPlugin().getCompat();
+
+        final Object w = compat.getNMSWorld(this.world);
         final int maxY = this.world.getMaxHeight();
-        final int minY = LibraryPlugin.getPlugin().getCompat().getMinHeight(this.world);
+        final int minY = compat.getMinHeight(this.world);
 
         final ExecutorService pool = Executors.newFixedThreadPool(this.threads);
 
-        final Set<Vec2<Integer>> chunks = pool.invokeAll(
+        final long[] chunks = pool.invokeAll(
                         LambdaUtils.toCallable(this.posData, d -> {
                             if (d instanceof BlockRegionData) {
-                                final Vec2i start = new Vec2i(d.getPos().getX() >> 4,
-                                        d.getPos().getZ() >> 4);
-                                final Vec2i end = new Vec2i((d.getPos().getX() + ((BlockRegionData) d).getSize().getX()) >> 4,
-                                        (d.getPos().getZ() + ((BlockRegionData) d).getSize().getZ()) >> 4);
+                                final BlockRegionData rd = (BlockRegionData) d;
+                                final int startX = WorldUtils.toChunkCoord(rd.getPos().getX());
+                                final int startZ = WorldUtils.toChunkCoord(rd.getPos().getZ());
+                                final int endX = WorldUtils.toChunkCoord(rd.getPos().getX() + rd.getSize().getX());
+                                final int endZ = WorldUtils.toChunkCoord(rd.getPos().getZ() + rd.getSize().getZ());
 
-                                final List<Vec2i> chunks2 = new ArrayList<>();
-                                for (int x = start.getX(); x <= end.getX(); x++) {
-                                    for (int y = start.getY(); y <= end.getY(); y++) {
-                                        chunks2.add(new Vec2i(x, y));
+                                final int xLen = endX - startX + 1;
+                                final int zLen = endZ - startZ + 1;
+                                final long[] chunks2 = new long[xLen * zLen];
+
+                                int i = 0;
+                                for (int x = startX; x <= endX; x++) {
+                                    for (int z = startZ; z <= endZ; z++) {
+                                        chunks2[i++] = WorldUtils.packChunkKey(x, z);
                                     }
                                 }
-                                return chunks2.toArray(new Vec2i[0]);
+                                return chunks2;
                             } else {
-                                return new Vec2i[]{new Vec2i(d.getPos().getX() >> 4, d.getPos().getZ() >> 4)};
+                                final int x = WorldUtils.toChunkCoord(d.getPos().getX());
+                                final int z = WorldUtils.toChunkCoord(d.getPos().getZ());
+                                return new long[]{WorldUtils.packChunkKey(x, z)};
                             }
                         }))
                 .stream()
@@ -141,83 +154,56 @@ public class EditSession {
                         throw new RuntimeException(e.getCause());
                     }
                 })
-                .flatMap(Arrays::stream)
-                .collect(Collectors.toSet());
-/*
-        final Set<Vec2<Integer>> chunks = new HashSet<>();
-        pool.invokeAll(LambdaUtils.toCallable(this.posData, d -> {
-            final Vec2i start = new Vec2i(d.getPos().getX() >> 4, d.getPos().getZ() >> 4);
-            if (d instanceof BlockRegionData) {
-                final List<Vec2<Integer>> chunks2 = new ArrayList<>();
-                for (int x = start.getX(),
-                     xE = (d.getPos().getX() + ((BlockRegionData) d).getSize().getX()) >> 4;
-                     x <= xE; x++) {
-                    for (int y = start.getY(),
-                         yE = (d.getPos().getZ() + ((BlockRegionData) d).getSize().getZ()) >> 4;
-                         y <= yE; y++) {
-                        chunks2.add(new Vec2i(x, y));
-                    }
-                }
-                synchronized (chunks) {
-                    chunks.addAll(chunks2);
-                }
-            } else {
-                synchronized (chunks) {
-                    chunks.add(start);
-                }
-            }
-        }));
-*/
-        System.out.println("Initializing " + chunks.size() + " chunks");
+                .collect(LongOpenHashSet::new,
+                        (set, elems) -> set.addAll(new LongOpenHashSet(elems)),
+                        LongOpenHashSet::addAll)
+                .toArray(new long[0]);
 
-        //chunks.forEach(c -> this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin()));
+        System.out.println("Initializing " + chunks.length + " chunks");
 
+        pool.invokeAll(LambdaUtils2.toCallable(chunks, chunkKey -> {
+            final int chunkX = WorldUtils.unpackChunkX(chunkKey);
+            final int chunkY = WorldUtils.unpackChunkZ(chunkKey);
+            final Vec2i c = new Vec2i(chunkX, chunkY);
 
-        pool.invokeAll(LambdaUtils.toCallable(chunks, c -> {
-            this.world.addPluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
+            this.world.addPluginChunkTicket(chunkX, chunkY, LibraryPlugin.getPlugin());
 
-            final Object chunk = LibraryPlugin.getPlugin().getCompat().getNMSChunk(w, c);
+            final Object chunk = compat.getNMSChunk(w, c);
 
-            final SMultiBlockChangePacket[] pkts = this.posData.stream()
+            final WrapperPlayServerMultiBlockChange[] pkts = this.posData.stream()
                     // Filter out the blocks that are not in the chunk
                     .filter(r -> {
                         if (r instanceof BlockRegionData) {
-                            return MathUtils.contains(c.getX(),
-                                    r.getPos().getX() >> 4,
-                                    (r.getPos().getX() + ((BlockRegionData) r).getSize().getX()) >> 4)
-                                    && MathUtils.contains(c.getY(),
-                                    r.getPos().getZ() >> 4,
-                                    (r.getPos().getZ() + ((BlockRegionData) r).getSize().getZ()) >> 4);
+                            final BlockRegionData rd = (BlockRegionData) r;
+                            return MathUtils.contains(chunkX,
+                                    WorldUtils.toChunkCoord(rd.getPos().getX()),
+                                    WorldUtils.toChunkCoord(rd.getPos().getX() + rd.getSize().getX()))
+                                    && MathUtils.contains(chunkY,
+                                    WorldUtils.toChunkCoord(rd.getPos().getZ()),
+                                    WorldUtils.toChunkCoord(rd.getPos().getZ() + rd.getSize().getZ()));
                         } else {
-                            return (r.getPos().getX() >> 4) == c.getX() && (r.getPos().getZ() >> 4) == c.getY();
+                            return WorldUtils.toChunkCoord(r.getPos().getX()) == chunkX
+                                    && WorldUtils.toChunkCoord(r.getPos().getZ()) == chunkY;
                         }
                     })
                     .map(r -> {
                         if (r instanceof BlockRegionData) {
-                            final Vec3<Integer> start = r.getPos();
-                            final Vec3<Integer> size = ((BlockRegionData) r).getSize();
-                            final int xS = Math.max(start.getX(), c.getX() << 4);
-                            //final int xE = Math.min(start.getX() + size.getX() + 1, (c.getX() + 1) << 4);
+                            final Vec3i start = r.getPos();
+                            final Vec3i size = ((BlockRegionData) r).getSize();
+                            final int xS = Math.max(start.getX(), WorldUtils.toWorldCoord(chunkX, 0));
                             final int xDiff = Math.min(size.getX(), 16);
-                            final int zS = Math.max(start.getZ(), c.getY() << 4);
-                            //final int zE = Math.min(start.getZ() + size.getZ() + 1, (c.getY() + 1) << 4);
+                            final int zS = Math.max(start.getZ(), WorldUtils.toWorldCoord(chunkY, 0));
                             final int zDiff = Math.min(size.getZ(), 16);
                             final int yS = Math.max(start.getY(), minY);
-                            //final int yE = Math.min(start.getY() + size.getY(), maxY);
                             final int yDiff = Math.min(size.getY(), maxY - yS);
 
                             final BlockPosData[] arr = new BlockPosData[xDiff * yDiff * zDiff];
 
-                            for (int x = 0, i = 0;
-                                 x < xDiff;
-                                 x++) {
-                                for (int z = 0;
-                                     z < zDiff;
-                                     z++) {
-                                    for (int y = 0;
-                                         y < yDiff;
-                                         y++, i++) {
-                                        arr[i] = new BlockPosData(new Vec3i(x + xS, y + yS, z + zS), r.getBlockData());
+                            for (int x = 0; x < xDiff; x++) {
+                                for (int z = 0; z < zDiff; z++) {
+                                    for (int y = 0; y < yDiff; y++) {
+                                        arr[(x * zDiff + z) * yDiff + y]
+                                                = new BlockPosData(new Vec3i(x + xS, y + yS, z + zS), r.getBlockData());
                                     }
                                 }
                             }
@@ -228,54 +214,53 @@ public class EditSession {
                     })
                     .flatMap(Arrays::stream)
                     // Group by chunk section of the block
-                    .collect(Collectors.groupingBy(e2 -> (e2.getPos().getY() - minY) >> 4))
+                    .collect(Collectors.groupingBy(e2 -> WorldUtils.toSectionIndex(e2.getPos().getY(), minY)))
                     // Edit the blocks in the chunk section
                     .entrySet()
                     .stream()
                     .map(e -> {
-                        final Object cs = LibraryPlugin.getPlugin().getCompat()
-                                .getNMSChunkSection2(chunk, e.getKey());
+                        final Object cs = compat.getNMSChunkSection2(chunk, e.getKey());
 
                         // Edit the blocks and update lights
-                        final SMultiBlockChangePacket.BlockInfo[] placeRes = e.getValue().stream()
+                        final WrapperPlayServerMultiBlockChange.EncodedBlock[] placeRes = e.getValue().stream()
                                 .filter((e3) -> {
-                                    final Vec3<Integer> v3 = e3.getPos().clone().plus(0, -minY, 0);
-                                    if (Objects.equals(LibraryPlugin.getPlugin().getCompat()
-                                            .getWrappedBlockData(cs, v3), e3.getBlockData())) {
+                                    final Vec3i v3 = e3.getPos().clone().plus(0, -minY, 0);
+                                    if (Objects.equals(compat.getWrappedBlockData(cs, v3), e3.getBlockData())) {
                                         return false;
                                     }
-                                    LibraryPlugin.getPlugin().getCompat().setWrappedBlockData(cs, v3, e3.getBlockData(), false);
-                                    LibraryPlugin.getPlugin().getCompat().updateLightsAtBlock(w, v3);
+                                    compat.setWrappedBlockData(cs, v3, e3.getBlockData(), false);
+                                    compat.updateLightsAtBlock(w, v3);
                                     return true;
                                 })
-                                .map(d -> new SMultiBlockChangePacket.BlockInfo(d.getPos(), d.getBlockData()))
-                                .toArray(SMultiBlockChangePacket.BlockInfo[]::new);
+                                .map(d -> new WrapperPlayServerMultiBlockChange.EncodedBlock(d.getBlockData().toPacketBlockState(), d.getPos().getX(), d.getPos().getY(), d.getPos().getZ()))
+                                .toArray(WrapperPlayServerMultiBlockChange.EncodedBlock[]::new);
 
                         if (placeRes.length != 0) {
                             // Update the blocks in the chunk sections
-                            return new SMultiBlockChangePacket(
-                                    new Vec3i(c.getX(), e.getKey() + (minY >> 4), c.getY()), placeRes);
+                            return new WrapperPlayServerMultiBlockChange(
+                                    new Vector3i(chunkX, WorldUtils.toWorldSectionY(e.getKey(), minY), chunkY), true, placeRes);
                         } else {
                             return null;
                         }
                     })
                     .filter(Objects::nonNull)
-                    .toArray(SMultiBlockChangePacket[]::new);
+                    .toArray(WrapperPlayServerMultiBlockChange[]::new);
 
             // Send the packet to all players in the world
             this.world.getPlayers()
                     .stream()
-                    .filter(p -> LibraryPlugin.getPlugin().getCompat().isChunkViewing(p, w, c))
+                    .filter(p -> compat.isChunkViewing(p, w, c))
+                    .map(p -> PacketEvents.getAPI().getPlayerManager().getUser(p.getUniqueId()))
                     .forEach(p -> {
-                        for (final SMultiBlockChangePacket pkt : pkts) {
-                            LibraryPlugin.getPlugin().getCompat().sendPacket(p, pkt);
+                        for (final WrapperPlayServerMultiBlockChange pkt : pkts) {
+                            p.sendPacket(pkt);
                         }
                     });
 
-            this.world.removePluginChunkTicket(c.getX(), c.getY(), LibraryPlugin.getPlugin());
-            //LibraryPlugin.getPlugin().getCompat().unloadChunk(chunk, true);
+            this.world.removePluginChunkTicket(chunkX, chunkY, LibraryPlugin.getPlugin());
+            //compat.unloadChunk(chunk, true);
         }));
-        System.out.println("Initialized " + chunks.size() + " chunks");
+        System.out.println("Initialized " + chunks.length + " chunks");
 
         pool.shutdown();
         try {
@@ -286,6 +271,6 @@ public class EditSession {
             e.printStackTrace();
         }
 
-        System.out.println("Updated " + chunks.size() + " chunks");
+        System.out.println("Updated " + chunks.length + " chunks");
     }
 }

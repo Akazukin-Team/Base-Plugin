@@ -40,7 +40,7 @@ public class ConfigUtils {
             try {
                 if (!configFile.exists()) {
                     if (filename.contains("/")) {
-                        Files.createDirectories(this.configFolder.toPath().resolve(filename.substring(0, filename.lastIndexOf("/"))));
+                        Files.createDirectories(this.configFolder.toPath().resolve(filename.substring(0, filename.lastIndexOf('/'))));
                     }
                     configFile.createNewFile();
                     try (final InputStream is = this.plugin.getResource("assets/org/akazukin/" + this.id + "/configs/" + filename)) {

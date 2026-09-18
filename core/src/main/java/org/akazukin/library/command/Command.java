@@ -2,7 +2,7 @@ package org.akazukin.library.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.akazukin.event.Listenable;
+import org.akazukin.event.IListenable;
 import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPluginProvider;
 import org.akazukin.library.utils.ArrayUtils;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Command<T extends ICmdSender> implements Listenable {
+public abstract class Command<T extends ICmdSender> implements IListenable {
     @Getter
     private final String name;
     @Getter
@@ -99,12 +99,6 @@ public abstract class Command<T extends ICmdSender> implements Listenable {
                 .findFirst().orElse(null);
     }
 
-    public abstract void run(T sender, String[] args, String[] args2);
-
-    public final boolean hasPermission(final T sender) {
-        return this.permission.isEmpty() || !(sender instanceof IPlayerCmdSender) || ((IPlayerCmdSender) sender).hasPermission(this.permission);
-    }
-
     public final boolean validExecutor(final T sender) {
         if (this.executor == CommandExecutor.CONSOLE && !(sender instanceof IPlayerCmdSender)) {
             return true;
@@ -113,4 +107,10 @@ public abstract class Command<T extends ICmdSender> implements Listenable {
         }
         return this.executor == CommandExecutor.BOTH;
     }
+
+    public final boolean hasPermission(final T sender) {
+        return this.permission.isEmpty() || !(sender instanceof IPlayerCmdSender) || ((IPlayerCmdSender) sender).hasPermission(this.permission);
+    }
+
+    public abstract void run(T sender, String[] args, String[] args2);
 }

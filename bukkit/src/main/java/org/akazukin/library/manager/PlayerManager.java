@@ -1,8 +1,8 @@
 package org.akazukin.library.manager;
 
 import lombok.Getter;
-import org.akazukin.event.Listenable;
-import org.akazukin.event.annotation.EventTarget;
+import org.akazukin.event.IListenable;
+import org.akazukin.event.target.EventTarget;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.event.events.PlayerLocationChangeEvent;
 import org.akazukin.library.event.events.PlayerRotationEvent;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public final class PlayerManager implements Listenable {
+public final class PlayerManager implements IListenable {
     public static final PlayerManager SINGLETON = new PlayerManager();
     public final Map<UUID, Location> prevRot = new HashMap<>();
     public final Map<UUID, Location> prevLoc = new HashMap<>();

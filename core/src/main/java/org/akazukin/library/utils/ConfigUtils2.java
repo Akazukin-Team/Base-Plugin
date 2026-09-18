@@ -41,7 +41,7 @@ public class ConfigUtils2 {
                 if (!configFile.exists()) {
                     if (filename.contains("/")) {
                         Files.createDirectories(this.file.toPath().resolve(filename.substring(0,
-                                filename.lastIndexOf("/"))));
+                                filename.lastIndexOf('/'))));
                     }
                     configFile.createNewFile();
                     try (final InputStream is = this.plugin.getClass().getResourceAsStream(

@@ -42,4 +42,6 @@ dependencies {
     //compileOnly(platform("com.intellectualsites.bom:bom-newest:1.43"))
     //compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     //compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
+    compileOnly("com.github.retrooper:packetevents-api:2.13.0")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
 }

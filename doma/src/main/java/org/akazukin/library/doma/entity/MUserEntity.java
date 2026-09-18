@@ -1,7 +1,7 @@
 package org.akazukin.library.doma.entity;
 
 import lombok.Data;
-import org.akazukin.i18n.manager.data.I18nLang;
+import org.akazukin.i18n.manager.data.II18nLang;
 import org.seasar.doma.Column;
 import org.seasar.doma.Entity;
 import org.seasar.doma.Id;
@@ -19,7 +19,7 @@ public class MUserEntity {
     private UUID playerUuid;
 
     @Column(name = "LOCALE")
-    private I18nLang locale;
+    private II18nLang locale;
 
     @Column(name = "VERSION_NO")
     @Version

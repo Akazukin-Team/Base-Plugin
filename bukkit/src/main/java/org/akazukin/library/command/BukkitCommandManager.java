@@ -11,15 +11,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BukkitCommandManager extends CommandManager<ICmdSender> implements CommandExecutor, TabCompleter {
+public abstract class BukkitCommandManager extends CommandManager<Command<? super ICmdSender>> implements CommandExecutor, TabCompleter {
     private final JavaPlugin plugin;
 
-    public BukkitCommandManager(final JavaPlugin plugin) {
+    protected BukkitCommandManager(final JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public void registerCommand(final Command<ICmdSender> command) {
+    public void registerCommand(final Command<? super ICmdSender> command) {
         super.registerCommand(command);
 
         final PluginCommand cmd = this.plugin.getCommand(command.getName());
@@ -39,7 +39,7 @@ public abstract class BukkitCommandManager extends CommandManager<ICmdSender> im
     @Override
     public List<String> onTabComplete(final CommandSender sender, final org.bukkit.command.Command cmd,
                                       final String cmdName, final String[] args) {
-        final Command<ICmdSender> cmD = this.getCommand(cmdName);
+        final Command<? super ICmdSender> cmD = this.getCommand(cmdName);
         final ICmdSender s = new BukkitPlayerCommandSender((Player) sender);
         if (cmD != null && cmD.hasPermission(s)) {
             final String[] comp = cmD.getCompletion(s, cmd.getName(), args, args);
@@ -54,7 +54,7 @@ public abstract class BukkitCommandManager extends CommandManager<ICmdSender> im
     public boolean onCommand(final CommandSender sender, final org.bukkit.command.Command command, final String label
             , final String[] args) {
         new Thread(() -> {
-            final Command<ICmdSender> cmd = this.getCommand(label);
+            final Command<? super ICmdSender> cmd = this.getCommand(label);
             if (cmd == null || !cmd.handleEvents()) {
                 return;
             }

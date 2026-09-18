@@ -1,5 +1,6 @@
 package org.akazukin.library.command.commands.akazukin;
 
+import org.akazukin.i18n.manager.data.I18nLang;
 import org.akazukin.i18n.object.I18n;
 import org.akazukin.library.LibraryPlugin;
 import org.akazukin.library.command.CommandExecutor;
@@ -31,10 +32,13 @@ public class LanguageSubCommand extends SubCommand<ICmdSender> {
                     entity = new MUserEntity();
                     entity.setPlayerUuid(pSender.getUniqueId());
                 }
-                entity.setLocale(ArrayUtils.getIndex(args, 1));
+                entity.setLocale(new I18nLang(ArrayUtils.getIndex(args, 1), ArrayUtils.getIndex(args, 1)));
                 MUserRepo.save(entity);
             });
             LibraryPlugin.getPlugin().getMessageHelper().sendMessage(sender, I18n.of("library.command.language.changed"));
         }
     }
 }
+
+
+

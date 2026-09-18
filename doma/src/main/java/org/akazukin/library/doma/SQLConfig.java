@@ -19,7 +19,7 @@ public abstract class SQLConfig implements Config {
     private final LocalTransactionManager transactionManager;
     private final UnknownColumnHandler unknownColumnHandler;
 
-    public SQLConfig(final File database) {
+    protected SQLConfig(final File database) {
         this.dialect = new SqliteDialect();
         this.dataSource = new LocalTransactionDataSource("jdbc:sqlite:" + database.getPath() + "?jdbc.explicit_readonly=true&busy_timeout=1000000", null, null);
         this.jdbcLogger = new IJdbcLogger();

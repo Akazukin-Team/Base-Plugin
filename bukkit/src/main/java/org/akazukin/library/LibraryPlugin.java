@@ -1,6 +1,6 @@
 package org.akazukin.library;
 
-import io.netty.channel.Channel;
+import com.github.retrooper.packetevents.PacketEvents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -8,22 +8,19 @@ import org.akazukin.i18n.config.I18nManagerConfig;
 import org.akazukin.i18n.config.II18nManagerConfig;
 import org.akazukin.i18n.manager.I18nManager;
 import org.akazukin.i18n.manager.II18nManager;
-import org.akazukin.i18n.manager.data.I18nLang;
 import org.akazukin.library.command.LibraryBukkitCommandManager;
 import org.akazukin.library.compat.minecraft.CompatManager;
 import org.akazukin.library.compat.minecraft.ICompat;
 import org.akazukin.library.doma.LibrarySQLConfig;
 import org.akazukin.library.doma.dao.MUserDaoImpl;
 import org.akazukin.library.doma.dao.MUserProfileDaoImpl;
-import org.akazukin.library.event.Events;
+import org.akazukin.library.event.EventListeners;
 import org.akazukin.library.event.LibraryEventManager;
+import org.akazukin.library.event.PacketEventListeners;
 import org.akazukin.library.event.events.ServerTickEvent;
 import org.akazukin.library.gui.GuiManager;
 import org.akazukin.library.manager.BukkitMessageHelper;
 import org.akazukin.library.manager.I18nLocaleManager;
-import org.akazukin.library.packetlistener.BukkitChannelHandler;
-import org.akazukin.library.packetlistener.InjectionManager;
-import org.akazukin.library.packetlistener.client.SocketRemoteClient;
 import org.akazukin.library.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,7 +32,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -52,14 +48,12 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
     ICompat compat;
     ConfigUtils configUtils;
     BukkitMessageHelper messageHelper;
-    InjectionManager injectionManager;
     I18nLocaleManager i18nLocaleMgr;
+    GuiManager guiMgr;
+    private PacketEventListeners packetEventListener;
 
     {
         LibraryPluginProvider.setApi(this);
-    }
-
-    public static void main(final String[] args) {
     }
 
     @Override
@@ -97,6 +91,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
             }
         });
 
+        this.guiMgr = new GuiManager(this);
 
         this.getLogManager().info("Initializing version manager...");
         this.compat = CompatManager.initCompat(this);
@@ -121,27 +116,12 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
     public void onDisable() {
         this.guiManager.getScreens().keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(Player::closeInventory);
 
-        final Channel[] channels = this.compat.getServerChannels();
-        if (channels == null) {
-            this.getLogManager().warning("Couldn't get active server's channels !");
-        } else {
-            try {
-                Arrays.stream(channels)
-                        .map(SocketRemoteClient::new)
-                        .forEach(this.injectionManager::removeCustomHandler);
-            } catch (final NoClassDefFoundError e) {
-                this.getLogManager().warning("Couldn't remove packet listener from server's channels !");
-            }
-        }
+        PacketEvents.getAPI().getEventManager().unregisterListener(this.packetEventListener);
+        this.packetEventListener = null;
     }
 
     @Override
     public void onEnable() {
-        this.getLogManager().info("Initializing injection manager...");
-        this.injectionManager = new InjectionManager(BukkitChannelHandler.class);
-        this.getLogManager().info("Successfully injection manager");
-
-
         this.getLogManager().info("Initializing configurations...");
         this.configUtils = new ConfigUtils(this, "library");
         this.configUtils.loadConfigFiles("config.yaml");
@@ -167,7 +147,6 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
                     .setDomain("org.akazukin")
                     .setAppId("library")
                     .setDataFolder(this.getDataFolder())
-                    .setFallbackLang(new I18nLang("", ""))
                     .build();
             this.i18nManager = I18nManager.create(i18nCfg);
         }
@@ -178,7 +157,7 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
         this.getLogManager().info("Initializing event listeners...");
         this.eventManager = new LibraryEventManager(this);
         this.eventManager.registerListeners();
-        Bukkit.getPluginManager().registerEvents(new Events(this.eventManager), this);
+        Bukkit.getPluginManager().registerEvents(new EventListeners(this.eventManager), this);
         this.getLogManager().info("Successfully initialized event listeners");
 
 
@@ -194,16 +173,9 @@ public final class LibraryPlugin extends JavaPlugin implements LibraryPluginAPI 
         this.getLogManager().info("Successfully initialized event handler");
 
 
-        this.getLogManager().info("Initializing packet handler...");
-        final Channel[] channels = this.compat.getServerChannels();
-        if (channels == null) {
-            this.getLogManager().warning("Couldn't get active server's channels !");
-            this.getLogManager().info("Failed to initialize packet listener");
-        } else {
-            Arrays.stream(channels)
-                    .map(SocketRemoteClient::new)
-                    .forEach(this.injectionManager::injectCustomHandler);
-            this.getLogManager().info("Successfully initialized packet handler");
+        {
+            this.packetEventListener = new PacketEventListeners(this.eventManager);
+            PacketEvents.getAPI().getEventManager().registerListener(this.packetEventListener);
         }
 
 

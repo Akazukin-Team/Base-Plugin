@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 import org.akazukin.util.utils.StringUtils;
 import org.bukkit.World;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.UUID;
 

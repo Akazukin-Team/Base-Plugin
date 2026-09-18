@@ -1,6 +1,8 @@
 package org.akazukin.library.compat.minecraft.compats.v1_20_R4;
 
 import io.netty.channel.Channel;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPosition;
@@ -29,12 +31,9 @@ import org.akazukin.library.compat.minecraft.CompatExceptions;
 import org.akazukin.library.compat.minecraft.ICompat;
 import org.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
-import org.akazukin.library.compat.minecraft.data.packets.Packet;
 import org.akazukin.library.utils.ReflectionUtils;
-import org.akazukin.library.world.WrappedBlockData;
-import org.akazukin.library.worldedit.Vec2;
+import org.akazukin.library.world.IWrappedBlockData;
 import org.akazukin.library.worldedit.Vec2i;
-import org.akazukin.library.worldedit.Vec3;
 import org.akazukin.library.worldedit.Vec3i;
 import org.akazukin.util.utils.ObjectUtils;
 import org.bukkit.Bukkit;
@@ -64,7 +63,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,12 +70,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Compat implements ICompat {
-    private final JavaPlugin plugin;
-    public PacketProcessor pktProcessor;
+    JavaPlugin plugin;
 
     public Compat(final JavaPlugin plugin) {
-        this.pktProcessor = new PacketProcessor(this);
         this.plugin = plugin;
     }
 
@@ -126,21 +123,6 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public net.minecraft.network.protocol.Packet<?> getNMSPacket(final Packet packet) {
-        return this.pktProcessor.processWrapper(packet);
-    }
-
-    @Override
-    public Packet getWrappedPacket(final Object packet) {
-        return this.pktProcessor.processPacket((net.minecraft.network.protocol.Packet<?>) packet);
-    }
-
-    @Override
-    public void sendPacket(@Nonnull final Player player, @Nonnull final Packet packet) {
-        this.getNMSPlayer(player).c.b(this.getNMSPacket(packet));
-    }
-
-    @Override
     public Vec3i getWrappedBlockPos(final Object pos) {
         if (!(pos instanceof final BlockPosition pos2)) {
             throw new IllegalArgumentException("Invalid argument position must be a block position");
@@ -150,7 +132,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public BlockPosition getNMSBlockPos(final Vec3<Integer> position) {
+    public BlockPosition getNMSBlockPos(final Vec3i position) {
         return new BlockPosition(position.getX(), position.getY(), position.getZ());
     }
 
@@ -644,24 +626,24 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public Chunk getNMSChunk(final Object world, final Vec2<Integer> chunkLoc) {
+    public Chunk getNMSChunk(final Object world, final Vec2i chunkLoc) {
         return this.getNMSWorld(world).d(chunkLoc.getX(), chunkLoc.getY());
     }
 
     @Override
-    public Chunk getNMSChunk(final Object world, final Vec3<Integer> loc) {
+    public Chunk getNMSChunk(final Object world, final Vec3i loc) {
         return this.getNMSChunk(world, new Vec2i(loc.getX() >> 4, loc.getZ() >> 4));
     }
 
     @Override
-    public Object setBlockData(final Object chunk, final Vec3<Integer> vec3i, final WrappedBlockData blockData,
+    public Object setBlockData(final Object chunk, final Vec3i vec3i, final IWrappedBlockData blockData,
                                final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunk, vec3i.getY());
         return this.setWrappedBlockData(cs, vec3i, blockData, applyPhysics);
     }
 
     @Override
-    public WrappedBlockData getNMSNewBlockData(final Material material, final byte data) {
+    public IWrappedBlockData getNMSNewBlockData(final Material material, final byte data) {
         return new WrappedBlockData(CraftMagicNumbers.getBlock(material, data));
     }
 
@@ -693,7 +675,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public ChunkSection getNMSChunkSection(final Object world, final Vec3<Integer> chunkLoc) {
+    public ChunkSection getNMSChunkSection(final Object world, final Vec3i chunkLoc) {
         return this.getNMSChunkSection(this.getNMSChunk(this.getNMSWorld(world), chunkLoc), chunkLoc.getY());
     }
 
@@ -709,7 +691,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public void updateChunk(final Object world, final Vec2<Integer> chunkLoc) {
+    public void updateChunk(final Object world, final Vec2i chunkLoc) {
         this.getNMSWorld(world).l().a(
                 TicketType.PLUGIN,
                 new ChunkCoordIntPair(chunkLoc.getX(), chunkLoc.getY()),
@@ -718,18 +700,18 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public WrappedBlockData setWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i,
-                                                final WrappedBlockData blockData,
-                                                final boolean applyPhysics) {
+    public IWrappedBlockData setWrappedBlockData(final Object chunkSection, final Vec3i vec3i,
+                                                 final IWrappedBlockData blockData,
+                                                 final boolean applyPhysics) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
 
         return new WrappedBlockData(cs.a(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15,
-                ((IBlockData) blockData.getBlockData()),
+                ((WrappedBlockData) blockData).getBlockData(),
                 applyPhysics));
     }
 
     @Override
-    public WrappedBlockData getWrappedBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+    public IWrappedBlockData getWrappedBlockData(final Object chunkSection, final Vec3i vec3i) {
         return new WrappedBlockData(this.getBlockData(chunkSection, vec3i));
     }
 
@@ -747,12 +729,12 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public IBlockData getBlockData(final Object chunkSection, final Vec3<Integer> vec3i) {
+    public IBlockData getBlockData(final Object chunkSection, final Vec3i vec3i) {
         return this.getBlockData2(chunkSection, new Vec3i(vec3i.getX() & 15, vec3i.getY() & 15, vec3i.getZ() & 15));
     }
 
     @Override
-    public IBlockData getBlockData2(final Object chunkSection, final Vec3<Integer> fixedVec3i) {
+    public IBlockData getBlockData2(final Object chunkSection, final Vec3i fixedVec3i) {
         final ChunkSection cs = this.getNMSChunkSection(chunkSection);
         return cs.a(fixedVec3i.getX(), fixedVec3i.getY(), fixedVec3i.getZ());
     }
@@ -773,7 +755,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public void updateLightsAtBlock(final Object world, final Vec3<Integer> pos) {
+    public void updateLightsAtBlock(final Object world, final Vec3i pos) {
         final WorldServer c = this.getNMSWorld(world);
         c.y_().a(new BlockPosition(pos.getX(), pos.getY(), pos.getZ()));
     }
@@ -787,7 +769,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public Chunk loadChunk(final Object world, final Vec2<Integer> chunkLoc, final boolean generate) {
+    public Chunk loadChunk(final Object world, final Vec2i chunkLoc, final boolean generate) {
         final ChunkProviderServer provider = this.getNMSWorld(world).l();
 
         IChunkAccess chunk = provider.a(chunkLoc.getX(), chunkLoc.getY(),
@@ -822,7 +804,7 @@ public class Compat implements ICompat {
     }
 
     @Override
-    public boolean isChunkViewing(final Object player, final Object world, final Vec2<Integer> chunkPos) {
+    public boolean isChunkViewing(final Object player, final Object world, final Vec2i chunkPos) {
         final WorldServer w = this.getNMSWorld(world);
         final EntityPlayer p = this.getNMSPlayer(player);
 
@@ -893,3 +875,4 @@ public class Compat implements ICompat {
         }
     }
 }
+

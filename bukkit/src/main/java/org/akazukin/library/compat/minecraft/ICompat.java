@@ -3,10 +3,9 @@ package org.akazukin.library.compat.minecraft;
 import io.netty.channel.Channel;
 import org.akazukin.library.compat.minecraft.data.WrappedAnvilInventory;
 import org.akazukin.library.compat.minecraft.data.WrappedPlayerProfile;
-import org.akazukin.library.compat.minecraft.data.packets.Packet;
-import org.akazukin.library.world.WrappedBlockData;
-import org.akazukin.library.worldedit.Vec2;
-import org.akazukin.library.worldedit.Vec3;
+import org.akazukin.library.world.IWrappedBlockData;
+import org.akazukin.library.worldedit.Vec2i;
+import org.akazukin.library.worldedit.Vec3i;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,8 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.UUID;
 
 public interface ICompat {
@@ -36,15 +35,9 @@ public interface ICompat {
     @Deprecated
     Inventory getBukkitAnvil(WrappedAnvilInventory inventory);
 
-    Object getNMSPacket(Packet packet);
+    Vec3i getWrappedBlockPos(Object pos);
 
-    Packet getWrappedPacket(Object packet);
-
-    void sendPacket(@Nonnull Player player, @Nonnull Packet packet);
-
-    Vec3<Integer> getWrappedBlockPos(Object pos);
-
-    Object getNMSBlockPos(Vec3<Integer> pos);
+    Object getNMSBlockPos(Vec3i pos);
 
     Channel getPlayerChannel(Player player);
 
@@ -125,13 +118,13 @@ public interface ICompat {
 
     <I> I removePDCData(I item, String key);
 
-    Object getNMSChunk(Object world, Vec2<Integer> chunkLoc);
+    Object getNMSChunk(Object world, Vec2i chunkLoc);
 
-    Object getNMSChunk(Object world, Vec3<Integer> vec3i);
+    Object getNMSChunk(Object world, Vec3i vec3i);
 
-    Object setBlockData(Object chunk, Vec3<Integer> vec3i, WrappedBlockData blockData, boolean applyPhysics);
+    Object setBlockData(Object chunk, Vec3i vec3i, IWrappedBlockData blockData, boolean applyPhysics);
 
-    WrappedBlockData getNMSNewBlockData(Material material, byte data);
+    IWrappedBlockData getNMSNewBlockData(Material material, byte data);
 
     Object getNMSChunk(Object chunk);
 
@@ -139,40 +132,40 @@ public interface ICompat {
 
     Object getNMSChunkSection(Object chunk, int y);
 
-    Object getNMSChunkSection(Object world, Vec3<Integer> chunkLoc);
+    Object getNMSChunkSection(Object world, Vec3i chunkLoc);
 
     int getHeight(World world);
 
     void updateLightsAtChunk(final Object chunk);
 
-    void updateChunk(Object world, Vec2<Integer> chunkLoc);
+    void updateChunk(Object world, Vec2i chunkLoc);
 
-    WrappedBlockData setWrappedBlockData(Object chunkSection, Vec3<Integer> vec3i, WrappedBlockData blockData,
-                                         boolean applyPhysics);
+    IWrappedBlockData setWrappedBlockData(Object chunkSection, Vec3i vec3i, IWrappedBlockData blockData,
+                                          boolean applyPhysics);
 
-    WrappedBlockData getWrappedBlockData(Object chunkSection, Vec3<Integer> vec3i);
+    IWrappedBlockData getWrappedBlockData(Object chunkSection, Vec3i vec3i);
 
     Object getBlockData(Object blockData);
 
-    Object getBlockData(Object chunkSection, Vec3<Integer> vec3i);
+    Object getBlockData(Object chunkSection, Vec3i vec3i);
 
-    Object getBlockData2(Object chunkSection, Vec3<Integer> fixedVec3i);
+    Object getBlockData2(Object chunkSection, Vec3i fixedVec3i);
 
     Object getNMSChunkSection(Object chunkSection);
 
     Object getNMSChunkSection2(Object chunk, int fixedY);
 
-    void updateLightsAtBlock(Object world, Vec3<Integer> pos);
+    void updateLightsAtBlock(Object world, Vec3i pos);
 
     void unloadChunk(Object chunk, boolean save);
 
-    Object loadChunk(Object world, Vec2<Integer> chunkLoc, boolean generate);
+    Object loadChunk(Object world, Vec2i chunkLoc, boolean generate);
 
     float getDestroySpeed(ItemStack itemStack, BlockState blockState);
 
     String getBlockName(Object block);
 
-    boolean isChunkViewing(Object player, Object world, Vec2<Integer> chunkPos);
+    boolean isChunkViewing(Object player, Object world, Vec2i chunkPos);
 
     Object getNMSPlayer(Object player);
 }

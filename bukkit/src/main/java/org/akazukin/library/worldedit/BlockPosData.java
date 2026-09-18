@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.library.world.WrappedBlockData;
+import org.akazukin.library.world.IWrappedBlockData;
 
 import java.util.Objects;
 
@@ -12,8 +12,8 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 public class BlockPosData {
-    Vec3<Integer> pos;
-    WrappedBlockData blockData;
+    Vec3i pos;
+    IWrappedBlockData blockData;
 
     @Override
     public int hashCode() {
